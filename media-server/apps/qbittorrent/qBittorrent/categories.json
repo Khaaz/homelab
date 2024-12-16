@@ -1,11 +1,14 @@
 {
+    "anime": {
+        "save_path": "/data/anime"
+    },
+    "movies": {
+        "save_path": "/data/movies"
+    },
     "prowlarr": {
-        "save_path": ""
+        "save_path": "/data/unsorted"
     },
-    "radarr": {
-        "save_path": ""
-    },
-    "tv-sonarr": {
-        "save_path": ""
+    "series": {
+        "save_path": "/data/series"
     }
 }
