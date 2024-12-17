@@ -6,7 +6,7 @@
   <LaunchBrowser>True</LaunchBrowser>
   <ApiKey>69f87af967a047a68fa4a74c1f441856</ApiKey>
   <AuthenticationMethod>Forms</AuthenticationMethod>
-  <AuthenticationRequired>Enabled</AuthenticationRequired>
+  <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
   <Branch>main</Branch>
   <LogLevel>debug</LogLevel>
   <SslCertPath></SslCertPath>
@@ -15,4 +15,5 @@
   <InstanceName>Sonarr</InstanceName>
   <UpdateMechanism>Docker</UpdateMechanism>
   <Theme>dark</Theme>
+  <AnalyticsEnabled>False</AnalyticsEnabled>
 </Config>
