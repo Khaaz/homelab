@@ -1,3 +1,6 @@
+# secret.env file with secret env var:
+# ctrl+f: overriden
+
 networks:
   mediaserver:
     name: mediaserver
