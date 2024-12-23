@@ -1,5 +1,9 @@
 # MEDIA SERVER
 
+## Architecture
+
+![alt text](../assets/media-server.png)
+
 ## Docs
 
 Mediastack:  
