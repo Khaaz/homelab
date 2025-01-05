@@ -8,15 +8,20 @@ if [ "$COMMAND" != "up" ] && [ "$COMMAND" != "down" ]; then
     exit 1
 fi
 
-# Get the directory where the script is located
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-# Set the default environment file path
+# compose envs
 DEFAULT_ENV_FILE="$SCRIPT_DIR/src/default.env"
-OVERRIDE_ENV_FILE="$SCRIPT_DIR/src/secret.env"
+OVERRIDE_ENV_FILE="$SCRIPT_DIR/src/.env"
+
+# additional envs (setup)
+SETUP_ENV_FILE="$SCRIPT_DIR/src/setup/.env"
+
+# source
 COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
 
-echo $SCRIPT_DIR
-
+# Set the default environment file path
 export ROOT_PATH=$SCRIPT_DIR
-docker compose -f $COMPOSE_FILE --env-file $DEFAULT_ENV_FILE --env-file $OVERRIDE_ENV_FILE $COMMAND "$@"
+echo "Root: $SCRIPT_DIR"
+
+docker compose -f $COMPOSE_FILE --env-file $DEFAULT_ENV_FILE --env-file $OVERRIDE_ENV_FILE --env-file $SETUP_ENV_FILE $COMMAND "$@"

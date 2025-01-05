@@ -1,0 +1,147 @@
+# secret.env file with secret env var:
+# ctrl+f: overriden
+
+networks:
+  reverseproxy:
+    name: reverseproxy
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${DOCKER_SUBNET:?err}
+        gateway: ${DOCKER_GATEWAY:?err}
+
+services:
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${APPS_FOLDER:?err}/portainer:/data
+    ports:
+      - "${WEBUI_PORT_PORTAINER:?err}:9443"
+    network_mode: bridge
+
+###########################################################################
+###########################################################################
+## Authentification / DNS
+###########################################################################
+###########################################################################
+
+# Authelia - Multi-factor authentication portal
+  authelia:
+    image: ghcr.io/authelia/authelia:latest
+    container_name: authelia
+    depends_on:
+      gluetun:
+        condition: service_started
+    volumes:
+      - ${APPS_FOLDER:?err}/authelia:/config
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+    restart: unless-stopped
+    networks:
+      - reverseproxy
+
+# SWAG - Reverse proxy with Certbot, for Let's Encrypt / ZeroSSL
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    volumes:
+      - ${APPS_FOLDER:?err}/swag:/config
+    ports:
+      - ${REVERSE_PROXY_PORT_HTTP:?err}:80
+      - ${REVERSE_PROXY_PORT_HTTPS:?err}:443
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - URL=${DOMAINNAME:?err}
+      - SUBDOMAINS=${SUBDOMAINS}
+      - VALIDATION=${VALIDATION:?err}
+      - CERTPROVIDER=${CERTPROVIDER}
+      - DNSPLUGIN=${DNSPLUGIN}
+      - PROPAGATION=${PROPAGATION}
+      - DUCKDNSTOKEN=${DUCKDNSTOKEN}
+      - EMAIL=${EMAIL}
+      - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
+      - EXTRA_DOMAINS=${EXTRA_DOMAINS}
+      - STAGING=${STAGING}
+    networks:
+      - reverseproxy
+    dns:
+      - unbound  # Custom DNS server (Unbound container IP)
+      - 127.0.0.11  # Docker's internal DNS resolver
+
+# DNSMask - DNS server for local resolution
+  dnsmasq:
+    image: andyshinn/dnsmasq:latest
+    container_name: dnsmasq
+    restart: unless-stopped
+    ports:
+      - "53:53/udp"
+    volumes:
+      - ${APPS_FOLDER:?err}/dnsmasq:/etc/dnsmasq.d
+    environment:
+      - DNS_LISTENING_ADDRESS=0.0.0.0  # Listen on all interfaces
+    networks:
+      - reverseproxy
+
+# DNSMask - DNS server for local resolution
+  unbound:
+    image: mvance/unbound:latest
+    container_name: unbound
+    restart: unless-stopped
+    ports:
+      - "53:53/udp"
+    volumes:
+      - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound
+    networks:
+      - reverseproxy
+
+# DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
+  ddns-updater:
+    image: qmcgaw/ddns-updater:latest
+    container_name: ddns-updater
+    restart: always
+    user: ${PUID:?err}:${PGID:?err}
+    volumes:
+      - ${APPS_FOLDER:?err}/ddns-updater:/updater/data
+    ports:
+      - ${WEBUI_PORT_DDNS_UPDATER:?err}:${WEBUI_PORT_DDNS_UPDATER:?err}/tcp
+    environment:
+#      - PUID=${PUID:?err}    # Not used in DDNS-Updater - see above:   user: ${PUID:?err}:${PGID:?err}
+#      - PGID=${PGID:?err}    # Not used in DDNS-Updater - see above:   user: ${PUID:?err}:${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - CONFIG=
+      - PERIOD=5m
+      - UPDATE_COOLDOWN_PERIOD=5m
+      - PUBLICIP_FETCHERS=all
+      - PUBLICIP_HTTP_PROVIDERS=all
+      - PUBLICIPV4_HTTP_PROVIDERS=all
+      - PUBLICIPV6_HTTP_PROVIDERS=all
+      - PUBLICIP_DNS_PROVIDERS=all
+      - PUBLICIP_DNS_TIMEOUT=3s
+      - HTTP_TIMEOUT=10s
+      # Web UI
+      - LISTENING_ADDRESS=:${WEBUI_PORT_DDNS_UPDATER:?err}
+      - ROOT_URL=/
+      # Backup
+      - BACKUP_PERIOD=0 # 0 to disable
+      - BACKUP_DIRECTORY=/updater/data
+      # Other
+      - LOG_LEVEL=info
+      - LOG_CALLER=hidden
+      - SHOUTRRR_ADDRESSES=
+    networks:
+      - reverseproxy

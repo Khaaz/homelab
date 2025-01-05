@@ -4,8 +4,8 @@
 
 ### Nas server
 
-![alt text](./assets/proxmox.png)
+![proxmox](./assets/proxmox.png)
 
 ### Network
 
-![alt text](./assets/network.png)
+![network](./assets/network.png)

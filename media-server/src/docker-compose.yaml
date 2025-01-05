@@ -45,22 +45,21 @@ services:
       - "8388:8388/udp"                         # Gluetun Local Network Shadowsocks
       - ${GLUETUN_CONTROL_PORT:?err}:${GLUETUN_CONTROL_PORT:?err} # Gluetun Status Port
 
-      - "${WEBUI_PORT_PROWLARR:?err}:9696"      # WebUI Portal: Prowlarr
+      - "${PORT_PROWLARR:?err}:9696"      # WebUI Portal: Prowlarr
       - "${FLARESOLVERR_PORT:?err}:8191"        # Service Port: FlareSolverr
       - "${WEBUI_PORT_QBITTORRENT:?err}:${WEBUI_PORT_QBITTORRENT:?err}"   # WebUI Portal: qBittorrent
       - "${QBIT_PORT:?err}:6881"                # Transmission Torrent Port
       # - "${WEBUI_PORT_SABNZBD:?err}:8080"       # WebUI Portal: SABnzbd
       # - "${WEBUI_PORT_NZBGET:?err}:6789"       # WebUI Portal: NZBGet
 
-      - "${WEBUI_PORT_BAZARR:?err}:6767"        # WebUI Portal: Bazarr
-      - "${WEBUI_PORT_RADARR:?err}:7878"        # WebUI Portal: Radarr
-      - "${WEBUI_PORT_SONARR:?err}:8989"        # WebUI Portal: Sonarr
-      # - "${WEBUI_PORT_LIDARR:?err}:8686"        # WebUI Portal: Lidarr
-      # - "${WEBUI_PORT_MYLAR:?err}:8090"         # WebUI Portal: Mylar3
-      # - "${WEBUI_PORT_READARR:?err}:8787"       # WebUI Portal: Readarr
+      - "${PORT_BAZARR:?err}:6767"        # WebUI Portal: Bazarr
+      - "${PORT_RADARR:?err}:7878"        # WebUI Portal: Radarr
+      - "${PORT_RADARR4k:?err}:7879"     # WebUI Portal: Radarr4k
+      - "${PORT_SONARR:?err}:8989"        # WebUI Portal: Sonarr
 
-      - "${WEBUI_PORT_HOMARR:?err}:7575"        # WebUI Portal: Homarr
-      - "${WEBUI_PORT_OVERSEER:?err}:5055"      # WebUI Portal: Overseer
+      - "${PORT_HOMARR:?err}:7575"        # WebUI Portal: Homarr
+      - "${PORT_MAINTAINERR:?err}:6246"   # WebUI Portal: Maintainerr
+      - "${PORT_OVERSEER:?err}:5055"      # WebUI Portal: Overseer
       - "${WEBUI_PORT_PLEX:?err}:32400"         # WebUI Portal: Plex
 #      - 1900:1900/udp                           # DNLA Service       (Clashes with Synology: SSPD "File Services" --> "Advanced")
 #      - 5353:5353/udp                           # Plex Network Port  (Clashes with Synology: Bonjour "File Services" --> "Advanced")
@@ -74,7 +73,6 @@ services:
       # - "${WEBUI_PORT_FILEBOT:?err}:${WEBUI_PORT_FILEBOT:?err}"           # WebUI Portal: Filebot
       # - "${TDARR_SERVER_PORT:?err}:${TDARR_SERVER_PORT:?err}"   # Tdarr: Server Port
       # - "${WEBUI_PORT_TDARR:?err}:${WEBUI_PORT_TDARR:?err}"     # Tdarr: WebUI Portal
-
     volumes:
       - ${APPS_FOLDER:?err}/gluetun:/gluetun
     environment:
@@ -128,6 +126,13 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:prowlarr
       - TP_THEME=${TP_THEME:?err}
+      # setup env vars
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+        user: root
+      - command: /scripts/execute-sql.sh /config/prowlarr.db /config/_setup/sql/init.sql
+        user: root
 
 # Flaresolverr - Cloudflare Proxy Server 
   flaresolverr:
@@ -226,8 +231,6 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
       - TP_THEME=${TP_THEME:?err}
-#    ports:
-#      - "${WEBUI_PORT_BAZARR:?err}:6767"             # Configured in Gluetun VPN container
 
 # Radarr - Movie library
   radarr:
@@ -247,8 +250,40 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
       - TP_THEME=${TP_THEME:?err}
-#    ports:
-#      - "${WEBUI_PORT_RADARR:?err}:7878"             # Configured in Gluetun VPN container
+      # setup env vars
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+        user: root
+      - command: /scripts/execute-sql.sh /config/radarr.db /config/_setup/sql/init.sql
+        user: root
+
+# Radarr - Movie library (4k)
+  radarr4k:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr4k
+    depends_on:
+      gluetun:
+        condition: service_started
+    network_mode: "service:gluetun"
+    restart: unless-stopped
+    volumes:
+      - ${APPS_FOLDER:?err}/radarr4k:/config
+      - ${DATA_FOLDER:?err}:/data
+      - ${SCRIPTS_FOLDER:?err}:/scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - TZ=${TIMEZONE:?err}
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
+      - TP_THEME=${TP_THEME:?err}
+      # setup env vars
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+        user: root
+      - command: /scripts/execute-sql.sh /config/radarr.db /config/_setup/sql/init.sql
+        user: root
 
 # Sonarr - Serie library
   sonarr:
@@ -268,62 +303,13 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:sonarr
       - TP_THEME=${TP_THEME:?err}
-#    ports:
-#      - "${WEBUI_PORT_SONARR:?err}:8989"             # Configured in Gluetun VPN container
-
-#  Lidarr - Music library
-  # lidarr:
-  #   image: lscr.io/linuxserver/lidarr:latest
-  #   container_name: lidarr
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${APPS_FOLDER:?err}/lidarr:/config
-  #     - ${DATA_FOLDER:?err}:/data
-  #   environment:
-  #     - PUID=${PUID:?err}
-  #     - PGID=${PGID:?err}
-  #     - TZ=${TIMEZONE:?err}
-  #     - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:lidarr
-  #     - TP_THEME=${TP_THEME:?err}
-  #   network_mode: "service:gluetun"
-#    ports:
-#      - "${WEBUI_PORT_LIDARR:?err}:8686"             # Configured in Gluetun VPN container
-
-# Mylarr - Comics library
-  # mylar:
-  #   image: lscr.io/linuxserver/mylar3:latest
-  #   container_name: mylar
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${APPS_FOLDER:?err}/mylar:/config
-  #     - ${DATA_FOLDER:?err}:/data
-  #   environment:
-  #     - PUID=${PUID:?err}
-  #     - PGID=${PGID:?err}
-  #     - TZ=${TIMEZONE:?err}
-  #     - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:mylar3
-  #     - TP_THEME=${TP_THEME:?err}
-  #   network_mode: "service:gluetun"
-#    ports:
-#      - "${WEBUI_PORT_MYLAR:?err}:8090"             # Configured in Gluetun VPN container
-
-# Redarr - Book library
-  # readarr:
-  #   image: lscr.io/linuxserver/readarr:develop
-  #   container_name: readarr
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${APPS_FOLDER:?err}/readarr:/config
-  #     - ${DATA_FOLDER:?err}:/data
-  #   environment:
-  #     - PUID=${PUID:?err}
-  #     - PGID=${PGID:?err}
-  #     - TZ=${TIMEZONE:?err}
-  #     - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
-  #     - TP_THEME=${TP_THEME:?err}
-  #   network_mode: "service:gluetun"
-#    ports:
-#      - "${WEBUI_PORT_READARR:?err}:8787"             # Configured in Gluetun VPN container
+      # setup env vars
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+        user: root
+      - command: /scripts/execute-sql.sh /config/sonarr.db /config/_setup/sql/init.sql
+        user: root
 
 ###########################################################################
 ###########################################################################
@@ -350,10 +336,22 @@ services:
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-#    ports:
-#      - "${WEBUI_PORT_HOMARR:?err}:7575"             # Configured in Gluetun VPN container
 
 # Maintainerr - Management Dashboard
+  maintainerr:
+    image: ghcr.io/jorenn92/maintainerr:latest
+    container_name: maintainerr
+    depends_on:
+      gluetun:
+        condition: service_started
+    network_mode: "container:gluetun"
+    restart: unless-stopped
+    user:  ${PUID:?err}:${PGID:?err}
+    volumes:
+      - '${APPS_FOLDER:?err}/maintainerr/config:/opt/data'
+    environment:
+      - TZ=${TIMEZONE:?err}
+#      - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
 
 # Overseer - Media Management
   overseerr:
@@ -373,7 +371,7 @@ services:
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
       - TP_THEME=${TP_THEME:?err}
     volumes:
-      - '${APPS_FOLDER:?err}/overseerr/config:/app/config'
+      - '${APPS_FOLDER:?err}/overseerr/config:/config'
 
 # Plex - Media Server
   plex:
@@ -570,103 +568,6 @@ services:
 #       - UN_CMDHOOK_0_EVENTS_0=0
 #     security_opt:
 #       - no-new-privileges:true
-
-###########################################################################
-###########################################################################
-## Authentification / DNS
-###########################################################################
-###########################################################################
-
-# Authelia - Multi-factor authentication portal
-  authelia:
-    image: ghcr.io/authelia/authelia:latest
-    container_name: authelia
-    depends_on:
-      gluetun:
-        condition: service_started
-    volumes:
-      - ${APPS_FOLDER:?err}/authelia:/config
-    environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
-      - UMASK=${UMASK:?err}
-      - TZ=${TIMEZONE:?err}
-    restart: unless-stopped
-# NOTE: Authelia MUST NOT connect to the Gluetun VPN container
-    networks:
-      - mediaserver
-
-# SWAG - Reverse proxy with Certbot, for Let's Encrypt / ZeroSSL
-  swag:
-    image: lscr.io/linuxserver/swag:latest
-    container_name: swag
-    cap_add:
-      - NET_ADMIN
-    restart: unless-stopped
-    volumes:
-      - ${APPS_FOLDER:?err}/swag:/config
-    ports:
-      - ${REVERSE_PROXY_PORT_HTTP:?err}:80
-      - ${REVERSE_PROXY_PORT_HTTPS:?err}:443
-    environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
-      - UMASK=${UMASK:?err}
-      - TZ=${TIMEZONE:?err}
-      - URL=${DOMAINNAME:?err}
-      - SUBDOMAINS=${SUBDOMAINS}
-      - VALIDATION=${VALIDATION:?err}
-      - CERTPROVIDER=${CERTPROVIDER}
-      - DNSPLUGIN=${DNSPLUGIN}
-      - PROPAGATION=${PROPAGATION}
-      - DUCKDNSTOKEN=${DUCKDNSTOKEN}
-      - EMAIL=${EMAIL}
-      - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
-      - EXTRA_DOMAINS=${EXTRA_DOMAINS}
-      - STAGING=${STAGING}
-# NOTE: SWAG MUST NOT connect to the Gluetun VPN container
-    networks:
-      - mediaserver
-
-# DDNS-Updater - Update Dynamic IP addresses for DNS A and/or AAAA records
-  ddns-updater:
-    image: qmcgaw/ddns-updater:latest
-    container_name: ddns-updater
-    restart: always
-    user: ${PUID:?err}:${PGID:?err}
-    volumes:
-      - ${APPS_FOLDER:?err}/ddns-updater:/updater/data
-    ports:
-      - ${WEBUI_PORT_DDNS_UPDATER:?err}:${WEBUI_PORT_DDNS_UPDATER:?err}/tcp
-    environment:
-#      - PUID=${PUID:?err}    # Not used in DDNS-Updater - see above:   user: ${PUID:?err}:${PGID:?err}
-#      - PGID=${PGID:?err}    # Not used in DDNS-Updater - see above:   user: ${PUID:?err}:${PGID:?err}
-      - UMASK=${UMASK:?err}
-      - TZ=${TIMEZONE:?err}
-      - CONFIG=
-      - PERIOD=5m
-      - UPDATE_COOLDOWN_PERIOD=5m
-      - PUBLICIP_FETCHERS=all
-      - PUBLICIP_HTTP_PROVIDERS=all
-      - PUBLICIPV4_HTTP_PROVIDERS=all
-      - PUBLICIPV6_HTTP_PROVIDERS=all
-      - PUBLICIP_DNS_PROVIDERS=all
-      - PUBLICIP_DNS_TIMEOUT=3s
-      - HTTP_TIMEOUT=10s
-      # Web UI
-      - LISTENING_ADDRESS=:${WEBUI_PORT_DDNS_UPDATER:?err}
-      - ROOT_URL=/
-      # Backup
-      - BACKUP_PERIOD=0 # 0 to disable
-      - BACKUP_DIRECTORY=/updater/data
-      # Other
-      - LOG_LEVEL=info
-      - LOG_CALLER=hidden
-      - SHOUTRRR_ADDRESSES=
-# NOTE: DDNS-Update MUST NOT connect to the Gluetun VPN container
-    networks:
-      - mediaserver
-
 
   # wireguard:
   #   image: ghcr.io/linuxserver/wireguard:latest
