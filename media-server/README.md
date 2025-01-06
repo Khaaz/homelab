@@ -2,7 +2,7 @@
 
 ## Architecture
 
-![media-server](../assets/media-server/media-server.png)
+![architecture](../assets/media-server/architecture.png)
 
 ## Docs
 
@@ -57,17 +57,16 @@ Indexer/Downloader:
 
 TODO conf:
 
-- DATA CONFIG:
-  - overseer
-  - bazarr
+- OK:
+  - qbittorrent
 - DATA SQL:
   - sonarr
   - radarr
   - radarr4k
   - prowlarr
+- DATA CONFIG:
+  - overseer
+  - bazarr
 - AUTOMATISATION:
-  - qbit
   - maintainerr
   - plex
-- OK:
-  - /

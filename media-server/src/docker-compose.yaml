@@ -150,6 +150,7 @@ services:
       - TZ=${TIMEZONE:?err}
 
 # Qbittorrent - Torrent client
+# default user/password: admin/admin!
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
