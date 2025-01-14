@@ -1,4 +1,2 @@
-
-!nginx/proxy-confs/homarr.subdomain.conf.sample
-!nginx/proxy-confs/radarr.subdomain.conf.sample
-!nginx/proxy-confs/radarr.subdomain.conf
+!ssl.conf
+!ssl-private.conf
