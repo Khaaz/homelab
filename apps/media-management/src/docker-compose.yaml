@@ -82,7 +82,9 @@ services:
       - HTTPPROXY=on
       - SHADOWSOCKS=on
     networks:
-      - media-management-vpn
+        media-management-vpn:
+        media-management:
+          ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.10"
 
 ###########################################################################
 ###########################################################################
@@ -185,7 +187,7 @@ services:
     restart: unless-stopped
     networks:
       media-management:
-        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.11"
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.21"
     ports:
       - "${PORT_UI_BAZARR:?err}:6767"
     volumes:
@@ -209,7 +211,7 @@ services:
     restart: unless-stopped
     networks:
       media-management:
-        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.12"
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.22"
     ports:
       - "${PORT_UI_RADARR:?err}:7878"
     volumes:
@@ -237,7 +239,7 @@ services:
     restart: unless-stopped
     networks:
       media-management:
-        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.13"
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.23"
     ports:
       - "${PORT_UI_RADARR4K:?err}:7878"
     volumes:
@@ -265,7 +267,7 @@ services:
     restart: unless-stopped
     networks:
       media-management:
-        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.14"
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.24"
     ports:
       - "${PORT_UI_SONARR:?err}:8989"
     volumes:
@@ -299,7 +301,7 @@ services:
     restart: unless-stopped
     networks:
       media-management:
-        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.21"
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.31"
     ports:
       - "${PORT_UI_HOMARR:?err}:7575"
     volumes:
@@ -324,7 +326,7 @@ services:
     restart: unless-stopped
     networks:
       media-management:
-        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.22"
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.32"
     user:  ${PUID:?err}:${PGID:?err}
     ports:
       - "${PORT_UI_MAINTAINERR:?err}:6246"

@@ -47,8 +47,8 @@ DELETE FROM Applications;
 INSERT INTO Applications (Id, Name, Implementation, Settings, ConfigContract, SyncLevel, Tags)
 VALUES
 (1, 'Sonarr', 'Sonarr', '{
-  "prowlarrUrl": "http://localhost:9696",
-  "baseUrl": "http://localhost:8989",
+  "prowlarrUrl": "http://172.18.10.10:9696",
+  "baseUrl": "http://172.18.10.24:8989",
   "apiKey": "69f87af967a047a68fa4a74c1f441856",
   "syncCategories": [
     5000,
@@ -67,8 +67,8 @@ VALUES
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
 }', 'SonarrSettings', 2, '[]'),
 (2, 'Radarr', 'Radarr', '{
-  "prowlarrUrl": "http://localhost:9696",
-  "baseUrl": "http://localhost:7878",
+  "prowlarrUrl": "http://172.18.10.10:9696",
+  "baseUrl": "http://172.18.10.22:7878",
   "apiKey": "3ebde1f20ae54d1684a171f23cf112ea",
   "syncCategories": [
     2000,
@@ -86,8 +86,8 @@ VALUES
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
 }', 'RadarrSettings', 2, '[]'),
 (3, 'Radarr-4k', 'Radarr', '{
-  "prowlarrUrl": "http://localhost:9696",
-  "baseUrl": "http://localhost:7879",
+  "prowlarrUrl": "http://172.18.10.10:9696",
+  "baseUrl": "http://172.18.10.23:7879",
   "apiKey": "9a6865941b224b05ab7632c4f6bbbf00",
   "syncCategories": [
     2000,
@@ -128,7 +128,7 @@ VALUES
   "port": 8200,
   "useSsl": false,
   "username": "admin",
-  "password": "Khaaz11!",
+  "password": "admin!",
   "category": "prowlarr",
   "priority": 0,
   "initialState": 0,
