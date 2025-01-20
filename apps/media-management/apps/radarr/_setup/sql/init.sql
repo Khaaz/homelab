@@ -70,7 +70,7 @@ VALUES (
     "port": 8200,
     "useSsl": false,
     "username": "admin",
-    "password": "Khaaz11!",
+    "password": "admin!",
     "movieCategory": "movies",
     "recentMoviePriority": 0,
     "olderMoviePriority": 0,
