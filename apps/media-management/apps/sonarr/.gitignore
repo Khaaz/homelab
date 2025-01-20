@@ -1,3 +1,4 @@
-!scripts/**
+!_setup/**
 
+# todo delete
 !sonarr.db

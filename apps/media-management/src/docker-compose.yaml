@@ -1,20 +1,20 @@
 networks:
-  mediaserver:
-    name: mediaserver
+  media-management:
+    name: media-management
     driver: bridge
     ipam:
       driver: default
       config:
-      - subnet: ${DOCKER_SUBNET:?err}
-        gateway: ${DOCKER_GATEWAY:?err}
-  # vpn:
-  #   name: vpn
-  #   driver: bridge
-  #   ipam:
-  #     driver: default
-  #     config:
-  #     - subnet: ${DOCKER_SUBNET:?err}
-  #       gateway: ${DOCKER_GATEWAY:?err}
+      - subnet: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.0/24
+        gateway: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.1
+  media-management-vpn:
+    name: media-management-vpn
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${MEDIA_MANAGEMENT_DOCKER_SUBNET_VPN:?err}.0/24
+        gateway: ${MEDIA_MANAGEMENT_DOCKER_SUBNET_VPN:?err}.1
 
 services:
 
@@ -48,36 +48,15 @@ services:
       - "8888:8888/tcp"                         # Gluetun Local Network HTTP proxy
       - "8388:8388/tcp"                         # Gluetun Local Network Shadowsocks
       - "8388:8388/udp"                         # Gluetun Local Network Shadowsocks
-      - ${GLUETUN_CONTROL_PORT:?err}:${GLUETUN_CONTROL_PORT:?err} # Gluetun Status Port
+      - ${PORT_SERVICE_GLUETUN:?err}:${PORT_SERVICE_GLUETUN:?err} # Gluetun Status Port
 
-      - "${PORT_SERVICE_PROWLARR:?err}:9696"      # WebUI Portal: Prowlarr
-      - "${PORT_UI_FLARESOLVERR:?err}:8191"        # Service Port: FlareSolverr
+      - "${PORT_UI_PROWLARR:?err}:9696"      # WebUI Portal: Prowlarr
+      - "${PORT_SERVICE_FLARESOLVERR:?err}:8191"        # Service Port: FlareSolverr
       - "${PORT_UI_QBITTORRENT:?err}:${PORT_UI_QBITTORRENT:?err}"   # WebUI Portal: qBittorrent
       - "${PORT_SERVICE_QBITTORRENT:?err}:6881"                # Transmission Torrent Port
       # - "${WEBUI_PORT_UI_SABNZBD:?err}:8080"       # WebUI Portal: SABnzbd
-      - "${PORT_UI_BAZARR:?err}:6767"        # WebUI Portal: Bazarr
-      - "${PORT_UI_RADARR:?err}:7878"        # WebUI Portal: Radarr
-      - "${PORT_UI_RADARR4k:?err}:7879"      # WebUI Portal: Radarr4k
-      - "${PORT_UI_SONARR:?err}:8989"        # WebUI Portal: Sonarr
-      - "${PORT_UI_HOMARR:?err}:7575"        # WebUI Portal: Homarr
-      - "${PORT_UI_MAINTAINERR:?err}:6246"   # WebUI Portal: Maintainerr
-      - "${PORT_UI_OVERSEER:?err}:5055"      # WebUI Portal: Overseer
-      - "${PORT_UI_PLEX:?err}:32400"         # WebUI Portal: Plex
-
-#      - 1900:1900/udp                           # DNLA Service       (Clashes with Synology: SSPD "File Services" --> "Advanced")
-#      - 5353:5353/udp                           # Plex Network Port  (Clashes with Synology: Bonjour "File Services" --> "Advanced")
-      - 8324:8324                               # Plex Network Port
-      - 32410:32410/udp                         # Plex Network Port
-      - 32412:32412/udp                         # Plex Network Port
-      - 32413:32413/udp                         # Plex Network Port
-      - 32414:32414/udp                         # Plex Network Port
-      - 32469:32469                             # Plex Network Port
-      
-      # - "${PORT_UI_FILEBOT:?err}:${PORT_UI_FILEBOT:?err}"           # WebUI Portal: Filebot
-      # - "${TDARR_SERVER_PORT:?err}:${TDARR_SERVER_PORT:?err}"   # Tdarr: Server Port
-      # - "${PORT_UI_TDARR:?err}:${PORT_UI_TDARR:?err}"     # Tdarr: WebUI Portal
     volumes:
-      - ${APPS_FOLDER:?err}/gluetun:/gluetun
+      - ${APPS_FOLDER:?err}/gluetun:/gluetun # config
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -92,11 +71,10 @@ services:
       - SERVER_HOSTNAMES=${SERVER_HOSTNAMES}
       - SERVER_CATEGORIES=${SERVER_CATEGORIES}
       - FIREWALL_OUTBOUND_SUBNETS=${LOCAL_SUBNET:?err}
-      - OPENVPN_CUSTOM_CONFIG=${OPENVPN_CUSTOM_CONFIG}
-      - HTTP_CONTROL_SERVER_ADDRESS=:${GLUETUN_CONTROL_PORT:?err}
+      - HTTP_CONTROL_SERVER_ADDRESS=:${PORT_SERVICE_GLUETUN:?err}
       - VPN_TYPE=${VPN_TYPE}
-      - VPN_ENDPOINT_IP=${VPN_ENDPOINT_IP}
-      - VPN_ENDPOINT_PORT=${VPN_ENDPOINT_PORT}
+      - OPENVPN_ENDPOINT_IP=${OPENVPN_ENDPOINT_IP}
+      - OPENVPN_ENDPOINT_PORT=${OPENVPN_ENDPOINT_PORT}
       - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
@@ -104,7 +82,7 @@ services:
       - HTTPPROXY=on
       - SHADOWSOCKS=on
     networks:
-      - mediaserver
+      - media-management-vpn
 
 ###########################################################################
 ###########################################################################
@@ -116,14 +94,14 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
+    restart: unless-stopped
     depends_on:
       gluetun:
         condition: service_started
     network_mode: "service:gluetun"
-    restart: unless-stopped
     volumes:
-      - ${APPS_FOLDER:?err}/prowlarr:/config
-      - ${SCRIPTS_FOLDER:?err}:/scripts
+      - ${APPS_FOLDER:?err}/prowlarr:/config # config
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -142,11 +120,11 @@ services:
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
+    restart: unless-stopped
     depends_on:
       gluetun:
         condition: service_started
     network_mode: "service:gluetun"
-    restart: unless-stopped
     environment:
       - LOG_LEVEL=info
       - LOG_HTML=false
@@ -158,14 +136,14 @@ services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
+    restart: unless-stopped
     depends_on:
       gluetun:
         condition: service_started
     network_mode: "service:gluetun"
-    restart: unless-stopped
     volumes:
-      - ${APPS_FOLDER:?err}/qbittorrent:/config
-      - ${DATA_FOLDER:?err}/torrents:/data
+      - ${APPS_FOLDER:?err}/qbittorrent:/config # config
+      - ${DATA_FOLDER:?err}/torrents:/data # data
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -204,35 +182,40 @@ services:
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.11"
+    ports:
+      - "${PORT_UI_BAZARR:?err}:6767"
     volumes:
-      - ${APPS_FOLDER:?err}/bazarr:/config
-      - ${DATA_FOLDER:?err}:/data
-      - ${SCRIPTS_FOLDER:?err}:/scripts
+      - ${APPS_FOLDER:?err}/bazarr:/config # config
+      - ${DATA_FOLDER:?err}:/data # data
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
       - TP_THEME=${TP_THEME:?err}
+    # post_start:
+    #   - command: /scripts/parse-file.sh /config/_setup/templates/config.yaml /config/config/config.xml
+    #     user: root
 
 # Radarr - Movie library
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.12"
+    ports:
+      - "${PORT_UI_RADARR:?err}:7878"
     volumes:
-      - ${APPS_FOLDER:?err}/radarr:/config
-      - ${DATA_FOLDER:?err}:/data
-      - ${SCRIPTS_FOLDER:?err}:/scripts
+      - ${APPS_FOLDER:?err}/radarr:/config # config
+      - ${DATA_FOLDER:?err}:/data # data
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -251,15 +234,16 @@ services:
   radarr4k:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr4k
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.13"
+    ports:
+      - "${PORT_UI_RADARR4K:?err}:7878"
     volumes:
-      - ${APPS_FOLDER:?err}/radarr4k:/config
-      - ${DATA_FOLDER:?err}:/data
-      - ${SCRIPTS_FOLDER:?err}:/scripts
+      - ${APPS_FOLDER:?err}/radarr4k:/config # config
+      - ${DATA_FOLDER:?err}:/data # data
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -278,15 +262,16 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.14"
+    ports:
+      - "${PORT_UI_SONARR:?err}:8989"
     volumes:
-      - ${APPS_FOLDER:?err}/sonarr:/config
-      - ${DATA_FOLDER:?err}:/data
-      - ${SCRIPTS_FOLDER:?err}:/scripts
+      - ${APPS_FOLDER:?err}/sonarr:/config # config
+      - ${DATA_FOLDER:?err}:/data # data
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -311,93 +296,47 @@ services:
   homarr:
     image: ghcr.io/ajnart/homarr:latest
     container_name: homarr
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "container:gluetun"
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.21"
+    ports:
+      - "${PORT_UI_HOMARR:?err}:7575"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${APPS_FOLDER:?err}/homarr/configs:/app/data/configs
+      - ${APPS_FOLDER:?err}/homarr/configs:/app/data/configs # config
+      - ${APPS_FOLDER:?err}/homarr/data:/data # data
       - ${APPS_FOLDER:?err}/homarr/icons:/app/public/icons
-      - ${APPS_FOLDER:?err}/homarr/data:/data
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
+    # post_start:
+    #   - command: /scripts/parse-file.sh /config/_setup/templates/default.json /config/configs/default.json
+    #     user: root
 
 # Maintainerr - Management Dashboard
   maintainerr:
     image: ghcr.io/jorenn92/maintainerr:latest
     container_name: maintainerr
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "container:gluetun"
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.22"
     user:  ${PUID:?err}:${PGID:?err}
+    ports:
+      - "${PORT_UI_MAINTAINERR:?err}:6246"
     volumes:
-      - '${APPS_FOLDER:?err}/maintainerr/config:/opt/data'
+      - ${APPS_FOLDER:?err}/maintainerr/config:/opt/data #config
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - TZ=${TIMEZONE:?err}
-#      - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
-
-# Overseer - Media Management
-  overseerr:
-    image: lscr.io/linuxserver/overseerr:latest
-    container_name: overseerr
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
-    restart: unless-stopped
-    environment:
-      - LOG_LEVEL=debug
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
-      - UMASK=${UMASK:?err}
-      - TZ=${TIMEZONE:?err}
-      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
-      - TP_THEME=${TP_THEME:?err}
-    volumes:
-      - '${APPS_FOLDER:?err}/overseerr/config:/config'
-
-# Plex - Media Server
-  plex:
-    image: lscr.io/linuxserver/plex:latest
-    container_name: plex
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
-    restart: unless-stopped
-# Add Configurations for GPU Hardware Rendering Here:
-#    devices:
-#      - /dev/dri/renderD128:/dev/dri/renderD128
-#      - /dev/dri/card0:/dev/dri/card0
-    volumes:
-      - ${APPS_FOLDER:?err}/plex:/config
-      - ${DATA_FOLDER:?err}/media:/data/media
-    environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
-      - UMASK=${UMASK:?err}
-      - TZ=${TIMEZONE:?err}
-      - VERSION=docker
-      - PLEX_CLAIM=${PLEX_CLAIM}
-# Ports are disabled in containers when they are connected to VPN, as the
-# Gluetun container manages the ports for containers that connect via VPN
-#    ports:
-#      - "${PORT_UI_PLEX:?err}:32400"             # Configured in Gluetun VPN container
-#      - 1900:1900/udp
-#      - 5353:5353/udp
-#      - 8324:8324
-#      - 32410:32410/udp
-#      - 32412:32412/udp
-#      - 32413:32413/udp
-#      - 32414:32414/udp
-#      - 32469:32469
+      # - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
+    post_start:
+      - command: /scripts/execute-sql.sh /config/config/maintainerr.sqlite /config/_setup/sql/init.sql
+        user: root
 
 ###########################################################################
 ###########################################################################

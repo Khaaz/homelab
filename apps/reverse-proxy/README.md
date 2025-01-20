@@ -1,10 +1,12 @@
-# REVERSE PROXY
+# reverse-proxy
+
+## Context
 
 ## Architecture
 
 ![architecture](../../assets/reverse-proxy/architecture.png)
 
-## Workflow
+### Workflow
 
 Phase 1:
 
@@ -13,3 +15,5 @@ Phase 1:
 Phase 2:
 
 ![reverse-proxy-phase2](../../assets/reverse-proxy/reverse-proxy-phase2.png)
+
+## Setup

@@ -1,14 +1,14 @@
-# MEDIA SERVER
+# media-management
+
+## Context
 
 ## Architecture
 
-![architecture](../../assets/media-server/architecture.png)
+![architecture](../../assets/media-management/architecture.png)
 
-## Configuration
+## Setup
 
-## Usage
-
-## Docs
+### Docs
 
 Mediastack:  
 
@@ -28,20 +28,9 @@ Indexer/Downloader:
   - https://fmhy.net/downloadpiracyguide#usenet
   - https://docs.google.com/document/d/1TwUrRj982WlWUhrxvMadq6gdH0mPW0CGtHsTOFWprCo/mobilebasic
 
-## Setup
-
-- change config to access ?qbtorrent? interface
-- prowlarr: setup sonarr / radarr
-- prowlarr: setup indexer
-- sonarr: setup client: qbtorrent
-- radarr: setup client: qbtorrent
-- use correct URLs
-
-## TODO
+### TODO
 
 - setup wireguard / use openvpn conf
-- SWAG + DNS
-- Nom de domaine khaaz.me externe pour pointer sur SWAG
 - Authelia
 - configs:
   - automatisation des dernières config
@@ -63,15 +52,15 @@ TODO conf:
 
 - OK:
   - qbittorrent
-- DATA SQL:
   - sonarr
   - radarr
   - radarr4k
   - prowlarr
+- DATA SQL:
+  - maintainerr
 - DATA CONFIG:
   - overseer
   - bazarr
   - homarr
-- AUTOMATISATION:
-  - maintainerr
   - plex
+- AUTOMATISATION:

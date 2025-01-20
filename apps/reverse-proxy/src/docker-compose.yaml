@@ -1,12 +1,12 @@
 networks:
-  reverseproxy:
-    name: reverseproxy
+  reverse-proxy:
+    name: reverse-proxy
     driver: bridge
     ipam:
       driver: default
       config:
-      - subnet: "${DOCKER_SUBNET:?err}.0/24"
-        gateway: "${DOCKER_SUBNET:?err}.1"
+      - subnet: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.0/24"
+        gateway: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.1"
 
 services:
 
@@ -31,6 +31,10 @@ services:
   authelia:
     image: ghcr.io/authelia/authelia:latest
     container_name: authelia
+    restart: unless-stopped
+    networks:
+      reverse-proxy:
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.12"
     volumes:
       - ${APPS_FOLDER:?err}/authelia:/config
     environment:
@@ -38,23 +42,24 @@ services:
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-    restart: unless-stopped
-    networks:
-      reverseproxy:
-        ipv4_address: "${DOCKER_SUBNET:?err}.12"
 
 # SWAG - Reverse proxy with Certbot, for Let's Encrypt / ZeroSSL
   swag:
     image: lscr.io/linuxserver/swag:latest
     container_name: swag
+    restart: unless-stopped
     cap_add:
       - NET_ADMIN
-    restart: unless-stopped
-    volumes:
-      - ${APPS_FOLDER:?err}/swag:/config:rw
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.11
+    dns:
+      - "${REVERSE_PROXY_DOCKER_SUBNET:?err}.10"  # Custom DNS server (Unbound container IP)
     ports:
       - 80:80
       - 443:443
+    volumes:
+      - ${APPS_FOLDER:?err}/swag:/config:rw
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -67,28 +72,22 @@ services:
       - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
       # - EXTRA_DOMAINS=${EXTRA_DOMAINS}
       # - STAGING=${STAGING}
-    networks:
-      reverseproxy:
-        ipv4_address: ${DOCKER_SUBNET:?err}.11
-    dns:
-      - "${DOCKER_SUBNET:?err}.10"  # Custom DNS server (Unbound container IP)
 
 # DNSMask - DNS server for local resolution
   unbound:
     image: mvance/unbound:latest
     container_name: unbound
     restart: unless-stopped
-    expose:
-      - "53"
+    networks:
+      reverse-proxy:
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.10"
     ports:
       - "53:53/tcp"
       - "53:53/udp"
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound
-    networks:
-      reverseproxy:
-        ipv4_address: "${DOCKER_SUBNET:?err}.10"
-  
+
+# minica - Generate self signed certificat
   minica:
     container_name: minica
     build:
@@ -105,14 +104,15 @@ services:
     image: qmcgaw/ddns-updater:latest
     container_name: ddns-updater
     restart: always
+    networks:
+      reverse-proxy:
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.20"
     user: ${PUID:?err}:${PGID:?err}
-    volumes:
-      - ${APPS_FOLDER:?err}/ddns-updater:/updater/data
     ports:
       - ${PORT_UI_DDNS_UPDATER:?err}:${PORT_UI_DDNS_UPDATER:?err}/tcp
+    volumes:
+      - ${APPS_FOLDER:?err}/ddns-updater:/updater/data
     environment:
-#      - PUID=${PUID:?err}    # Not used in DDNS-Updater - see above:   user: ${PUID:?err}:${PGID:?err}
-#      - PGID=${PGID:?err}    # Not used in DDNS-Updater - see above:   user: ${PUID:?err}:${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
       - CONFIG=
@@ -135,6 +135,3 @@ services:
       - LOG_LEVEL=info
       - LOG_CALLER=hidden
       - SHOUTRRR_ADDRESSES=
-    networks:
-      reverseproxy:
-        ipv4_address: "${DOCKER_SUBNET:?err}.20"

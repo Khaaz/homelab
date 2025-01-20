@@ -1,0 +1,86 @@
+networks:
+  media-server:
+    name: media-server
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.0/24
+        gateway: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.1
+
+services:
+
+  # portainer:
+  #   image: portainer/portainer-ce:latest
+  #   container_name: portainer
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ${APPS_FOLDER:?err}/portainer:/data
+  #   ports:
+  #     - "${PORT_UI_PORTAINER:?err}:9443"
+  #   network_mode: bridge
+
+# Overseer - Media Management
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: "${MEDIA_SERVER_DOCKER_SUBNET:?err}.20"
+    ports:
+      - "${PORT_UI_OVERSEERR:?err}:5055"
+    volumes:
+      - ${APPS_FOLDER:?err}/overseerr/config:/config # config
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - LOG_LEVEL=debug
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
+      - TP_THEME=${TP_THEME:?err}
+      # setup env vars
+      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+    # post_start:
+    #   - command: /scripts/parse-file.sh /config/_setup/templates/settings.json /config/settings.json
+    #     user: root
+
+# Plex - Media Server
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: "${MEDIA_SERVER_DOCKER_SUBNET:?err}.10"
+# Add Configurations for GPU Hardware Rendering Here:
+#    devices:
+#      - /dev/dri/renderD128:/dev/dri/renderD128
+#      - /dev/dri/card0:/dev/dri/card0
+    ports:
+     - "${PORT_UI_PLEX:?err}:32400"
+     - 1900:1900/udp
+     - 5353:5353/udp
+     - 8324:8324
+     - 32410:32410/udp
+     - 32412:32412/udp
+     - 32413:32413/udp
+     - 32414:32414/udp
+     - 32469:32469
+    volumes:
+      - ${APPS_FOLDER:?err}/plex:/config # config
+      - ${DATA_FOLDER:?err}/media:/data/media # data
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIM}
+    # post_start:
+    #   - command: /scripts/parse-file.sh /config/_setup/templates/Preferences.xml "/config/Library.Application Support/Plex Media Server/Preferences.xml"
+    #     user: root
