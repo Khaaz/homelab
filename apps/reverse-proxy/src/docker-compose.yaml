@@ -59,7 +59,8 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ${APPS_FOLDER:?err}/swag:/config:rw
+      - ${APPS_FOLDER:?err}/swag:/config:rw # config
+      - ${APPS_FOLDER:?err}/swag/_setup:/_setup # setup
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -85,7 +86,8 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
     volumes:
-      - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound
+      - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
+      - ${APPS_FOLDER:?err}/unbound/_setup:/_setup # setup
 
 # minica - Generate self signed certificat
   minica:
@@ -94,6 +96,9 @@ services:
       context: ${APPS_FOLDER:?err}/ca
       dockerfile: Dockerfile
       no_cache: true
+    networks:
+      reverse-proxy:
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"
     volumes:
       - ${APPS_FOLDER:?err}/ca:/app/certs
     environment:

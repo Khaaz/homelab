@@ -37,13 +37,13 @@ install_sqlite() {
 }
 
 # Main script execution
-if [ "$#" -ne 2 ]; then
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
     echo "Usage: $0 <path_to_db> <path_to_sql_script>"
     exit 1
 fi
 
 DB_PATH="$1"
-SQL_SCRIPT_PATH="$2"
+SQL_SCRIPT_PATH="${2:-/_setup/sql/init.sql}"
 
 # Check if the database file exists
 if [ ! -f "$DB_PATH" ]; then

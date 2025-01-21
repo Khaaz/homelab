@@ -103,6 +103,7 @@ services:
     network_mode: "service:gluetun"
     volumes:
       - ${APPS_FOLDER:?err}/prowlarr:/config # config
+      - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
@@ -115,7 +116,7 @@ services:
     post_start:
       - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/prowlarr.db /config/_setup/sql/init.sql
+      - command: /scripts/execute-sql.sh /config/prowlarr.db
         user: root
 
 # Flaresolverr - Cloudflare Proxy Server 
@@ -193,6 +194,7 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/bazarr:/config # config
       - ${DATA_FOLDER:?err}:/data # data
+      - ${APPS_FOLDER:?err}/bazarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
@@ -201,7 +203,7 @@ services:
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
       - TP_THEME=${TP_THEME:?err}
     # post_start:
-    #   - command: /scripts/parse-file.sh /config/_setup/templates/config.yaml /config/config/config.xml
+    #   - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.xml
     #     user: root
 
 # Radarr - Movie library
@@ -217,6 +219,7 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/radarr:/config # config
       - ${DATA_FOLDER:?err}:/data # data
+      - ${APPS_FOLDER:?err}/radarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
@@ -227,9 +230,9 @@ services:
       # setup env vars
       - API_KEY_RADARR=${API_KEY_RADARR:?err}
     post_start:
-      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/radarr.db /config/_setup/sql/init.sql
+      - command: /scripts/execute-sql.sh /config/radarr.db
         user: root
 
 # Radarr - Movie library (4k)
@@ -245,6 +248,7 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/radarr4k:/config # config
       - ${DATA_FOLDER:?err}:/data # data
+      - ${APPS_FOLDER:?err}/radarr4k/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
@@ -255,9 +259,9 @@ services:
       # setup env vars
       - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
     post_start:
-      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/radarr.db /config/_setup/sql/init.sql
+      - command: /scripts/execute-sql.sh /config/radarr.db
         user: root
 
 # Sonarr - Serie library
@@ -273,6 +277,7 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/sonarr:/config # config
       - ${DATA_FOLDER:?err}:/data # data
+      - ${APPS_FOLDER:?err}/sonarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
@@ -283,9 +288,9 @@ services:
       # setup env vars
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
     post_start:
-      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/sonarr.db /config/_setup/sql/init.sql
+      - command: /scripts/execute-sql.sh /config/sonarr.db
         user: root
 
 ###########################################################################
@@ -308,6 +313,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APPS_FOLDER:?err}/homarr/configs:/app/data/configs # config
       - ${APPS_FOLDER:?err}/homarr/data:/data # data
+      - ${APPS_FOLDER:?err}/homarr/_setup:/_setup # setup
       - ${APPS_FOLDER:?err}/homarr/icons:/app/public/icons
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
@@ -316,7 +322,7 @@ services:
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
     # post_start:
-    #   - command: /scripts/parse-file.sh /config/_setup/templates/default.json /config/configs/default.json
+    #   - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
     #     user: root
 
 # Maintainerr - Management Dashboard
@@ -332,12 +338,13 @@ services:
       - "${PORT_UI_MAINTAINERR:?err}:6246"
     volumes:
       - ${APPS_FOLDER:?err}/maintainerr/config:/opt/data #config
+      - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - TZ=${TIMEZONE:?err}
       # - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
     post_start:
-      - command: /scripts/execute-sql.sh /config/config/maintainerr.sqlite /config/_setup/sql/init.sql
+      - command: /scripts/execute-sql.sh /opt/data/config/maintainerr.sqlite
         user: root
 
 ###########################################################################
