@@ -114,7 +114,7 @@ services:
       # setup env vars
       - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
     post_start:
-      - command: /scripts/parse-file.sh /config/_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
       - command: /scripts/execute-sql.sh /config/prowlarr.db
         user: root

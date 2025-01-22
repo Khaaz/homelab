@@ -8,6 +8,7 @@
 !nginx/proxy.conf
 
 # custom
+!nginx/site-confs/default.conf
 !nginx/ssl.conf
 !nginx/ssl-private.conf
 

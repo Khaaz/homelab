@@ -101,6 +101,7 @@ services:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"
     volumes:
       - ${APPS_FOLDER:?err}/ca:/app/certs
+      - ${APPS_FOLDER:?err}/swag/keys-private:/app/certs/keys-private
     environment:
       - DOMAIN=l.ab
 
