@@ -287,9 +287,9 @@ VALUES
 
 -- NamingConfig
 DELETE FROM NamingConfig;
-INSERT INTO NamingConfig (Id, MultiEpisodeStyle, RenameEpisodes, StandardEpisodeFormat, DailyEpisodeFormat, SeasonFolderFormat, SeriesFolderFormat, AnimeEpisodeFormat, ReplaceIllegalCharacters, SpecialsFolderFormat, ColonReplacementFormat, CustomColonReplacementFormat)
+INSERT INTO NamingConfig (Id, MultiEpisodeStyle, RenameEpisodes, StandardEpisodeFormat, DailyEpisodeFormat, SeasonFolderFormat, SeriesFolderFormat, AnimeEpisodeFormat, ReplaceIllegalCharacters, SpecialsFolderFormat, ColonReplacementFormat)
 VALUES
-(1, 5, 1, '{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}', '{Series TitleYear} - {Air-Date} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}', 'Season {season:00}', '{Series TitleYear} {imdb-{ImdbId}}', '{Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}', 1, 'Specials', 4, NULL);
+(1, 5, 1, '{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}', '{Series TitleYear} - {Air-Date} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}', 'Season {season:00}', '{Series TitleYear} {imdb-{ImdbId}}', '{Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}', 1, 'Specials', 4);
 
 -- QualityDefinitions
 DELETE FROM QualityDefinitions;

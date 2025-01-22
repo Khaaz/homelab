@@ -203,7 +203,7 @@ VALUES
     "downloadlink2": 0,
     "info_download": "As the .torrent download links on this site are known to fail from time to time, you can optionally set as a fallback an automatic alternate link.",
     "sort": 0,
-    "info_category_8000": "LimeTorrents only returns category <b>Other</b> in its <i>Keywordless</i> search results page.<br>To pass your apps\' indexer TEST you will need to include the 8000(Other) category."
+    "info_category_8000": "LimeTorrents only returns category <b>Other</b> in its <i>Keywordless</i> search results page.<br>To pass your apps indexer TEST you will need to include the 8000(Other) category."
   },
   "baseSettings": {
     "limitsUnit": 0

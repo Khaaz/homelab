@@ -550,4 +550,4 @@ DELETE FROM Tags;
 INSERT INTO
     Tags (Id, Label)
 VALUES
-    (1, "movies");
+    (1, 'movies');
