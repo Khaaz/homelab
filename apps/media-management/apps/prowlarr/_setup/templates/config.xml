@@ -4,7 +4,7 @@
   <SslPort>6969</SslPort>
   <EnableSsl>False</EnableSsl>
   <LaunchBrowser>True</LaunchBrowser>
-  <ApiKey>$API_KEY_PROWLARR</ApiKey>
+  <ApiKey>${API_KEY_PROWLARR}</ApiKey>
   <AuthenticationMethod>External</AuthenticationMethod>
   <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
   <Branch>develop</Branch>
