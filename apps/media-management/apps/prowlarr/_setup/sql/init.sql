@@ -233,7 +233,7 @@ VALUES
     "prefer_magnet_links": false,
     "sort": 0,
     "type": 1,
-    "info_category_8000": "BitSearch does not properly return categories in its search results for some releases.<br>To add to your Apps\' Torznab indexer, you will need to include the 8000(Other) category."
+    "info_category_8000": "BitSearch does not properly return categories in its search results for some releases.<br>To add to your Apps Torznab indexer, you will need to include the 8000(Other) category."
   },
   "baseSettings": {
     "limitsUnit": 0

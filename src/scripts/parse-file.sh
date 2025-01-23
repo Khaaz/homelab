@@ -1,31 +1,39 @@
 #!/bin/sh
 
+. /scripts/lib/get-script-dir.sh
+DIRNAME=$(get_script_dir)
+
+# Import the parse file function
+. $DIRNAME/lib/parse-file.sh
+
+# Import the dependencies function
+. $DIRNAME/lib/install-dependencies.sh
+
+## Usage
 if [ "$#" -ne 2 ]; then
   echo "Usage: $0 <input-file> <output-file>"
   exit 1
 fi
 
+## Variables
 INPUT_FILE="$1"
 OUTPUT_FILE="$2"
 
+## Input verification
 if [ ! -f "$INPUT_FILE" ]; then
   echo "Error: Input file does not exist: $INPUT_FILE"
   exit 1
 fi
 
-# Create or overwrite the output file
-> "$OUTPUT_FILE"
+## Core
+install_dependencies
 
-# Read and process the input file line by line
-echo "Processing file '$INPUT_FILE' as '$OUTPUT_FILE'..."
-while IFS= read -r line || [ -n "$line" ]; do
-  # Evaluate the line to replace environment variables
-  eval "echo \"$line\"" >> "$OUTPUT_FILE"
-done < "$INPUT_FILE"
+echo "INIT: Processing file '$INPUT_FILE' as '$OUTPUT_FILE'..."
+parse_file $INPUT_FILE > $OUTPUT_FILE
 
 if [ $? -eq 0 ]; then
-  echo "Successfully processed file. Output written to: $OUTPUT_FILE"
+  echo "INIT: Success => Successfully processed file. Output written to: $OUTPUT_FILE"
 else
-  echo "Error: Failed to process file."
+  echo "INIT: Error => Failed to process file."
   exit 1
 fi
