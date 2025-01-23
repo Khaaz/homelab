@@ -11,18 +11,3 @@
 !nginx/site-confs/default.conf
 !nginx/ssl.conf
 !nginx/ssl-private.conf
-
-# proxy
-!nginx/proxy-confs/bazarr.subdomain.conf
-!nginx/proxy-confs/ddns-updater.subdomain.conf
-!nginx/proxy-confs/homarr.subdomain.conf
-!nginx/proxy-confs/maintainerr.subdomain.conf
-!nginx/proxy-confs/overseerr.subdomain.conf
-!nginx/proxy-confs/overseerr-open.subdomain.conf
-!nginx/proxy-confs/plex.subdomain.conf
-!nginx/proxy-confs/plex-open.subdomain.conf
-!nginx/proxy-confs/prowlarr.subdomain.conf
-!nginx/proxy-confs/qbittorrent.subdomain.conf
-!nginx/proxy-confs/radarr.subdomain.conf 
-!nginx/proxy-confs/radarr4k.subdomain.conf 
-!nginx/proxy-confs/sonarr.subdomain.conf
