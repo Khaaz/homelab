@@ -100,10 +100,15 @@ services:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"
     volumes:
-      - ${APPS_FOLDER:?err}/ca:/app/certs
-      - ${APPS_FOLDER:?err}/swag/keys-private:/app/certs/keys-private
+      - ${APPS_FOLDER:?err}/ca/certs:/app/certs
+      - ${APPS_FOLDER:?err}/ca/scripts:/scripts
+      - ${APPS_FOLDER:?err}/swag/keys-private:/swag/keys-private
+      - ${APPS_FOLDER:?err}/swag/www:/swag/www
     environment:
       - DOMAIN=l.ab
+    post_start:
+      - command: /scripts/move-certs.sh
+        user: root
 
 # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:

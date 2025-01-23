@@ -66,7 +66,7 @@ VALUES (
   'qbit',
   'QBittorrent',
   '{
-    "host": "172.18.10.10",
+    "host": "${DOCKER_SUBNET}.10",
     "port": 8200,
     "useSsl": false,
     "username": "admin",
@@ -95,7 +95,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://$DOCKER_SUBNET.10:9696/1/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/1/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000, 2070, 2030, 2010, 2040, 2060, 2045],
@@ -107,7 +107,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/2/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/2/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000, 2020, 2040, 2060, 2030, 2045],
@@ -119,7 +119,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/3/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/3/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -131,7 +131,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/5/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/5/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -143,7 +143,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/7/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/7/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000, 2040, 2045, 2060, 2070, 2010, 2020],
@@ -155,7 +155,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/9/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/9/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -167,7 +167,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/10/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/10/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -179,7 +179,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/11/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/11/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -191,7 +191,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/6/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:9696/6/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -273,255 +273,255 @@ VALUES
 
 -- QualityProfiles
 DELETE FROM QualityProfiles;    
--- INSERT INTO QualityProfiles (Id, Name, Cutoff, Items, Language, FormatItems, UpgradeAllowed, MinFormatScore, CutoffFormatScore, MinUpgradeFormatScore)
--- VALUES
--- (1, 'Any', 20, '[
---   {"quality": 0, "items": [], "allowed": false},
---   {"quality": 24, "items": [], "allowed": true},
---   {"quality": 25, "items": [], "allowed": true},
---   {"quality": 26, "items": [], "allowed": true},
---   {"quality": 27, "items": [], "allowed": true},
---   {"quality": 29, "items": [], "allowed": true},
---   {"quality": 28, "items": [], "allowed": true},
---   {"quality": 1, "items": [], "allowed": true},
---   {"quality": 2, "items": [], "allowed": true},
---   {"quality": 23, "items": [], "allowed": true},
---   {"id": 1000, "name": "WEB 480p", "items": [
---     {"quality": 8, "items": [], "allowed": true},
---     {"quality": 12, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 20, "items": [], "allowed": true},
---   {"quality": 21, "items": [], "allowed": true},
---   {"quality": 4, "items": [], "allowed": true},
---   {"id": 1001, "name": "WEB 720p", "items": [
---     {"quality": 5, "items": [], "allowed": true},
---     {"quality": 14, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 6, "items": [], "allowed": true},
---   {"quality": 9, "items": [], "allowed": true},
---   {"id": 1002, "name": "WEB 1080p", "items": [
---     {"quality": 3, "items": [], "allowed": true},
---     {"quality": 15, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 7, "items": [], "allowed": true},
---   {"quality": 30, "items": [], "allowed": true},
---   {"quality": 16, "items": [], "allowed": true},
---   {"id": 1003, "name": "WEB 2160p", "items": [
---     {"quality": 18, "items": [], "allowed": true},
---     {"quality": 17, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 19, "items": [], "allowed": true},
---   {"quality": 31, "items": [], "allowed": true},
---   {"quality": 22, "items": [], "allowed": true},
---   {"quality": 10, "items": [], "allowed": false}
--- ]', 1, '[]', 0, 0, 0, 1),
--- (2, 'SD', 20, '[
---   {"quality": 0, "items": [], "allowed": false},
---   {"quality": 24, "items": [], "allowed": true},
---   {"quality": 25, "items": [], "allowed": true},
---   {"quality": 26, "items": [], "allowed": true},
---   {"quality": 27, "items": [], "allowed": true},
---   {"quality": 29, "items": [], "allowed": true},
---   {"quality": 28, "items": [], "allowed": true},
---   {"quality": 1, "items": [], "allowed": true},
---   {"quality": 2, "items": [], "allowed": true},
---   {"quality": 23, "items": [], "allowed": false},
---   {"id": 1000, "name": "WEB 480p", "items": [
---     {"quality": 8, "items": [], "allowed": true},
---     {"quality": 12, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 20, "items": [], "allowed": true},
---   {"quality": 21, "items": [], "allowed": true},
---   {"quality": 4, "items": [], "allowed": false},
---   {"id": 1001, "name": "WEB 720p", "items": [
---     {"quality": 5, "items": [], "allowed": false},
---     {"quality": 14, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 6, "items": [], "allowed": false},
---   {"quality": 9, "items": [], "allowed": false},
---   {"id": 1002, "name": "WEB 1080p", "items": [
---     {"quality": 3, "items": [], "allowed": false},
---     {"quality": 15, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 7, "items": [], "allowed": false},
---   {"quality": 30, "items": [], "allowed": false},
---   {"quality": 16, "items": [], "allowed": false},
---   {"id": 1003, "name": "WEB 2160p", "items": [
---     {"quality": 18, "items": [], "allowed": false},
---     {"quality": 17, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 19, "items": [], "allowed": false},
---   {"quality": 31, "items": [], "allowed": false},
---   {"quality": 22, "items": [], "allowed": false},
---   {"quality": 10, "items": [], "allowed": false}
--- ]', 1, '[]', 0, 0, 0, 1),
--- (3, 'HD-720p', 6, '[
---   {"quality": 0, "items": [], "allowed": false},
---   {"quality": 24, "items": [], "allowed": false},
---   {"quality": 25, "items": [], "allowed": false},
---   {"quality": 26, "items": [], "allowed": false},
---   {"quality": 27, "items": [], "allowed": false},
---   {"quality": 29, "items": [], "allowed": false},
---   {"quality": 28, "items": [], "allowed": false},
---   {"quality": 1, "items": [], "allowed": false},
---   {"quality": 2, "items": [], "allowed": false},
---   {"quality": 23, "items": [], "allowed": false},
---   {"id": 1000, "name": "WEB 480p", "items": [
---     {"quality": 8, "items": [], "allowed": false},
---     {"quality": 12, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 20, "items": [], "allowed": false},
---   {"quality": 21, "items": [], "allowed": false},
---   {"quality": 4, "items": [], "allowed": true},
---   {"id": 1001, "name": "WEB 720p", "items": [
---     {"quality": 5, "items": [], "allowed": true},
---     {"quality": 14, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 6, "items": [], "allowed": true},
---   {"quality": 9, "items": [], "allowed": false},
---   {"id": 1002, "name": "WEB 1080p", "items": [
---     {"quality": 3, "items": [], "allowed": false},
---     {"quality": 15, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 7, "items": [], "allowed": false},
---   {"quality": 30, "items": [], "allowed": false},
---   {"quality": 16, "items": [], "allowed": false},
---   {"id": 1003, "name": "WEB 2160p", "items": [
---     {"quality": 18, "items": [], "allowed": false},
---     {"quality": 17, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 19, "items": [], "allowed": false},
---   {"quality": 31, "items": [], "allowed": false},
---   {"quality": 22, "items": [], "allowed": false},
---   {"quality": 10, "items": [], "allowed": false}
--- ]', 1, '[]', 0, 0, 0, 1),
--- (4, 'HD-1080p', 7, '[
---   {"quality": 0, "items": [], "allowed": false},
---   {"quality": 24, "items": [], "allowed": false},
---   {"quality": 25, "items": [], "allowed": false},
---   {"quality": 26, "items": [], "allowed": false},
---   {"quality": 27, "items": [], "allowed": false},
---   {"quality": 29, "items": [], "allowed": false},
---   {"quality": 28, "items": [], "allowed": false},
---   {"quality": 1, "items": [], "allowed": false},
---   {"quality": 2, "items": [], "allowed": false},
---   {"quality": 23, "items": [], "allowed": false},
---   {"id": 1000, "name": "WEB 480p", "items": [
---     {"quality": 8, "items": [], "allowed": false},
---     {"quality": 12, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 20, "items": [], "allowed": false},
---   {"quality": 21, "items": [], "allowed": false},
---   {"quality": 4, "items": [], "allowed": false},
---   {"id": 1001, "name": "WEB 720p", "items": [
---     {"quality": 5, "items": [], "allowed": false},
---     {"quality": 14, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 6, "items": [], "allowed": false},
---   {"quality": 9, "items": [], "allowed": true},
---   {"id": 1002, "name": "WEB 1080p", "items": [
---     {"quality": 3, "items": [], "allowed": true},
---     {"quality": 15, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 7, "items": [], "allowed": true},
---   {"quality": 30, "items": [], "allowed": true},
---   {"quality": 16, "items": [], "allowed": false},
---   {"id": 1003, "name": "WEB 2160p", "items": [
---     {"quality": 18, "items": [], "allowed": false},
---     {"quality": 17, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 19, "items": [], "allowed": false},
---   {"quality": 31, "items": [], "allowed": false},
---   {"quality": 22, "items": [], "allowed": false},
---   {"quality": 10, "items": [], "allowed": false}
--- ]', 1, '[]', 0, 0, 0, 1),
--- (5, 'Ultra-HD', 31, '[
---   {"quality": 0, "items": [], "allowed": false},
---   {"quality": 24, "items": [], "allowed": false},
---   {"quality": 25, "items": [], "allowed": false},
---   {"quality": 26, "items": [], "allowed": false},
---   {"quality": 27, "items": [], "allowed": false},
---   {"quality": 29, "items": [], "allowed": false},
---   {"quality": 28, "items": [], "allowed": false},
---   {"quality": 1, "items": [], "allowed": false},
---   {"quality": 2, "items": [], "allowed": false},
---   {"quality": 23, "items": [], "allowed": false},
---   {"id": 1000, "name": "WEB 480p", "items": [
---     {"quality": 8, "items": [], "allowed": false},
---     {"quality": 12, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 20, "items": [], "allowed": false},
---   {"quality": 21, "items": [], "allowed": false},
---   {"quality": 4, "items": [], "allowed": false},
---   {"id": 1001, "name": "WEB 720p", "items": [
---     {"quality": 5, "items": [], "allowed": false},
---     {"quality": 14, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 6, "items": [], "allowed": false},
---   {"quality": 9, "items": [], "allowed": false},
---   {"id": 1002, "name": "WEB 1080p", "items": [
---     {"quality": 3, "items": [], "allowed": false},
---     {"quality": 15, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 7, "items": [], "allowed": false},
---   {"quality": 30, "items": [], "allowed": false},
---   {"quality": 16, "items": [], "allowed": true},
---   {"id": 1003, "name": "WEB 2160p", "items": [
---     {"quality": 18, "items": [], "allowed": true},
---     {"quality": 17, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 19, "items": [], "allowed": true},
---   {"quality": 31, "items": [], "allowed": true},
---   {"quality": 22, "items": [], "allowed": false},
---   {"quality": 10, "items": [], "allowed": false}
--- ]', 1, '[]', 0, 0, 0, 1),
--- (6, 'HD - 720p/1080p', 6, '[
---   {"quality": 0, "items": [], "allowed": false},
---   {"quality": 24, "items": [], "allowed": false},
---   {"quality": 25, "items": [], "allowed": false},
---   {"quality": 26, "items": [], "allowed": false},
---   {"quality": 27, "items": [], "allowed": false},
---   {"quality": 29, "items": [], "allowed": false},
---   {"quality": 28, "items": [], "allowed": false},
---   {"quality": 1, "items": [], "allowed": false},
---   {"quality": 2, "items": [], "allowed": false},
---   {"quality": 23, "items": [], "allowed": false},
---   {"id": 1000, "name": "WEB 480p", "items": [
---     {"quality": 8, "items": [], "allowed": false},
---     {"quality": 12, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 20, "items": [], "allowed": false},
---   {"quality": 21, "items": [], "allowed": false},
---   {"quality": 4, "items": [], "allowed": true},
---   {"id": 1001, "name": "WEB 720p", "items": [
---     {"quality": 5, "items": [], "allowed": true},
---     {"quality": 14, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 6, "items": [], "allowed": true},
---   {"quality": 9, "items": [], "allowed": true},
---   {"id": 1002, "name": "WEB 1080p", "items": [
---     {"quality": 3, "items": [], "allowed": true},
---     {"quality": 15, "items": [], "allowed": true}
---   ], "allowed": true},
---   {"quality": 7, "items": [], "allowed": true},
---   {"quality": 30, "items": [], "allowed": true},
---   {"quality": 16, "items": [], "allowed": false},
---   {"id": 1003, "name": "WEB 2160p", "items": [
---     {"quality": 18, "items": [], "allowed": false},
---     {"quality": 17, "items": [], "allowed": false}
---   ], "allowed": false},
---   {"quality": 19, "items": [], "allowed": false},
---   {"quality": 31, "items": [], "allowed": false},
---   {"quality": 22, "items": [], "allowed": false},
---   {"quality": 10, "items": [], "allowed": false}
--- ]', 1, '[]', 0, 0, 0, 1);
+INSERT INTO QualityProfiles (Id, Name, Cutoff, Items, Language, FormatItems, UpgradeAllowed, MinFormatScore, CutoffFormatScore, MinUpgradeFormatScore)
+VALUES
+(1, 'Any', 20, '[
+  {"quality": 0, "items": [], "allowed": false},
+  {"quality": 24, "items": [], "allowed": true},
+  {"quality": 25, "items": [], "allowed": true},
+  {"quality": 26, "items": [], "allowed": true},
+  {"quality": 27, "items": [], "allowed": true},
+  {"quality": 29, "items": [], "allowed": true},
+  {"quality": 28, "items": [], "allowed": true},
+  {"quality": 1, "items": [], "allowed": true},
+  {"quality": 2, "items": [], "allowed": true},
+  {"quality": 23, "items": [], "allowed": true},
+  {"id": 1000, "name": "WEB 480p", "items": [
+    {"quality": 8, "items": [], "allowed": true},
+    {"quality": 12, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 20, "items": [], "allowed": true},
+  {"quality": 21, "items": [], "allowed": true},
+  {"quality": 4, "items": [], "allowed": true},
+  {"id": 1001, "name": "WEB 720p", "items": [
+    {"quality": 5, "items": [], "allowed": true},
+    {"quality": 14, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 6, "items": [], "allowed": true},
+  {"quality": 9, "items": [], "allowed": true},
+  {"id": 1002, "name": "WEB 1080p", "items": [
+    {"quality": 3, "items": [], "allowed": true},
+    {"quality": 15, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 7, "items": [], "allowed": true},
+  {"quality": 30, "items": [], "allowed": true},
+  {"quality": 16, "items": [], "allowed": true},
+  {"id": 1003, "name": "WEB 2160p", "items": [
+    {"quality": 18, "items": [], "allowed": true},
+    {"quality": 17, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 19, "items": [], "allowed": true},
+  {"quality": 31, "items": [], "allowed": true},
+  {"quality": 22, "items": [], "allowed": true},
+  {"quality": 10, "items": [], "allowed": false}
+]', 1, '[]', 0, 0, 0, 1),
+(2, 'SD', 20, '[
+  {"quality": 0, "items": [], "allowed": false},
+  {"quality": 24, "items": [], "allowed": true},
+  {"quality": 25, "items": [], "allowed": true},
+  {"quality": 26, "items": [], "allowed": true},
+  {"quality": 27, "items": [], "allowed": true},
+  {"quality": 29, "items": [], "allowed": true},
+  {"quality": 28, "items": [], "allowed": true},
+  {"quality": 1, "items": [], "allowed": true},
+  {"quality": 2, "items": [], "allowed": true},
+  {"quality": 23, "items": [], "allowed": false},
+  {"id": 1000, "name": "WEB 480p", "items": [
+    {"quality": 8, "items": [], "allowed": true},
+    {"quality": 12, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 20, "items": [], "allowed": true},
+  {"quality": 21, "items": [], "allowed": true},
+  {"quality": 4, "items": [], "allowed": false},
+  {"id": 1001, "name": "WEB 720p", "items": [
+    {"quality": 5, "items": [], "allowed": false},
+    {"quality": 14, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 6, "items": [], "allowed": false},
+  {"quality": 9, "items": [], "allowed": false},
+  {"id": 1002, "name": "WEB 1080p", "items": [
+    {"quality": 3, "items": [], "allowed": false},
+    {"quality": 15, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 7, "items": [], "allowed": false},
+  {"quality": 30, "items": [], "allowed": false},
+  {"quality": 16, "items": [], "allowed": false},
+  {"id": 1003, "name": "WEB 2160p", "items": [
+    {"quality": 18, "items": [], "allowed": false},
+    {"quality": 17, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 19, "items": [], "allowed": false},
+  {"quality": 31, "items": [], "allowed": false},
+  {"quality": 22, "items": [], "allowed": false},
+  {"quality": 10, "items": [], "allowed": false}
+]', 1, '[]', 0, 0, 0, 1),
+(3, 'HD-720p', 6, '[
+  {"quality": 0, "items": [], "allowed": false},
+  {"quality": 24, "items": [], "allowed": false},
+  {"quality": 25, "items": [], "allowed": false},
+  {"quality": 26, "items": [], "allowed": false},
+  {"quality": 27, "items": [], "allowed": false},
+  {"quality": 29, "items": [], "allowed": false},
+  {"quality": 28, "items": [], "allowed": false},
+  {"quality": 1, "items": [], "allowed": false},
+  {"quality": 2, "items": [], "allowed": false},
+  {"quality": 23, "items": [], "allowed": false},
+  {"id": 1000, "name": "WEB 480p", "items": [
+    {"quality": 8, "items": [], "allowed": false},
+    {"quality": 12, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 20, "items": [], "allowed": false},
+  {"quality": 21, "items": [], "allowed": false},
+  {"quality": 4, "items": [], "allowed": true},
+  {"id": 1001, "name": "WEB 720p", "items": [
+    {"quality": 5, "items": [], "allowed": true},
+    {"quality": 14, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 6, "items": [], "allowed": true},
+  {"quality": 9, "items": [], "allowed": false},
+  {"id": 1002, "name": "WEB 1080p", "items": [
+    {"quality": 3, "items": [], "allowed": false},
+    {"quality": 15, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 7, "items": [], "allowed": false},
+  {"quality": 30, "items": [], "allowed": false},
+  {"quality": 16, "items": [], "allowed": false},
+  {"id": 1003, "name": "WEB 2160p", "items": [
+    {"quality": 18, "items": [], "allowed": false},
+    {"quality": 17, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 19, "items": [], "allowed": false},
+  {"quality": 31, "items": [], "allowed": false},
+  {"quality": 22, "items": [], "allowed": false},
+  {"quality": 10, "items": [], "allowed": false}
+]', 1, '[]', 0, 0, 0, 1),
+(4, 'HD-1080p', 7, '[
+  {"quality": 0, "items": [], "allowed": false},
+  {"quality": 24, "items": [], "allowed": false},
+  {"quality": 25, "items": [], "allowed": false},
+  {"quality": 26, "items": [], "allowed": false},
+  {"quality": 27, "items": [], "allowed": false},
+  {"quality": 29, "items": [], "allowed": false},
+  {"quality": 28, "items": [], "allowed": false},
+  {"quality": 1, "items": [], "allowed": false},
+  {"quality": 2, "items": [], "allowed": false},
+  {"quality": 23, "items": [], "allowed": false},
+  {"id": 1000, "name": "WEB 480p", "items": [
+    {"quality": 8, "items": [], "allowed": false},
+    {"quality": 12, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 20, "items": [], "allowed": false},
+  {"quality": 21, "items": [], "allowed": false},
+  {"quality": 4, "items": [], "allowed": false},
+  {"id": 1001, "name": "WEB 720p", "items": [
+    {"quality": 5, "items": [], "allowed": false},
+    {"quality": 14, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 6, "items": [], "allowed": false},
+  {"quality": 9, "items": [], "allowed": true},
+  {"id": 1002, "name": "WEB 1080p", "items": [
+    {"quality": 3, "items": [], "allowed": true},
+    {"quality": 15, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 7, "items": [], "allowed": true},
+  {"quality": 30, "items": [], "allowed": true},
+  {"quality": 16, "items": [], "allowed": false},
+  {"id": 1003, "name": "WEB 2160p", "items": [
+    {"quality": 18, "items": [], "allowed": false},
+    {"quality": 17, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 19, "items": [], "allowed": false},
+  {"quality": 31, "items": [], "allowed": false},
+  {"quality": 22, "items": [], "allowed": false},
+  {"quality": 10, "items": [], "allowed": false}
+]', 1, '[]', 0, 0, 0, 1),
+(5, 'Ultra-HD', 31, '[
+  {"quality": 0, "items": [], "allowed": false},
+  {"quality": 24, "items": [], "allowed": false},
+  {"quality": 25, "items": [], "allowed": false},
+  {"quality": 26, "items": [], "allowed": false},
+  {"quality": 27, "items": [], "allowed": false},
+  {"quality": 29, "items": [], "allowed": false},
+  {"quality": 28, "items": [], "allowed": false},
+  {"quality": 1, "items": [], "allowed": false},
+  {"quality": 2, "items": [], "allowed": false},
+  {"quality": 23, "items": [], "allowed": false},
+  {"id": 1000, "name": "WEB 480p", "items": [
+    {"quality": 8, "items": [], "allowed": false},
+    {"quality": 12, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 20, "items": [], "allowed": false},
+  {"quality": 21, "items": [], "allowed": false},
+  {"quality": 4, "items": [], "allowed": false},
+  {"id": 1001, "name": "WEB 720p", "items": [
+    {"quality": 5, "items": [], "allowed": false},
+    {"quality": 14, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 6, "items": [], "allowed": false},
+  {"quality": 9, "items": [], "allowed": false},
+  {"id": 1002, "name": "WEB 1080p", "items": [
+    {"quality": 3, "items": [], "allowed": false},
+    {"quality": 15, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 7, "items": [], "allowed": false},
+  {"quality": 30, "items": [], "allowed": false},
+  {"quality": 16, "items": [], "allowed": true},
+  {"id": 1003, "name": "WEB 2160p", "items": [
+    {"quality": 18, "items": [], "allowed": true},
+    {"quality": 17, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 19, "items": [], "allowed": true},
+  {"quality": 31, "items": [], "allowed": true},
+  {"quality": 22, "items": [], "allowed": false},
+  {"quality": 10, "items": [], "allowed": false}
+]', 1, '[]', 0, 0, 0, 1),
+(6, 'HD - 720p/1080p', 6, '[
+  {"quality": 0, "items": [], "allowed": false},
+  {"quality": 24, "items": [], "allowed": false},
+  {"quality": 25, "items": [], "allowed": false},
+  {"quality": 26, "items": [], "allowed": false},
+  {"quality": 27, "items": [], "allowed": false},
+  {"quality": 29, "items": [], "allowed": false},
+  {"quality": 28, "items": [], "allowed": false},
+  {"quality": 1, "items": [], "allowed": false},
+  {"quality": 2, "items": [], "allowed": false},
+  {"quality": 23, "items": [], "allowed": false},
+  {"id": 1000, "name": "WEB 480p", "items": [
+    {"quality": 8, "items": [], "allowed": false},
+    {"quality": 12, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 20, "items": [], "allowed": false},
+  {"quality": 21, "items": [], "allowed": false},
+  {"quality": 4, "items": [], "allowed": true},
+  {"id": 1001, "name": "WEB 720p", "items": [
+    {"quality": 5, "items": [], "allowed": true},
+    {"quality": 14, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 6, "items": [], "allowed": true},
+  {"quality": 9, "items": [], "allowed": true},
+  {"id": 1002, "name": "WEB 1080p", "items": [
+    {"quality": 3, "items": [], "allowed": true},
+    {"quality": 15, "items": [], "allowed": true}
+  ], "allowed": true},
+  {"quality": 7, "items": [], "allowed": true},
+  {"quality": 30, "items": [], "allowed": true},
+  {"quality": 16, "items": [], "allowed": false},
+  {"id": 1003, "name": "WEB 2160p", "items": [
+    {"quality": 18, "items": [], "allowed": false},
+    {"quality": 17, "items": [], "allowed": false}
+  ], "allowed": false},
+  {"quality": 19, "items": [], "allowed": false},
+  {"quality": 31, "items": [], "allowed": false},
+  {"quality": 22, "items": [], "allowed": false},
+  {"quality": 10, "items": [], "allowed": false}
+]', 1, '[]', 0, 0, 0, 1);
 
 
 -- RemotePathMappings
 DELETE FROM RemotePathMappings; 
 INSERT INTO RemotePathMappings (Id, Host, RemotePath, LocalPath)
 VALUES
-(1, '172.18.10.10', '/data/movies/', '/data/torrents/movies/');
+(1, '${DOCKER_SUBNET}.10', '/data/movies/', '/data/torrents/movies/');
 
 -- RootFolders
 DELETE FROM RootFolders;    
