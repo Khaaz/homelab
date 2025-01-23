@@ -23,9 +23,10 @@ install_dependencies() {
 
       if [ "$dep" = "sqlite" ]; then
         # Mark the appropriate package name for installation
-        if [ "$OS" = "debian" || "$OS" = "ubuntu" ]; then
+        if [ "$OS" = "debian" ] || [ "$OS" = "ubuntu" ]; then
           dep="sqlite3"
         fi
+      fi
 
       missing_dependencies="$missing_dependencies $dep"
     fi
