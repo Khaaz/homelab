@@ -66,8 +66,8 @@ VALUES (
   'qbit',
   'QBittorrent',
   '{
-    "host": "172.18.10.10",
-    "port": 8200,
+    "host": "${DOCKER_SUBNET}.10",
+    "port": ${PORT_UI_QBITTORRENT},
     "useSsl": false,
     "username": "admin",
     "password": "admin!",
@@ -95,7 +95,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/1/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/1/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000, 2070, 2030, 2010, 2040, 2060, 2045],
@@ -107,7 +107,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/2/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/2/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000, 2020, 2040, 2060, 2030, 2045],
@@ -119,7 +119,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/3/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/3/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -131,7 +131,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/5/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/5/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -143,7 +143,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/7/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/7/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000, 2040, 2045, 2060, 2070, 2010, 2020],
@@ -155,7 +155,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/9/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/9/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -167,7 +167,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/10/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/10/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -179,7 +179,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/11/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/11/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -191,7 +191,7 @@ VALUES
   "seedCriteria": {},
   "rejectBlocklistedTorrentHashesWhileGrabbing": false,
   "requiredFlags": [],
-  "baseUrl": "http://172.18.10.10:9696/6/",
+  "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/6/",
   "apiPath": "/api",
   "apiKey": "42dfafbdf737462597d4027ce30b0414",
   "categories": [2000],
@@ -521,7 +521,7 @@ VALUES
 DELETE FROM RemotePathMappings; 
 INSERT INTO RemotePathMappings (Id, Host, RemotePath, LocalPath)
 VALUES
-(1, '172.18.10.10', '/data/movies/', '/data/torrents/movies/');
+(1, '${DOCKER_SUBNET}.10', '/data/movies/', '/data/torrents/movies/');
 
 -- RootFolders
 DELETE FROM RootFolders;    
