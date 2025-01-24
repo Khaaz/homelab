@@ -1,33 +1,39 @@
 {
- "clientId": "f4da9bec-8021-4e05-a31d-ab51f80b3cea",
- "vapidPrivate": "VbfqzFfcpVMfEdx-9PpUwaabLWdG6rpUJ6sUIObbBs0",
- "vapidPublic": "BIPyt8oz-xtQgEyI0obfcu18__-LAMUGTtaqmHzZ_DqemDgccNgdPH6NEss7r9QMe2veyeSIo9YCwOH_aDySgFE",
- "main": {
-  "apiKey": "${API_KEY_OVERSEERR}",
-  "applicationTitle": "Overseerr",
-  "applicationUrl": "",
-  "csrfProtection": false,
-  "cacheImages": false,
-  "defaultPermissions": 32,
-  "defaultQuotas": {
-   "movie": {},
-   "tv": {}
+  "clientId": "f4da9bec-8021-4e05-a31d-ab51f80b3cea",
+  "vapidPrivate": "k4iuJufGiLGV8PYw_dNlm7hikUF7V3odv9sNLHI_jsA",
+  "vapidPublic": "BBRinaqEKy2m65QEUl-iAJUvd2aNYYX5IhJLXXwcWjPuz7Vv7Ie16LDybZ74-B4-zqkBtH0P63u2pTOIGim70Xw",
+  "main": {
+   "apiKey": "MTczNzMxMDY5ODEzNjQ1MThhNmI0LWRlYjQtNDViYi05NjJiLTE5NWRlODQ5YzE4YQ==",
+   "applicationTitle": "Overseerr",
+   "applicationUrl": "",
+   "csrfProtection": false,
+   "cacheImages": false,
+   "defaultPermissions": 8388768,
+   "defaultQuotas": {
+    "movie": {
+     "quotaLimit": 0,
+     "quotaDays": 7
+    },
+    "tv": {
+     "quotaLimit": 0,
+     "quotaDays": 7
+    }
+   },
+   "hideAvailable": false,
+   "localLogin": true,
+   "newPlexLogin": true,
+   "region": "",
+   "originalLanguage": "",
+   "trustProxy": false,
+   "partialRequestsEnabled": true,
+   "locale": "en"
   },
-  "hideAvailable": false,
-  "localLogin": true,
-  "newPlexLogin": true,
-  "region": "",
-  "originalLanguage": "",
-  "trustProxy": false,
-  "partialRequestsEnabled": true,
-  "locale": "en"
- },
- "plex": {
-  "name": "media-server",
-  "ip": "${HOST_IP}",
-  "port": "${PORT_UI_PLEX}",
-  "useSsl": false,
-  "libraries": [
+  "plex": {
+   "name": "media-server",
+   "ip": "${HOST_IP}",
+   "port": "${PORT_UI_PLEX}",
+   "useSsl": false,
+   "libraries": [
     {
      "id": "1",
      "name": "Movies",
@@ -49,122 +55,191 @@
    ],
    "machineId": "7bfda260416223f2fce42cb16b338b23372065ff"
   },
- "tautulli": {},
- "radarr": [],
- "sonarr": [],
- "public": {
-  "initialized": false
- },
- "notifications": {
-  "agents": {
-   "email": {
-    "enabled": false,
-    "options": {
-     "emailFrom": "",
-     "smtpHost": "",
-     "smtpPort": 587,
-     "secure": false,
-     "ignoreTls": false,
-     "requireTls": false,
-     "allowSelfSigned": false,
-     "senderName": "Overseerr"
-    }
+  "tautulli": {},
+  "radarr": [
+   {
+    "name": "Radarr 4K",
+    "hostname": "${HOST_IP}",
+    "port": "${PORT_UI_RADARR4K}",
+    "apiKey": "${API_KEY_RADARR4K}",
+    "useSsl": false,
+    "activeProfileId": 5,
+    "activeProfileName": "Ultra-HD",
+    "activeDirectory": "/data/media/movies",
+    "is4k": true,
+    "minimumAvailability": "announced",
+    "tags": [
+     1
+    ],
+    "isDefault": true,
+    "syncEnabled": true,
+    "preventSearch": false,
+    "tagRequests": true,
+    "id": 0
    },
-   "discord": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "webhookUrl": "",
-     "enableMentions": true
-    }
-   },
-   "lunasea": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "webhookUrl": ""
-    }
-   },
-   "slack": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "webhookUrl": ""
-    }
-   },
-   "telegram": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "botAPI": "",
-     "chatId": "",
-     "sendSilently": false
-    }
-   },
-   "pushbullet": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "accessToken": ""
-    }
-   },
-   "pushover": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "accessToken": "",
-     "userToken": ""
-    }
-   },
-   "webhook": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "webhookUrl": "",
-     "jsonPayload": "IntcbiAgICBcIm5vdGlmaWNhdGlvbl90eXBlXCI6IFwie3tub3RpZmljYXRpb25fdHlwZX19XCIsXG4gICAgXCJldmVudFwiOiBcInt7ZXZlbnR9fVwiLFxuICAgIFwic3ViamVjdFwiOiBcInt7c3ViamVjdH19XCIsXG4gICAgXCJtZXNzYWdlXCI6IFwie3ttZXNzYWdlfX1cIixcbiAgICBcImltYWdlXCI6IFwie3tpbWFnZX19XCIsXG4gICAgXCJ7e21lZGlhfX1cIjoge1xuICAgICAgICBcIm1lZGlhX3R5cGVcIjogXCJ7e21lZGlhX3R5cGV9fVwiLFxuICAgICAgICBcInRtZGJJZFwiOiBcInt7bWVkaWFfdG1kYmlkfX1cIixcbiAgICAgICAgXCJ0dmRiSWRcIjogXCJ7e21lZGlhX3R2ZGJpZH19XCIsXG4gICAgICAgIFwic3RhdHVzXCI6IFwie3ttZWRpYV9zdGF0dXN9fVwiLFxuICAgICAgICBcInN0YXR1czRrXCI6IFwie3ttZWRpYV9zdGF0dXM0a319XCJcbiAgICB9LFxuICAgIFwie3tyZXF1ZXN0fX1cIjoge1xuICAgICAgICBcInJlcXVlc3RfaWRcIjogXCJ7e3JlcXVlc3RfaWR9fVwiLFxuICAgICAgICBcInJlcXVlc3RlZEJ5X2VtYWlsXCI6IFwie3tyZXF1ZXN0ZWRCeV9lbWFpbH19XCIsXG4gICAgICAgIFwicmVxdWVzdGVkQnlfdXNlcm5hbWVcIjogXCJ7e3JlcXVlc3RlZEJ5X3VzZXJuYW1lfX1cIixcbiAgICAgICAgXCJyZXF1ZXN0ZWRCeV9hdmF0YXJcIjogXCJ7e3JlcXVlc3RlZEJ5X2F2YXRhcn19XCJcbiAgICB9LFxuICAgIFwie3tpc3N1ZX19XCI6IHtcbiAgICAgICAgXCJpc3N1ZV9pZFwiOiBcInt7aXNzdWVfaWR9fVwiLFxuICAgICAgICBcImlzc3VlX3R5cGVcIjogXCJ7e2lzc3VlX3R5cGV9fVwiLFxuICAgICAgICBcImlzc3VlX3N0YXR1c1wiOiBcInt7aXNzdWVfc3RhdHVzfX1cIixcbiAgICAgICAgXCJyZXBvcnRlZEJ5X2VtYWlsXCI6IFwie3tyZXBvcnRlZEJ5X2VtYWlsfX1cIixcbiAgICAgICAgXCJyZXBvcnRlZEJ5X3VzZXJuYW1lXCI6IFwie3tyZXBvcnRlZEJ5X3VzZXJuYW1lfX1cIixcbiAgICAgICAgXCJyZXBvcnRlZEJ5X2F2YXRhclwiOiBcInt7cmVwb3J0ZWRCeV9hdmF0YXJ9fVwiXG4gICAgfSxcbiAgICBcInt7Y29tbWVudH19XCI6IHtcbiAgICAgICAgXCJjb21tZW50X21lc3NhZ2VcIjogXCJ7e2NvbW1lbnRfbWVzc2FnZX19XCIsXG4gICAgICAgIFwiY29tbWVudGVkQnlfZW1haWxcIjogXCJ7e2NvbW1lbnRlZEJ5X2VtYWlsfX1cIixcbiAgICAgICAgXCJjb21tZW50ZWRCeV91c2VybmFtZVwiOiBcInt7Y29tbWVudGVkQnlfdXNlcm5hbWV9fVwiLFxuICAgICAgICBcImNvbW1lbnRlZEJ5X2F2YXRhclwiOiBcInt7Y29tbWVudGVkQnlfYXZhdGFyfX1cIlxuICAgIH0sXG4gICAgXCJ7e2V4dHJhfX1cIjogW11cbn0i"
-    }
-   },
-   "webpush": {
-    "enabled": false,
-    "options": {}
-   },
-   "gotify": {
-    "enabled": false,
-    "types": 0,
-    "options": {
-     "url": "",
-     "token": ""
+   {
+    "name": "Radarr",
+    "hostname": "${HOST_IP}",
+    "port": "${PORT_UI_RADARR}",
+    "apiKey": "${API_KEY_RADARR}",
+    "useSsl": false,
+    "activeProfileId": 4,
+    "activeProfileName": "HD-1080p",
+    "activeDirectory": "/data/media/movies",
+    "is4k": false,
+    "minimumAvailability": "announced",
+    "tags": [
+     1
+    ],
+    "isDefault": true,
+    "syncEnabled": true,
+    "preventSearch": false,
+    "tagRequests": true,
+    "id": 1
+   }
+  ],
+  "sonarr": [
+   {
+    "name": "Sonarr",
+    "hostname": "${HOST_IP}",
+    "port": "${PORT_UI_SONARR}",
+    "apiKey": "${API_KEY_SONARR}",
+    "useSsl": false,
+    "activeProfileId": 4,
+    "activeLanguageProfileId": 1,
+    "activeProfileName": "HD-1080p",
+    "activeDirectory": "/data/media/series",
+    "activeAnimeProfileId": 4,
+    "activeAnimeProfileName": "HD-1080p",
+    "activeAnimeDirectory": "/data/media/anime",
+    "tags": [
+     3
+    ],
+    "animeTags": [
+     1
+    ],
+    "is4k": false,
+    "isDefault": true,
+    "enableSeasonFolders": true,
+    "syncEnabled": true,
+    "preventSearch": false,
+    "tagRequests": true,
+    "id": 0
+   }
+  ],
+  "public": {
+   "initialized": true
+  },
+  "notifications": {
+   "agents": {
+    "email": {
+     "enabled": false,
+     "options": {
+      "emailFrom": "",
+      "smtpHost": "",
+      "smtpPort": 587,
+      "secure": false,
+      "ignoreTls": false,
+      "requireTls": false,
+      "allowSelfSigned": false,
+      "senderName": "Overseerr"
+     }
+    },
+    "discord": {
+     "enabled": true,
+     "types": 152,
+     "options": {
+      "webhookUrl": "${WEBHOOK_DISCORD}",
+      "enableMentions": true
+     }
+    },
+    "lunasea": {
+     "enabled": false,
+     "types": 0,
+     "options": {
+      "webhookUrl": ""
+     }
+    },
+    "slack": {
+     "enabled": false,
+     "types": 0,
+     "options": {
+      "webhookUrl": ""
+     }
+    },
+    "telegram": {
+     "enabled": false,
+     "types": 0,
+     "options": {
+      "botAPI": "",
+      "chatId": "",
+      "sendSilently": false
+     }
+    },
+    "pushbullet": {
+     "enabled": false,
+     "types": 0,
+     "options": {
+      "accessToken": ""
+     }
+    },
+    "pushover": {
+     "enabled": false,
+     "types": 0,
+     "options": {
+      "accessToken": "",
+      "userToken": ""
+     }
+    },
+    "webhook": {
+     "enabled": false,
+     "types": 0,
+     "options": {
+      "webhookUrl": "",
+      "jsonPayload": "IntcbiAgICBcIm5vdGlmaWNhdGlvbl90eXBlXCI6IFwie3tub3RpZmljYXRpb25fdHlwZX19XCIsXG4gICAgXCJldmVudFwiOiBcInt7ZXZlbnR9fVwiLFxuICAgIFwic3ViamVjdFwiOiBcInt7c3ViamVjdH19XCIsXG4gICAgXCJtZXNzYWdlXCI6IFwie3ttZXNzYWdlfX1cIixcbiAgICBcImltYWdlXCI6IFwie3tpbWFnZX19XCIsXG4gICAgXCJ7e21lZGlhfX1cIjoge1xuICAgICAgICBcIm1lZGlhX3R5cGVcIjogXCJ7e21lZGlhX3R5cGV9fVwiLFxuICAgICAgICBcInRtZGJJZFwiOiBcInt7bWVkaWFfdG1kYmlkfX1cIixcbiAgICAgICAgXCJ0dmRiSWRcIjogXCJ7e21lZGlhX3R2ZGJpZH19XCIsXG4gICAgICAgIFwic3RhdHVzXCI6IFwie3ttZWRpYV9zdGF0dXN9fVwiLFxuICAgICAgICBcInN0YXR1czRrXCI6IFwie3ttZWRpYV9zdGF0dXM0a319XCJcbiAgICB9LFxuICAgIFwie3tyZXF1ZXN0fX1cIjoge1xuICAgICAgICBcInJlcXVlc3RfaWRcIjogXCJ7e3JlcXVlc3RfaWR9fVwiLFxuICAgICAgICBcInJlcXVlc3RlZEJ5X2VtYWlsXCI6IFwie3tyZXF1ZXN0ZWRCeV9lbWFpbH19XCIsXG4gICAgICAgIFwicmVxdWVzdGVkQnlfdXNlcm5hbWVcIjogXCJ7e3JlcXVlc3RlZEJ5X3VzZXJuYW1lfX1cIixcbiAgICAgICAgXCJyZXF1ZXN0ZWRCeV9hdmF0YXJcIjogXCJ7e3JlcXVlc3RlZEJ5X2F2YXRhcn19XCJcbiAgICB9LFxuICAgIFwie3tpc3N1ZX19XCI6IHtcbiAgICAgICAgXCJpc3N1ZV9pZFwiOiBcInt7aXNzdWVfaWR9fVwiLFxuICAgICAgICBcImlzc3VlX3R5cGVcIjogXCJ7e2lzc3VlX3R5cGV9fVwiLFxuICAgICAgICBcImlzc3VlX3N0YXR1c1wiOiBcInt7aXNzdWVfc3RhdHVzfX1cIixcbiAgICAgICAgXCJyZXBvcnRlZEJ5X2VtYWlsXCI6IFwie3tyZXBvcnRlZEJ5X2VtYWlsfX1cIixcbiAgICAgICAgXCJyZXBvcnRlZEJ5X3VzZXJuYW1lXCI6IFwie3tyZXBvcnRlZEJ5X3VzZXJuYW1lfX1cIixcbiAgICAgICAgXCJyZXBvcnRlZEJ5X2F2YXRhclwiOiBcInt7cmVwb3J0ZWRCeV9hdmF0YXJ9fVwiXG4gICAgfSxcbiAgICBcInt7Y29tbWVudH19XCI6IHtcbiAgICAgICAgXCJjb21tZW50X21lc3NhZ2VcIjogXCJ7e2NvbW1lbnRfbWVzc2FnZX19XCIsXG4gICAgICAgIFwiY29tbWVudGVkQnlfZW1haWxcIjogXCJ7e2NvbW1lbnRlZEJ5X2VtYWlsfX1cIixcbiAgICAgICAgXCJjb21tZW50ZWRCeV91c2VybmFtZVwiOiBcInt7Y29tbWVudGVkQnlfdXNlcm5hbWV9fVwiLFxuICAgICAgICBcImNvbW1lbnRlZEJ5X2F2YXRhclwiOiBcInt7Y29tbWVudGVkQnlfYXZhdGFyfX1cIlxuICAgIH0sXG4gICAgXCJ7e2V4dHJhfX1cIjogW11cbn0i"
+     }
+    },
+    "webpush": {
+     "enabled": false,
+     "options": {}
+    },
+    "gotify": {
+     "enabled": false,
+     "types": 0,
+     "options": {
+      "url": "",
+      "token": ""
+     }
     }
    }
-  }
- },
- "jobs": {
-  "plex-recently-added-scan": {
-   "schedule": "0 */5 * * * *"
   },
-  "plex-full-scan": {
-   "schedule": "0 0 3 * * *"
-  },
-  "plex-watchlist-sync": {
-   "schedule": "0 */10 * * * *"
-  },
-  "radarr-scan": {
-   "schedule": "0 0 4 * * *"
-  },
-  "sonarr-scan": {
-   "schedule": "0 30 4 * * *"
-  },
-  "availability-sync": {
-   "schedule": "0 0 5 * * *"
-  },
-  "download-sync": {
-   "schedule": "0 * * * * *"
-  },
-  "download-sync-reset": {
-   "schedule": "0 0 1 * * *"
-  },
-  "image-cache-cleanup": {
-   "schedule": "0 0 5 * * *"
+  "jobs": {
+   "plex-recently-added-scan": {
+    "schedule": "0 */5 * * * *"
+   },
+   "plex-full-scan": {
+    "schedule": "0 0 3 * * *"
+   },
+   "plex-watchlist-sync": {
+    "schedule": "0 */10 * * * *"
+   },
+   "radarr-scan": {
+    "schedule": "0 0 4 * * *"
+   },
+   "sonarr-scan": {
+    "schedule": "0 30 4 * * *"
+   },
+   "availability-sync": {
+    "schedule": "0 0 5 * * *"
+   },
+   "download-sync": {
+    "schedule": "0 * * * * *"
+   },
+   "download-sync-reset": {
+    "schedule": "0 0 1 * * *"
+   },
+   "image-cache-cleanup": {
+    "schedule": "0 0 5 * * *"
+   }
   }
  }
-}
