@@ -1,9 +1,9 @@
 {
  "clientId": "f4da9bec-8021-4e05-a31d-ab51f80b3cea",
- "vapidPrivate": "",
- "vapidPublic": "",
+ "vapidPrivate": "VbfqzFfcpVMfEdx-9PpUwaabLWdG6rpUJ6sUIObbBs0",
+ "vapidPublic": "BIPyt8oz-xtQgEyI0obfcu18__-LAMUGTtaqmHzZ_DqemDgccNgdPH6NEss7r9QMe2veyeSIo9YCwOH_aDySgFE",
  "main": {
-  "apiKey": "MTczNzMxMDY5ODEzNjQ1MThhNmI0LWRlYjQtNDViYi05NjJiLTE5NWRlODQ5YzE4YQ==",
+  "apiKey": "${API_KEY_OVERSEERR}",
   "applicationTitle": "Overseerr",
   "applicationUrl": "",
   "csrfProtection": false,
@@ -23,12 +23,32 @@
   "locale": "en"
  },
  "plex": {
-  "name": "",
-  "ip": "",
-  "port": 32400,
+  "name": "media-server",
+  "ip": "${HOST_IP}",
+  "port": "${PORT_UI_PLEX}",
   "useSsl": false,
-  "libraries": []
- },
+  "libraries": [
+    {
+     "id": "1",
+     "name": "Movies",
+     "enabled": true,
+     "type": "movie"
+    },
+    {
+     "id": "3",
+     "name": "Anime",
+     "enabled": true,
+     "type": "show"
+    },
+    {
+     "id": "2",
+     "name": "Series",
+     "enabled": true,
+     "type": "show"
+    }
+   ],
+   "machineId": "7bfda260416223f2fce42cb16b338b23372065ff"
+  },
  "tautulli": {},
  "radarr": [],
  "sonarr": [],
