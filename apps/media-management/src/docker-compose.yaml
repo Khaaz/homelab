@@ -112,8 +112,11 @@ services:
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:prowlarr
       - TP_THEME=${TP_THEME:?err}
       # setup env vars
-      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
       - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - PORT_SERVICE_FLARESOLVERR=${PORT_SERVICE_FLARESOLVERR}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT}
@@ -237,6 +240,7 @@ services:
       # setup env vars
       - API_KEY_RADARR=${API_KEY_RADARR:?err}
       - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
@@ -269,6 +273,7 @@ services:
       # setup env vars
       - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
       - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
@@ -301,6 +306,7 @@ services:
       # setup env vars
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
