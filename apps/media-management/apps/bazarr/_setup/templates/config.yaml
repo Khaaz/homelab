@@ -19,7 +19,7 @@ anticaptcha:
 assrt:
   token: ''
 auth:
-  apikey: 3dc2760b565b4b6ee2a7886d53cd43c8
+  apikey: ${API_KEY_BAZARR}
   password: ''
   type: null
   username: ''
@@ -187,7 +187,7 @@ proxy:
   url: ''
   username: ''
 radarr:
-  apikey: 3ebde1f20ae54d1684a171f23cf112ea
+  apikey: ${API_KEY_RADARR}
   base_url: ''
   defer_search_signalr: false
   excluded_tags: []
@@ -216,7 +216,7 @@ series_scores:
   video_codec: 2
   year: 90
 sonarr:
-  apikey: 69f87af967a047a68fa4a74c1f441856
+  apikey: ${API_KEY_SONARR}
   base_url: ''
   defer_search_signalr: false
   exclude_season_zero: false

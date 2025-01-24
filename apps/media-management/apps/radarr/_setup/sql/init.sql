@@ -97,7 +97,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/1/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000, 2070, 2030, 2010, 2040, 2060, 2045],
   "multiLanguages": [],
   "removeYear": false
@@ -109,7 +109,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/2/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000, 2020, 2040, 2060, 2030, 2045],
   "multiLanguages": [],
   "removeYear": false
@@ -121,7 +121,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/3/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000],
   "multiLanguages": [],
   "removeYear": false
@@ -133,7 +133,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/5/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000],
   "multiLanguages": [],
   "removeYear": false
@@ -145,7 +145,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/7/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000, 2040, 2045, 2060, 2070, 2010, 2020],
   "multiLanguages": [],
   "removeYear": false
@@ -157,7 +157,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/9/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000],
   "multiLanguages": [],
   "removeYear": false
@@ -169,7 +169,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/10/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000],
   "multiLanguages": [],
   "removeYear": false
@@ -181,7 +181,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/11/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000],
   "multiLanguages": [],
   "removeYear": false
@@ -193,7 +193,7 @@ VALUES
   "requiredFlags": [],
   "baseUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}/6/",
   "apiPath": "/api",
-  "apiKey": "42dfafbdf737462597d4027ce30b0414",
+  "apiKey": "${API_KEY_PROWLARR}",
   "categories": [2000],
   "multiLanguages": [],
   "removeYear": false

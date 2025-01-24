@@ -136,7 +136,7 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "MTczNTUwMjE5MTkzMGZhYzVkZmM3LWIxNjEtNGRjMC1hNWEzLTFmYjIxM2E0OTRlMQ=="
+            "value": "${API_KEY_OVERSEERR}"
           }
         ]
       }
@@ -191,7 +191,7 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "3ebde1f20ae54d1684a171f23cf112ea"
+            "value": "${API_KEY_RADARR}"
           }
         ]
       }
@@ -246,7 +246,7 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "9a6865941b224b05ab7632c4f6bbbf00"
+            "value": "${API_KEY_RADARR4K}"
           }
         ]
       }
@@ -301,7 +301,7 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "69f87af967a047a68fa4a74c1f441856"
+            "value": "${API_KEY_SONARR}"
           }
         ]
       }

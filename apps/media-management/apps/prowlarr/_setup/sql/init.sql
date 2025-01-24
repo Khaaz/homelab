@@ -49,7 +49,7 @@ VALUES
 (1, 'Sonarr', 'Sonarr', '{
   "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
   "baseUrl": "http://${DOCKER_SUBNET}.24:${PORT_UI_SONARR}",
-  "apiKey": "69f87af967a047a68fa4a74c1f441856",
+  "apiKey": "${API_KEY_SONARR}",
   "syncCategories": [
     5000,
     5010,
@@ -69,7 +69,7 @@ VALUES
 (2, 'Radarr', 'Radarr', '{
   "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
   "baseUrl": "http://${DOCKER_SUBNET}.22:${PORT_UI_RADARR}",
-  "apiKey": "3ebde1f20ae54d1684a171f23cf112ea",
+  "apiKey": "${API_KEY_RADARR}",
   "syncCategories": [
     2000,
     2010,
@@ -88,7 +88,7 @@ VALUES
 (3, 'Radarr-4k', 'Radarr', '{
   "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
   "baseUrl": "http://${DOCKER_SUBNET}.23:${PORT_UI_RADARR4K}",
-  "apiKey": "9a6865941b224b05ab7632c4f6bbbf00",
+  "apiKey": "${API_KEY_RADARR4K}",
   "syncCategories": [
     2000,
     2010,
