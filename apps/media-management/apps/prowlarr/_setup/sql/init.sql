@@ -1,6 +1,4 @@
 -- TODO : Table Config check pass
--- TODO : DownloadClients change access
--- TODO : API key to change into Indexer
 
 -- AppSyncProfiles
 DELETE FROM AppSyncProfiles;
