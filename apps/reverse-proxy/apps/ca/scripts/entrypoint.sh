@@ -1,6 +1,8 @@
 #!/bin/sh
 
-echo "LOL"
+## Generate certs
+/app/minica/minica -ca-key root.key -ca-cert root.crt --domains $DOMAIN,*.$DOMAIN
+
 ## root
 # root cert
 cp /app/certs/root.crt /swag/www/root.crt

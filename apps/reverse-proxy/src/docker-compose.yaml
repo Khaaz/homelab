@@ -122,9 +122,6 @@ services:
       - ${APPS_FOLDER:?err}/swag/www:/swag/www
     environment:
       - DOMAIN=${INTERNAL_DOMAIN}
-    post_start:
-      - command: /scripts/move-certs.sh
-        user: root
 
 # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:
