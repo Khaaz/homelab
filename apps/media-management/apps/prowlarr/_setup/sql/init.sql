@@ -101,7 +101,27 @@ VALUES
     2090
   ],
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
-}', 'RadarrSettings', 2, '[]');
+}', 'RadarrSettings', 2, '[]'),
+(4,'Sonarr 4K','Sonarr','{
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
+  "baseUrl": "http://${DOCKER_SUBNET}.23:${PORT_UI_SONARR4K}",
+  "apiKey": "${API_KEY_SONARR4K}",
+  "syncCategories": [
+    5000,
+    5010,
+    5020,
+    5030,
+    5040,
+    5045,
+    5050,
+    5090
+  ],
+  "animeSyncCategories": [
+    5070
+  ],
+  "syncAnimeStandardFormatSearch": true,
+  "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
+}','SonarrSettings',2,'[]');
 
 -- Config
 DELETE FROM Config;
