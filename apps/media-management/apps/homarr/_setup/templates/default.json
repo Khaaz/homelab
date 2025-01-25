@@ -89,7 +89,7 @@
     {
       "id": "b4def3e4-c272-4f41-9c96-93f9211bfbd8",
       "name": "Overseer",
-      "url": "http://127.0.0.1:5055",
+      "url": "${HOST_IP}:${PORT_UI_OVERSEERR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/overseerr.svg",
         "appNameStatus": "normal",
@@ -110,7 +110,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:5055"
+        "externalUrl": "${HOST_IP}:${PORT_UI_OVERSEERR}"
       },
       "area": {
         "type": "wrapper",
@@ -144,7 +144,7 @@
     {
       "id": "4ebe8135-78b0-4ef2-9b50-8bc0ef15425c",
       "name": "Radarr",
-      "url": "http://127.0.1:7878",
+      "url": "${HOST_IP}:${PORT_UI_RADARR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg",
         "appNameStatus": "normal",
@@ -165,7 +165,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.1:7878"
+        "externalUrl": "${HOST_IP}:${PORT_UI_RADARR}"
       },
       "area": {
         "type": "wrapper",
@@ -199,7 +199,7 @@
     {
       "id": "53933e3e-2b6a-42db-8e75-603ca032d505",
       "name": "Radarr 4k",
-      "url": "http://127.0.0.1:7879",
+      "url": "${HOST_IP}:${PORT_UI_RADARR4K}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg",
         "appNameStatus": "normal",
@@ -220,7 +220,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:7879"
+        "externalUrl": "${HOST_IP}:${PORT_UI_RADARR4K}"
       },
       "area": {
         "type": "wrapper",
@@ -252,9 +252,9 @@
       }
     },
     {
-      "id": "c5b943ad-cde4-4dc4-91d2-efe5b46d279a",
-      "name": "Sonarr",
-      "url": "http://127.0.0.1:8989",
+      "id": "a32c9076-2d71-4809-af5e-e0f4cad28854",
+      "name": "Sonarr 4K",
+      "url": "${HOST_IP}:${PORT_UI_SONARR4K}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg",
         "appNameStatus": "normal",
@@ -275,7 +275,62 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:8989"
+        "externalUrl": "${HOST_IP}:${PORT_UI_SONARR4K}"
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 6,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      },
+      "integration": {
+        "type": "sonarr",
+        "properties": [
+          {
+            "field": "apiKey",
+            "type": "private",
+            "value": "${API_KEY_SONARR4K}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c5b943ad-cde4-4dc4-91d2-efe5b46d279a",
+      "name": "Sonarr",
+      "url": "${HOST_IP}:${PORT_UI_SONARR}",
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "lineClampAppName": 1,
+        "appNameFontSize": 16
+      },
+      "network": {
+        "enabledStatusChecker": false,
+        "statusCodes": [
+          "200",
+          "301",
+          "302",
+          "304",
+          "307",
+          "308"
+        ]
+      },
+      "behaviour": {
+        "isOpeningNewTab": true,
+        "externalUrl": "${HOST_IP}:${PORT_UI_SONARR}"
       },
       "area": {
         "type": "wrapper",
@@ -309,7 +364,7 @@
     {
       "id": "7b4925be-0a43-4d27-aaab-762f3238510d",
       "name": "Qbittorrent",
-      "url": "http://127.0.0.1:8200",
+      "url": "${HOST_IP}:${PORT_UI_QBITTORRENT}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/qbittorrent.svg",
         "appNameStatus": "normal",
@@ -330,7 +385,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:8200"
+        "externalUrl": "${HOST_IP}:${PORT_UI_QBITTORRENT}"
       },
       "area": {
         "type": "wrapper",
