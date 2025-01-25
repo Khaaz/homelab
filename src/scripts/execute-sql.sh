@@ -41,7 +41,7 @@ if [ ! -f "$SQL_SCRIPT_PATH" ]; then
 fi
 
 ## Core
-install_dependencies
+install_dependencies sqlite gettext
 
 PREPROCESSED_SQL=$(preprocess_sql_script "$SQL_SCRIPT_PATH")
 

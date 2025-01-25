@@ -61,18 +61,25 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/swag:/config:rw # config
       - ${APPS_FOLDER:?err}/swag/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-      - URL=${DOMAINNAME:?err}
+      - URL=${EXTERNAL_DOMAIN:?err}
       - SUBDOMAINS=${SUBDOMAINS}
       - VALIDATION=${VALIDATION:?err}
       - DNSPLUGIN=${DNSPLUGIN}
       - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
       # - EXTRA_DOMAINS=${EXTRA_DOMAINS}
       # - STAGING=${STAGING}
+      # setup env vars
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+    post_start:
+      - command: /scripts/parse-folder.sh /_setup/templates/ /config
+        user: root
 
 # DNSMask - DNS server for local resolution
   unbound:
@@ -88,6 +95,15 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
       - ${APPS_FOLDER:?err}/unbound/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      # setup env vars
+      - DOCKER_SUBNET=${REVERSE_PROXY_DOCKER_SUBNET:?err}
+      - HOST_IP=${HOST_IP:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
+        user: root
 
 # minica - Generate self signed certificat
   minica:
@@ -100,10 +116,12 @@ services:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"
     volumes:
-      - ${APPS_FOLDER:?err}/ca:/app/certs
-      - ${APPS_FOLDER:?err}/swag/keys-private:/app/certs/keys-private
+      - ${APPS_FOLDER:?err}/ca/certs:/app/certs
+      - ${APPS_FOLDER:?err}/ca/scripts:/scripts
+      - ${APPS_FOLDER:?err}/swag/keys-private:/swag/keys-private
+      - ${APPS_FOLDER:?err}/swag/www:/swag/www
     environment:
-      - DOMAIN=l.ab
+      - DOMAIN=${INTERNAL_DOMAIN}
 
 # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:

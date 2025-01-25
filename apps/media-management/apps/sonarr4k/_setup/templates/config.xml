@@ -1,18 +1,19 @@
 <Config>
   <BindAddress>*</BindAddress>
-  <Port>9696</Port>
-  <SslPort>6969</SslPort>
+  <Port>${PORT_UI_SONARR4K}</Port>
+  <SslPort>9898</SslPort>
   <EnableSsl>False</EnableSsl>
   <LaunchBrowser>True</LaunchBrowser>
-  <ApiKey>${API_KEY_PROWLARR}</ApiKey>
+  <ApiKey>$API_KEY_SONARR4K</ApiKey>
   <AuthenticationMethod>External</AuthenticationMethod>
   <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
-  <Branch>develop</Branch>
+  <Branch>main</Branch>
   <LogLevel>debug</LogLevel>
   <SslCertPath></SslCertPath>
   <SslCertPassword></SslCertPassword>
   <UrlBase></UrlBase>
-  <InstanceName>Prowlarr</InstanceName>
+  <InstanceName>Sonarr4k</InstanceName>
   <UpdateMechanism>Docker</UpdateMechanism>
   <Theme>dark</Theme>
+  <AnalyticsEnabled>False</AnalyticsEnabled>
 </Config>

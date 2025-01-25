@@ -56,8 +56,8 @@
       "shape": {
         "md": {
           "location": {
-            "x": 5,
-            "y": 1
+            "x": 3,
+            "y": 0
           },
           "size": {
             "width": 1,
@@ -89,7 +89,7 @@
     {
       "id": "b4def3e4-c272-4f41-9c96-93f9211bfbd8",
       "name": "Overseer",
-      "url": "http://127.0.0.1:5055",
+      "url": "http://${HOST_IP}:${PORT_UI_OVERSEERR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/overseerr.svg",
         "appNameStatus": "normal",
@@ -98,7 +98,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -110,7 +110,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:5055"
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_OVERSEERR}"
       },
       "area": {
         "type": "wrapper",
@@ -128,6 +128,16 @@
             "width": 2,
             "height": 1
           }
+        },
+        "md": {
+          "location": {
+            "x": 3,
+            "y": 3
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
         }
       },
       "integration": {
@@ -136,7 +146,7 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "MTczNTUwMjE5MTkzMGZhYzVkZmM3LWIxNjEtNGRjMC1hNWEzLTFmYjIxM2E0OTRlMQ=="
+            "value": "${API_KEY_OVERSEERR}"
           }
         ]
       }
@@ -144,7 +154,7 @@
     {
       "id": "4ebe8135-78b0-4ef2-9b50-8bc0ef15425c",
       "name": "Radarr",
-      "url": "http://127.0.1:7878",
+      "url": "http://${HOST_IP}:${PORT_UI_RADARR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg",
         "appNameStatus": "normal",
@@ -153,7 +163,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -165,7 +175,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.1:7878"
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_RADARR}"
       },
       "area": {
         "type": "wrapper",
@@ -183,6 +193,16 @@
             "width": 1,
             "height": 1
           }
+        },
+        "md": {
+          "location": {
+            "x": 3,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
         }
       },
       "integration": {
@@ -191,7 +211,7 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "3ebde1f20ae54d1684a171f23cf112ea"
+            "value": "${API_KEY_RADARR}"
           }
         ]
       }
@@ -199,7 +219,7 @@
     {
       "id": "53933e3e-2b6a-42db-8e75-603ca032d505",
       "name": "Radarr 4k",
-      "url": "http://127.0.0.1:7879",
+      "url": "http://${HOST_IP}:${PORT_UI_RADARR4K}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg",
         "appNameStatus": "normal",
@@ -208,7 +228,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -220,7 +240,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:7879"
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_RADARR4K}"
       },
       "area": {
         "type": "wrapper",
@@ -238,6 +258,16 @@
             "width": 1,
             "height": 1
           }
+        },
+        "md": {
+          "location": {
+            "x": 4,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
         }
       },
       "integration": {
@@ -246,15 +276,15 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "9a6865941b224b05ab7632c4f6bbbf00"
+            "value": "${API_KEY_RADARR4K}"
           }
         ]
       }
     },
     {
-      "id": "c5b943ad-cde4-4dc4-91d2-efe5b46d279a",
-      "name": "Sonarr",
-      "url": "http://127.0.0.1:8989",
+      "id": "a32c9076-2d71-4809-af5e-e0f4cad28854",
+      "name": "Sonarr 4K",
+      "url": "http://${HOST_IP}:${PORT_UI_SONARR4K}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg",
         "appNameStatus": "normal",
@@ -263,7 +293,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -275,7 +305,72 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:8989"
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_SONARR4K}"
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 6,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 3,
+            "y": 1
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      },
+      "integration": {
+        "type": "sonarr",
+        "properties": [
+          {
+            "field": "apiKey",
+            "type": "private",
+            "value": "${API_KEY_SONARR4K}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c5b943ad-cde4-4dc4-91d2-efe5b46d279a",
+      "name": "Sonarr",
+      "url": "http://${HOST_IP}:${PORT_UI_SONARR}",
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "lineClampAppName": 1,
+        "appNameFontSize": 16
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200",
+          "301",
+          "302",
+          "304",
+          "307",
+          "308"
+        ]
+      },
+      "behaviour": {
+        "isOpeningNewTab": true,
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_SONARR}"
       },
       "area": {
         "type": "wrapper",
@@ -293,6 +388,16 @@
             "width": 1,
             "height": 1
           }
+        },
+        "md": {
+          "location": {
+            "x": 4,
+            "y": 1
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
         }
       },
       "integration": {
@@ -301,7 +406,7 @@
           {
             "field": "apiKey",
             "type": "private",
-            "value": "69f87af967a047a68fa4a74c1f441856"
+            "value": "${API_KEY_SONARR}"
           }
         ]
       }
@@ -309,7 +414,7 @@
     {
       "id": "7b4925be-0a43-4d27-aaab-762f3238510d",
       "name": "Qbittorrent",
-      "url": "http://127.0.0.1:8200",
+      "url": "http://${HOST_IP}:${PORT_UI_QBITTORRENT}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/qbittorrent.svg",
         "appNameStatus": "normal",
@@ -318,7 +423,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -330,7 +435,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://127.0.0.1:8200"
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_QBITTORRENT}"
       },
       "area": {
         "type": "wrapper",
@@ -343,6 +448,16 @@
           "location": {
             "x": 5,
             "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 5,
+            "y": 1
           },
           "size": {
             "width": 1,
@@ -362,6 +477,71 @@
             "field": "password",
             "type": "private",
             "value": "admin!"
+          }
+        ]
+      }
+    },
+    {
+      "id": "de0bcf1d-2a73-446b-ae29-d63e95ca79f8",
+      "name": "Prowlarr",
+      "url": "http://${HOST_IP}:${PORT_UI_PROWLARR}",
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/prowlarr.svg",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "lineClampAppName": 1,
+        "appNameFontSize": 16
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200",
+          "301",
+          "302",
+          "304",
+          "307",
+          "308"
+        ]
+      },
+      "behaviour": {
+        "isOpeningNewTab": true,
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_PROWLARR}"
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "md": {
+          "location": {
+            "x": 5,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      },
+      "integration": {
+        "type": "prowlarr",
+        "properties": [
+          {
+            "field": "apiKey",
+            "type": "private",
+            "value": "${API_KEY_PROWLARR}"
           }
         ]
       }
@@ -475,11 +655,13 @@
       "properties": {
         "displayInFahrenheit": false,
         "location": {
-          "name": "Paris",
-          "latitude": 48.85341,
-          "longitude": 2.3488
+          "name": "Clermont-Ferrand",
+          "latitude": 45.77969,
+          "longitude": 3.08682
         },
-        "displayCityName": true
+        "displayCityName": true,
+        "displayWeekly": false,
+        "forecastDays": 5
       },
       "area": {
         "type": "wrapper",

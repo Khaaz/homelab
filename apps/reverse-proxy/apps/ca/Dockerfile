@@ -1,6 +1,6 @@
 FROM golang:latest
 
-ENV DOMAIN="lab"
+ENV DOMAIN="l.ab"
 
 # Clone minica
 WORKDIR /app
@@ -13,4 +13,4 @@ RUN go build
 # Create cert folder (volume)
 WORKDIR /app/certs
 
-CMD ["sh", "-c", "../minica/minica --domains $DOMAIN,*.$DOMAIN"]
+CMD ["sh", "-c", "/scripts/entrypoint.sh"]

@@ -19,7 +19,7 @@ anticaptcha:
 assrt:
   token: ''
 auth:
-  apikey: 3dc2760b565b4b6ee2a7886d53cd43c8
+  apikey: ${API_KEY_BAZARR}
   password: ''
   type: null
   username: ''
@@ -180,14 +180,14 @@ postgresql:
 proxy:
   exclude:
   - localhost
-  - 127.0.0.1
+  - ${HOST_IP}
   password: ''
   port: ''
   type: null
   url: ''
   username: ''
 radarr:
-  apikey: 3ebde1f20ae54d1684a171f23cf112ea
+  apikey: ${API_KEY_RADARR}
   base_url: ''
   defer_search_signalr: false
   excluded_tags: []
@@ -195,7 +195,7 @@ radarr:
   full_update_day: 6
   full_update_hour: 4
   http_timeout: 60
-  ip: 127.0.0.1
+  ip: ${HOST_IP}
   movies_sync: 60
   only_monitored: false
   port: 7878
@@ -216,7 +216,7 @@ series_scores:
   video_codec: 2
   year: 90
 sonarr:
-  apikey: 69f87af967a047a68fa4a74c1f441856
+  apikey: ${API_KEY_SONARR}
   base_url: ''
   defer_search_signalr: false
   exclude_season_zero: false
@@ -226,7 +226,7 @@ sonarr:
   full_update_day: 6
   full_update_hour: 4
   http_timeout: 60
-  ip: 127.0.0.1
+  ip: ${HOST_IP}
   only_monitored: false
   port: 8989
   series_sync: 60
@@ -261,7 +261,7 @@ titulky:
   password: ''
   username: ''
 whisperai:
-  endpoint: http://127.0.0.1:9000
+  endpoint: http://${HOST_IP}:9000
   loglevel: INFO
   response: 5
   timeout: 3600
