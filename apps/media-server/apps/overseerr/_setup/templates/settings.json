@@ -3,7 +3,7 @@
   "vapidPrivate": "k4iuJufGiLGV8PYw_dNlm7hikUF7V3odv9sNLHI_jsA",
   "vapidPublic": "BBRinaqEKy2m65QEUl-iAJUvd2aNYYX5IhJLXXwcWjPuz7Vv7Ie16LDybZ74-B4-zqkBtH0P63u2pTOIGim70Xw",
   "main": {
-   "apiKey": "MTczNzMxMDY5ODEzNjQ1MThhNmI0LWRlYjQtNDViYi05NjJiLTE5NWRlODQ5YzE4YQ==",
+   "apiKey": "${API_KEY_OVERSEERR}",
    "applicationTitle": "Overseerr",
    "applicationUrl": "",
    "csrfProtection": false,

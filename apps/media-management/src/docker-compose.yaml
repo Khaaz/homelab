@@ -413,10 +413,24 @@ services:
       - "${PORT_UI_MAINTAINERR:?err}:6246"
     volumes:
       - ${APPS_FOLDER:?err}/maintainerr:/opt/data # config
-      - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
+      - ${APPS_FOLDER:?err}/maintainerr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - TZ=${TIMEZONE:?err}
+      - HOST_IP=${HOST_IP:?err}
+      - API_KEY_MAINTAINERR=${API_KEY_MAINTAINERR:?err}
+      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - PLEX_CLAIM=${PLEX_CLAIM:?err}
+      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
       # - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
     post_start:
       - command: /scripts/execute-sql.sh /opt/data/maintainerr.sqlite
