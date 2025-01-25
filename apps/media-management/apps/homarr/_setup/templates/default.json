@@ -56,8 +56,8 @@
       "shape": {
         "md": {
           "location": {
-            "x": 5,
-            "y": 1
+            "x": 3,
+            "y": 0
           },
           "size": {
             "width": 1,
@@ -98,7 +98,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -128,6 +128,16 @@
             "width": 2,
             "height": 1
           }
+        },
+        "md": {
+          "location": {
+            "x": 3,
+            "y": 3
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
         }
       },
       "integration": {
@@ -153,7 +163,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -177,6 +187,16 @@
         "lg": {
           "location": {
             "x": 2,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 3,
             "y": 2
           },
           "size": {
@@ -208,7 +228,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -232,6 +252,16 @@
         "lg": {
           "location": {
             "x": 3,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 4,
             "y": 2
           },
           "size": {
@@ -263,7 +293,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -288,6 +318,16 @@
           "location": {
             "x": 6,
             "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 3,
+            "y": 1
           },
           "size": {
             "width": 1,
@@ -318,7 +358,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -343,6 +383,16 @@
           "location": {
             "x": 4,
             "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 4,
+            "y": 1
           },
           "size": {
             "width": 1,
@@ -373,7 +423,7 @@
         "appNameFontSize": 16
       },
       "network": {
-        "enabledStatusChecker": false,
+        "enabledStatusChecker": true,
         "statusCodes": [
           "200",
           "301",
@@ -403,6 +453,16 @@
             "width": 1,
             "height": 1
           }
+        },
+        "md": {
+          "location": {
+            "x": 5,
+            "y": 1
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
         }
       },
       "integration": {
@@ -417,6 +477,71 @@
             "field": "password",
             "type": "private",
             "value": "admin!"
+          }
+        ]
+      }
+    },
+    {
+      "id": "de0bcf1d-2a73-446b-ae29-d63e95ca79f8",
+      "name": "Prowlarr",
+      "url": "${HOST_IP}:${PORT_UI_PROWLARR}",
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/prowlarr.svg",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "lineClampAppName": 1,
+        "appNameFontSize": 16
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200",
+          "301",
+          "302",
+          "304",
+          "307",
+          "308"
+        ]
+      },
+      "behaviour": {
+        "isOpeningNewTab": true,
+        "externalUrl": "${HOST_IP}:${PORT_UI_PROWLARR}"
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "md": {
+          "location": {
+            "x": 5,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      },
+      "integration": {
+        "type": "prowlarr",
+        "properties": [
+          {
+            "field": "apiKey",
+            "type": "private",
+            "value": "${API_KEY_PROWLARR}"
           }
         ]
       }
@@ -530,11 +655,13 @@
       "properties": {
         "displayInFahrenheit": false,
         "location": {
-          "name": "Paris",
-          "latitude": 48.85341,
-          "longitude": 2.3488
+          "name": "Clermont-Ferrand",
+          "latitude": 45.77969,
+          "longitude": 3.08682
         },
-        "displayCityName": true
+        "displayCityName": true,
+        "displayWeekly": false,
+        "forecastDays": 5
       },
       "area": {
         "type": "wrapper",
