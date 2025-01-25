@@ -217,6 +217,7 @@ services:
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - API_KEY_RADARR=${API_KEY_RADARR:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
       - TP_THEME=${TP_THEME:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.yaml
@@ -398,6 +399,7 @@ services:
       - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
         user: root
