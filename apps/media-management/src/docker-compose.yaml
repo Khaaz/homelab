@@ -395,6 +395,8 @@ services:
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
