@@ -100,6 +100,34 @@
   ],
   "sonarr": [
    {
+    "name": "Sonarr 4K",
+    "hostname": "${HOST_IP}",
+    "port": "${PORT_UI_SONARR4K}",
+    "apiKey": "${API_KEY_SONARR4K}",
+    "useSsl": false,
+    "activeProfileId": 5,
+    "activeLanguageProfileId": 1,
+    "activeProfileName": "Ultra-HD",
+    "activeDirectory": "/data/media/series",
+    "activeAnimeProfileId": 5,
+    "activeAnimeLanguageProfileId": 1,
+    "activeAnimeProfileName": "Ultra-HD",
+    "activeAnimeDirectory": "/data/media/anime",
+    "tags": [
+     3
+    ],
+    "animeTags": [
+     1
+    ],
+    "is4k": true,
+    "isDefault": true,
+    "enableSeasonFolders": true,
+    "syncEnabled": true,
+    "preventSearch": false,
+    "tagRequests": true,
+    "id": 1
+   },
+   {
     "name": "Sonarr",
     "hostname": "${HOST_IP}",
     "port": "${PORT_UI_SONARR}",

@@ -49,6 +49,8 @@ services:
       - API_KEY_RADARR=${API_KEY_RADARR:?err}
       - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
       - WEBHOOK_DISCORD=${WEBHOOK_DISCORD:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
       - TP_THEME=${TP_THEME:?err}
@@ -91,8 +93,13 @@ services:
       - TZ=${TIMEZONE:?err}
       - VERSION=docker
       - PLEX_CLAIM=${PLEX_CLAIM}
+      - PLEX_USERNAME=${PLEX_USERNAME}
+      - PLEX_EMAIL=${PLEX_EMAIL}
+      - PORT_UI_PLEX=${PORT_UI_PLEX}
+      - HOST_IP=${HOST_IP}
     devices:
-      - /dev/bus/usb:/dev/bus/usb
-    post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/Preferences.xml "/config/Library/Application Support/Plex Media Server/Preferences.xml"
-        user: root
+      - /dev/dri:/dev/dri	# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
+
+    # post_start:
+    #   - command: /scripts/parse-file.sh /_setup/templates/Preferences.xml "/config/Library/Application Support/Plex Media Server/Preferences.xml"
+    #     user: root

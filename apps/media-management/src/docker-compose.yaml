@@ -117,12 +117,14 @@ services:
       - API_KEY_RADARR=${API_KEY_RADARR:?err}
       - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
       - PORT_SERVICE_FLARESOLVERR=${PORT_SERVICE_FLARESOLVERR}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT}
       - PORT_UI_RADARR=${PORT_UI_RADARR}
       - PORT_UI_RADARR4K=${PORT_UI_RADARR4K}
       - PORT_UI_SONARR=${PORT_UI_SONARR}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
@@ -308,6 +310,41 @@ services:
       - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
       - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+        user: root
+      - command: /scripts/execute-sql.sh /config/sonarr.db
+        user: root
+
+# Sonarr - Serie library 4K
+  sonarr4k:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr4k
+    restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.24"
+    ports:
+      - "${PORT_UI_SONARR4K:?err}:8988"
+    volumes:
+      - ${APPS_FOLDER:?err}/sonarr4k:/config # config
+      - ${DATA_FOLDER:?err}:/data # data
+      - ${APPS_FOLDER:?err}/sonarr4k/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - TZ=${TIMEZONE:?err}
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:sonarr
+      - TP_THEME=${TP_THEME:?err}
+      # setup env vars
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
