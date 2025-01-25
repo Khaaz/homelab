@@ -329,9 +329,9 @@ services:
     restart: unless-stopped
     networks:
       media-management:
-        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.24"
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.25"
     ports:
-      - "${PORT_UI_SONARR4K:?err}:8988"
+      - "${PORT_UI_SONARR4K:?err}:8989"
     volumes:
       - ${APPS_FOLDER:?err}/sonarr4k:/config # config
       - ${DATA_FOLDER:?err}:/data # data
