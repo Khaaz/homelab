@@ -118,13 +118,13 @@ services:
       - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
-      - PORT_SERVICE_FLARESOLVERR=${PORT_SERVICE_FLARESOLVERR}
+      - PORT_SERVICE_FLARESOLVERR=${PORT_SERVICE_FLARESOLVERR:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
-      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT}
-      - PORT_UI_RADARR=${PORT_UI_RADARR}
-      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K}
-      - PORT_UI_SONARR=${PORT_UI_SONARR}
-      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
@@ -393,6 +393,8 @@ services:
       - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
       - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
