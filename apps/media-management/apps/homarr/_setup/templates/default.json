@@ -484,7 +484,7 @@
     {
       "id": "de0bcf1d-2a73-446b-ae29-d63e95ca79f8",
       "name": "Prowlarr",
-      "url": "${HOST_IP}:${PORT_UI_PROWLARR}",
+      "url": "http://${HOST_IP}:${PORT_UI_PROWLARR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/prowlarr.svg",
         "appNameStatus": "normal",
@@ -505,7 +505,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "${HOST_IP}:${PORT_UI_PROWLARR}"
+        "externalUrl": "http://${HOST_IP}:${PORT_UI_PROWLARR}"
       },
       "area": {
         "type": "wrapper",
