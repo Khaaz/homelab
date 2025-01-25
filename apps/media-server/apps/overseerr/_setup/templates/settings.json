@@ -177,7 +177,7 @@
      "enabled": true,
      "types": 152,
      "options": {
-      "webhookUrl": "${WEBHOOK_DISCORD}",
+      "webhookUrl": "${WEBHOOK_OVERSERRR_DISCORD}",
       "enableMentions": true
      }
     },

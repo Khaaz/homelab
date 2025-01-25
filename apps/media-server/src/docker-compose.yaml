@@ -51,7 +51,7 @@ services:
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
-      - WEBHOOK_DISCORD=${WEBHOOK_DISCORD:?err}
+      - WEBHOOK_OVERSERRR_DISCORD=${WEBHOOK_OVERSERRR_DISCORD:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
       - TP_THEME=${TP_THEME:?err}
       - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}

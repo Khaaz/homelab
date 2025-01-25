@@ -212,11 +212,15 @@ services:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
+      - HOST_IP=${HOST_IP:?err}
+      - API_KEY_BAZARR=${API_KEY_BAZARR:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
       - TP_THEME=${TP_THEME:?err}
-    # post_start:
-    #   - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.xml
-    #     user: root
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.yaml
+        user: root
 
 # Radarr - Movie library
   radarr:
@@ -380,9 +384,19 @@ services:
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-    # post_start:
-    #   - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
-    #     user: root
+      - HOST_IP=${HOST_IP:?err}
+      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
+        user: root
 
 # Maintainerr - Management Dashboard
   maintainerr:
