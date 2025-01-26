@@ -30,5 +30,5 @@
     LogVerbose="0"
     ScheduledLibraryUpdateInterval="900"
     sendCrashReports="0"
-    customConnections="${HOST_IP}:${PORT_UI_PLEX}/"
+    customConnections="${MS_HOST_IP}/"
     MergedRecentlyAdded="0" />

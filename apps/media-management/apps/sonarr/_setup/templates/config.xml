@@ -1,6 +1,6 @@
 <Config>
   <BindAddress>*</BindAddress>
-  <Port>${PORT_UI_SONARR}</Port>
+  <Port>8989</Port>
   <SslPort>9898</SslPort>
   <EnableSsl>False</EnableSsl>
   <LaunchBrowser>True</LaunchBrowser>

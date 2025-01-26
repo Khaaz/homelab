@@ -1,6 +1,6 @@
 <Config>
   <BindAddress>*</BindAddress>
-  <Port>${PORT_UI_SONARR4K}</Port>
+  <Port>8989</Port>
   <SslPort>9898</SslPort>
   <EnableSsl>False</EnableSsl>
   <LaunchBrowser>True</LaunchBrowser>
@@ -14,6 +14,6 @@
   <UrlBase></UrlBase>
   <InstanceName>Sonarr4k</InstanceName>
   <UpdateMechanism>Docker</UpdateMechanism>
-  <Theme>dark</Theme>
   <AnalyticsEnabled>False</AnalyticsEnabled>
+  <Theme>dark</Theme>
 </Config>
