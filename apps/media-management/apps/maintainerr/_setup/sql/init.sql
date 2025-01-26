@@ -6,8 +6,8 @@ INSERT INTO settings (id, clientId, applicationTitle, applicationUrl, apikey, ov
 -- Radarr Configuration
 DELETE FROM radarr_settings;
 INSERT INTO radarr_settings (id, serverName, url, apiKey) VALUES
-(1, 'Radarr', '${DOCKER_SUBNET}.22:${PORT_UI_RADARR}', '${API_KEY_RADARR}');
-(2, 'Radarr 4K', '${DOCKER_SUBNET}.23:${PORT_UI_RADARR4K}', '${API_KEY_RADARR4K}'),
+(1, 'Radarr', '${DOCKER_SUBNET}.22:${PORT_UI_RADARR}', '${API_KEY_RADARR}'),
+(2, 'Radarr 4K', '${DOCKER_SUBNET}.23:${PORT_UI_RADARR4K}', '${API_KEY_RADARR4K}');
 
 -- Sonarr Configuration
 DELETE FROM sonarr_settings;
