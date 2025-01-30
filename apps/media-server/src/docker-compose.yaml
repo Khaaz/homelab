@@ -95,10 +95,13 @@ services:
       - TZ=${TIMEZONE:?err}
       - VERSION=docker
       # setup
-      - PLEX_CLAIM=${PLEX_CLAIM}
-      - PLEX_USERNAME=${PLEX_USERNAME}
-      - PLEX_EMAIL=${PLEX_EMAIL}
-      - MS_HOST_IP=${MEDIA_SERVER_HOST_IP}
+      - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - MS_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      - PLEX_CLAIM=${PLEX_CLAIM:?err}
+      - PLEX_USERNAME=${PLEX_USERNAME:?err}
+      - PLEX_EMAIL=${PLEX_EMAIL:?err}
     devices:
       - /dev/dri:/dev/dri	# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
 
