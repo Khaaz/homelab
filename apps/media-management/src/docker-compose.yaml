@@ -221,6 +221,8 @@ services:
       - API_KEY_RADARR=${API_KEY_RADARR:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
       - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - OPENSUBTITLE_PASSWORD=${OPENSUBTITLE_PASSWORD}
+      - OPENSUBTITLE_USERNAME=${OPENSUBTITLE_USERNAME}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.yaml
         user: root

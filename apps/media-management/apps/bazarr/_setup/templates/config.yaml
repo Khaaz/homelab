@@ -165,9 +165,9 @@ opensubtitles:
   vip: false
 opensubtitlescom:
   include_ai_translated: false
-  password: ''
+  password: ${OPENSUBTITLE_PASSWORD}
   use_hash: true
-  username: ''
+  username: ${OPENSUBTITLE_USERNAME}
 podnapisi:
   verify_ssl: true
 postgresql:
