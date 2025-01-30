@@ -8,7 +8,7 @@
    "applicationUrl": "",
    "csrfProtection": false,
    "cacheImages": false,
-   "defaultPermissions": 8388768,
+   "defaultPermissions": 8388640,
    "defaultQuotas": {
     "movie": {
      "quotaLimit": 0,
