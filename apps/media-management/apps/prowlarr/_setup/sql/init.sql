@@ -1,6 +1,4 @@
 -- TODO : Table Config check pass
--- TODO : DownloadClients change access
--- TODO : API key to change into Indexer
 
 -- AppSyncProfiles
 DELETE FROM AppSyncProfiles;
@@ -47,9 +45,9 @@ DELETE FROM Applications;
 INSERT INTO Applications (Id, Name, Implementation, Settings, ConfigContract, SyncLevel, Tags)
 VALUES
 (1, 'Sonarr', 'Sonarr', '{
-  "prowlarrUrl": "http://172.18.10.10:9696",
-  "baseUrl": "http://172.18.10.24:8989",
-  "apiKey": "69f87af967a047a68fa4a74c1f441856",
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
+  "baseUrl": "http://${DOCKER_SUBNET}.24:${PORT_UI_SONARR}",
+  "apiKey": "${API_KEY_SONARR}",
   "syncCategories": [
     5000,
     5010,
@@ -67,9 +65,9 @@ VALUES
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
 }', 'SonarrSettings', 2, '[]'),
 (2, 'Radarr', 'Radarr', '{
-  "prowlarrUrl": "http://172.18.10.10:9696",
-  "baseUrl": "http://172.18.10.22:7878",
-  "apiKey": "3ebde1f20ae54d1684a171f23cf112ea",
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
+  "baseUrl": "http://${DOCKER_SUBNET}.22:${PORT_UI_RADARR}",
+  "apiKey": "${API_KEY_RADARR}",
   "syncCategories": [
     2000,
     2010,
@@ -86,9 +84,9 @@ VALUES
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
 }', 'RadarrSettings', 2, '[]'),
 (3, 'Radarr-4k', 'Radarr', '{
-  "prowlarrUrl": "http://172.18.10.10:9696",
-  "baseUrl": "http://172.18.10.23:7879",
-  "apiKey": "9a6865941b224b05ab7632c4f6bbbf00",
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
+  "baseUrl": "http://${DOCKER_SUBNET}.23:${PORT_UI_RADARR4K}",
+  "apiKey": "${API_KEY_RADARR4K}",
   "syncCategories": [
     2000,
     2010,
@@ -103,7 +101,27 @@ VALUES
     2090
   ],
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
-}', 'RadarrSettings', 2, '[]');
+}', 'RadarrSettings', 2, '[]'),
+(4,'Sonarr 4K','Sonarr','{
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
+  "baseUrl": "http://${DOCKER_SUBNET}.23:${PORT_UI_SONARR4K}",
+  "apiKey": "${API_KEY_SONARR4K}",
+  "syncCategories": [
+    5000,
+    5010,
+    5020,
+    5030,
+    5040,
+    5045,
+    5050,
+    5090
+  ],
+  "animeSyncCategories": [
+    5070
+  ],
+  "syncAnimeStandardFormatSearch": true,
+  "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
+}','SonarrSettings',2,'[]');
 
 -- Config
 DELETE FROM Config;
@@ -125,7 +143,7 @@ INSERT INTO DownloadClients (Id, Enable, Name, Implementation, Settings, ConfigC
 VALUES
 (2, 1, 'qBittorrent', 'QBittorrent', '{
   "host": "localhost",
-  "port": 8200,
+  "port": ${PORT_UI_QBITTORRENT},
   "useSsl": false,
   "username": "admin",
   "password": "admin!",
@@ -142,7 +160,7 @@ DELETE FROM IndexerProxies;
 INSERT INTO IndexerProxies (Id, Name, Settings, Implementation, ConfigContract, Tags)
 VALUES
 (1, 'FlareSolverr', '{
-  "host": "http://localhost:8191/",
+  "host": "http://${DOCKER_SUBNET}.16:${PORT_SERVICE_FLARESOLVERR}/",
   "requestTimeout": 60
 }', 'FlareSolverr', 'FlareSolverrSettings', '[1]');
 

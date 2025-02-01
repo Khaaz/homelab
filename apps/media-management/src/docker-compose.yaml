@@ -39,19 +39,21 @@ services:
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
-    restart: always
+    restart: unless-stopped
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
+    networks:
+        media-management-vpn:
+        media-management:
+          ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.10"
     ports:
       - "8888:8888/tcp"                         # Gluetun Local Network HTTP proxy
       - "8388:8388/tcp"                         # Gluetun Local Network Shadowsocks
       - "8388:8388/udp"                         # Gluetun Local Network Shadowsocks
       - ${PORT_SERVICE_GLUETUN:?err}:${PORT_SERVICE_GLUETUN:?err} # Gluetun Status Port
 
-      - "${PORT_UI_PROWLARR:?err}:9696"      # WebUI Portal: Prowlarr
-      - "${PORT_SERVICE_FLARESOLVERR:?err}:8191"        # Service Port: FlareSolverr
       - "${PORT_UI_QBITTORRENT:?err}:${PORT_UI_QBITTORRENT:?err}"   # WebUI Portal: qBittorrent
       - "${PORT_SERVICE_QBITTORRENT:?err}:6881"                # Transmission Torrent Port
       # - "${WEBUI_PORT_UI_SABNZBD:?err}:8080"       # WebUI Portal: SABnzbd
@@ -81,10 +83,6 @@ services:
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
       - HTTPPROXY=on
       - SHADOWSOCKS=on
-    networks:
-        media-management-vpn:
-        media-management:
-          ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.10"
 
 ###########################################################################
 ###########################################################################
@@ -97,10 +95,14 @@ services:
     image: lscr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.15"
     depends_on:
-      gluetun:
+      flaresolverr:
         condition: service_started
-    network_mode: "service:gluetun"
+    ports:
+      - "${PORT_UI_PROWLARR:?err}:9696"
     volumes:
       - ${APPS_FOLDER:?err}/prowlarr:/config # config
       - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
@@ -111,8 +113,20 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:prowlarr
       - TP_THEME=${TP_THEME:?err}
-      # setup env vars
+      # setup
       - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - PORT_SERVICE_FLARESOLVERR=${PORT_SERVICE_FLARESOLVERR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
@@ -124,10 +138,11 @@ services:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
     restart: unless-stopped
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.16"
+    ports:
+      - "${PORT_SERVICE_FLARESOLVERR:?err}:8191"
     environment:
       - LOG_LEVEL=info
       - LOG_HTML=false
@@ -202,9 +217,18 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
       - TP_THEME=${TP_THEME:?err}
-    # post_start:
-    #   - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.xml
-    #     user: root
+      # setup
+      - API_KEY_BAZARR=${API_KEY_BAZARR:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - OPENSUBTITLE_PASSWORD=${OPENSUBTITLE_PASSWORD}
+      - OPENSUBTITLE_USERNAME=${OPENSUBTITLE_USERNAME}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.yaml
+        user: root
 
 # Radarr - Movie library
   radarr:
@@ -214,6 +238,11 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.22"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
     ports:
       - "${PORT_UI_RADARR:?err}:7878"
     volumes:
@@ -227,8 +256,12 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
       - TP_THEME=${TP_THEME:?err}
-      # setup env vars
+      # setup
       - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
@@ -243,6 +276,11 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.23"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
     ports:
       - "${PORT_UI_RADARR4K:?err}:7878"
     volumes:
@@ -256,9 +294,12 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
       - TP_THEME=${TP_THEME:?err}
-      # setup env vars
+      # setup
       - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
       - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
@@ -273,6 +314,11 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.24"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
     ports:
       - "${PORT_UI_SONARR:?err}:8989"
     volumes:
@@ -286,8 +332,50 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:sonarr
       - TP_THEME=${TP_THEME:?err}
-      # setup env vars
+      # setup
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+        user: root
+      - command: /scripts/execute-sql.sh /config/sonarr.db
+        user: root
+
+# Sonarr - Serie library (4K)
+  sonarr4k:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr4k
+    restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.25"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
+    ports:
+      - "${PORT_UI_SONARR4K:?err}:8989"
+    volumes:
+      - ${APPS_FOLDER:?err}/sonarr4k:/config # config
+      - ${DATA_FOLDER:?err}:/data # data
+      - ${APPS_FOLDER:?err}/sonarr4k/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - TZ=${TIMEZONE:?err}
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:sonarr
+      - TP_THEME=${TP_THEME:?err}
+      # setup env vars
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root
@@ -322,9 +410,26 @@ services:
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-    # post_start:
-    #   - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
-    #     user: root
+      # setup
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
+        user: root
 
 # Maintainerr - Management Dashboard
   maintainerr:
@@ -338,14 +443,30 @@ services:
     ports:
       - "${PORT_UI_MAINTAINERR:?err}:6246"
     volumes:
-      - ${APPS_FOLDER:?err}/maintainerr/config:/opt/data #config
-      - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
+      - ${APPS_FOLDER:?err}/maintainerr:/opt/data # config
+      - ${APPS_FOLDER:?err}/maintainerr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - TZ=${TIMEZONE:?err}
+      # setup
+      - API_KEY_MAINTAINERR=${API_KEY_MAINTAINERR:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - PLEX_CLAIM=${PLEX_CLAIM:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
       # - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
     post_start:
-      - command: /scripts/execute-sql.sh /opt/data/config/maintainerr.sqlite
+      - command: /scripts/execute-sql.sh /opt/data/maintainerr.sqlite
         user: root
 
 ###########################################################################
@@ -353,25 +474,6 @@ services:
 ## UTILITARY
 ###########################################################################
 ###########################################################################
-
-# Filebot -  Lookup and Rename Media from Internet Databases
-  # filebot:
-  #   image: rednoah/filebot:xpra
-  #   container_name: filebot
-  #   network_mode: "container:gluetun"
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${APPS_FOLDER:?err}/filebot:/data/filebot
-  #     - ${DATA_FOLDER:?err}/filebot:/filebot
-  #   environment:
-  #     # - XPRA_AUTH=password:value=YOUR_PASSWORD
-  #     - PUID=${PUID:?err}
-  #     - PGID=${PGID:?err}
-  #     - UMASK=${UMASK:?err}
-  #     - TZ=${TIMEZONE:?err}
-  #     - DARK_MODE=1
-#    ports:
-#      - "${PORT_UI_FILEBOT:?err}:5454"             # Configured in Gluetun VPN container
 
 # Tdarr - Audio/Video library transcoding automation
   # tdarr:

@@ -26,7 +26,7 @@ if [ ! -f "$INPUT_FILE" ]; then
 fi
 
 ## Core
-install_dependencies
+install_dependencies gettext
 
 echo "INIT: Processing file '$INPUT_FILE' as '$OUTPUT_FILE'..."
 parse_file $INPUT_FILE > $OUTPUT_FILE

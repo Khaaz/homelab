@@ -61,18 +61,36 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/swag:/config:rw # config
       - ${APPS_FOLDER:?err}/swag/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-      - URL=${DOMAINNAME:?err}
+      - URL=${EXTERNAL_DOMAIN:?err}
       - SUBDOMAINS=${SUBDOMAINS}
       - VALIDATION=${VALIDATION:?err}
       - DNSPLUGIN=${DNSPLUGIN}
       - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
-      # - EXTRA_DOMAINS=${EXTRA_DOMAINS}
-      # - STAGING=${STAGING}
+      # setup
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - MS_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
+      - MM_DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+      - PORT_UI_BAZARR=${PORT_UI_BAZARR:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
+      - PORT_UI_MAINTAINERR=${PORT_UI_MAINTAINERR:?err}
+      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+    post_start:
+      - command: /scripts/parse-folder.sh /_setup/templates/ /config
+        user: root
 
 # DNSMask - DNS server for local resolution
   unbound:
@@ -88,6 +106,17 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
       - ${APPS_FOLDER:?err}/unbound/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      # setup
+      - DOCKER_SUBNET=${REVERSE_PROXY_DOCKER_SUBNET:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - RP_HOST_IP=${REVERSE_PROXY_HOST_IP:?err}
+      - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
+      - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
+        user: root
 
 # minica - Generate self signed certificat
   minica:
@@ -100,16 +129,18 @@ services:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"
     volumes:
-      - ${APPS_FOLDER:?err}/ca:/app/certs
-      - ${APPS_FOLDER:?err}/swag/keys-private:/app/certs/keys-private
+      - ${APPS_FOLDER:?err}/ca/certs:/app/certs
+      - ${APPS_FOLDER:?err}/ca/scripts:/scripts
+      - ${APPS_FOLDER:?err}/swag/keys-private:/swag/keys-private
+      - ${APPS_FOLDER:?err}/swag/www:/swag/www
     environment:
-      - DOMAIN=l.ab
+      - DOMAIN=${INTERNAL_DOMAIN}
 
 # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:
     image: qmcgaw/ddns-updater:latest
     container_name: ddns-updater
-    restart: always
+    restart: unless-stopped
     networks:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.20"
