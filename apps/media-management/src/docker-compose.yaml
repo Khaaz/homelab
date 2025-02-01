@@ -54,8 +54,6 @@ services:
       - "8388:8388/udp"                         # Gluetun Local Network Shadowsocks
       - ${PORT_SERVICE_GLUETUN:?err}:${PORT_SERVICE_GLUETUN:?err} # Gluetun Status Port
 
-      - "${PORT_UI_PROWLARR:?err}:9696"      # WebUI Portal: Prowlarr
-      - "${PORT_SERVICE_FLARESOLVERR:?err}:8191"        # Service Port: FlareSolverr
       - "${PORT_UI_QBITTORRENT:?err}:${PORT_UI_QBITTORRENT:?err}"   # WebUI Portal: qBittorrent
       - "${PORT_SERVICE_QBITTORRENT:?err}:6881"                # Transmission Torrent Port
       # - "${WEBUI_PORT_UI_SABNZBD:?err}:8080"       # WebUI Portal: SABnzbd
@@ -97,10 +95,14 @@ services:
     image: lscr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
     restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.15"
     depends_on:
-      gluetun:
+      flaresolverr:
         condition: service_started
-    network_mode: "service:gluetun"
+    ports:
+      - "${PORT_UI_PROWLARR:?err}:9696"
     volumes:
       - ${APPS_FOLDER:?err}/prowlarr:/config # config
       - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
@@ -136,10 +138,11 @@ services:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
     restart: unless-stopped
-    depends_on:
-      gluetun:
-        condition: service_started
-    network_mode: "service:gluetun"
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.16"
+    ports:
+      - "${PORT_SERVICE_FLARESOLVERR:?err}:8191"
     environment:
       - LOG_LEVEL=info
       - LOG_HTML=false
@@ -235,6 +238,11 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.22"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
     ports:
       - "${PORT_UI_RADARR:?err}:7878"
     volumes:
@@ -268,6 +276,11 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.23"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
     ports:
       - "${PORT_UI_RADARR4K:?err}:7878"
     volumes:
@@ -301,6 +314,11 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.24"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
     ports:
       - "${PORT_UI_SONARR:?err}:8989"
     volumes:
@@ -334,6 +352,11 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.25"
+    depends_on:
+      prowlarr:
+        condition: service_started
+      qbittorrent:
+        condition: service_started
     ports:
       - "${PORT_UI_SONARR4K:?err}:8989"
     volumes:
