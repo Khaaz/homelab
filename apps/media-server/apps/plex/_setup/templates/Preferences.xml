@@ -4,13 +4,15 @@
     PlexOnlineUsername="${PLEX_USERNAME}"
     PlexOnlineMail="${PLEX_EMAIL}"
     customConnections="https://plex.${EXTERNAL_DOMAIN}/,https://plex.${MS_DOMAIN}/,http://${MS_HOST_IP}:${PORT_UI_PLEX}/"
+    MachineIdentifier="${PLEX_MACHINE_IDENTIFIER}"
     FriendlyName="media-server"
-    PublishServerOnPlexOnlineKey="0"
 
+    PublishServerOnPlexOnlineKey="0"
     EnableIPv6="0"
     PreferredNetworkInterface="eth0"
     RelayEnabled="0"
     LastAutomaticMappedPort="0"
+
     FSEventLibraryPartialScanEnabled="0"
     ScheduledLibraryUpdatesEnabled="1"
     ScheduledLibraryUpdateInterval="900"
@@ -21,19 +23,9 @@
     AcceptedEULA="1"
     LanguageInCloud="1"
     MergedRecentlyAdded="0" 
+    GlobalMusicVideoPathMigrated="1"
 
-    OldestPreviousVersion="1.41.3.9292-bc7397402"
     LogVerbose="0"
     sendCrashReports="0"
-    MachineIdentifier="e0ced37c-9bd6-453a-b4b5-e8d5fd6bf9d6"
-    ProcessedMachineIdentifier="7bfda260416223f2fce42cb16b338b23372065ff"
-    AnonymousMachineIdentifier="ec03bf4e-3c28-41f4-94d0-5b145a79361e"
     MetricsEpoch="1"
-    GlobalMusicVideoPathMigrated="1"
-    
-    CertificateUUID="7eee101049ea4a56bef8a7fa4f0b5867"
-    PubSubServer="178.79.177.129"
-    PubSubServerRegion="lhr"
-    PubSubServerPing="55"
-    CertificateVersion="3"
-    />
+/>

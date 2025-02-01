@@ -102,9 +102,11 @@ services:
       - PLEX_CLAIM=${PLEX_CLAIM:?err}
       - PLEX_USERNAME=${PLEX_USERNAME:?err}
       - PLEX_EMAIL=${PLEX_EMAIL:?err}
+      - PLEX_MACHINE_IDENTIFIER=${PLEX_MACHINE_IDENTIFIER:?err}
     devices:
       - /dev/dri:/dev/dri	# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
-
-    # post_start:
-    #   - command: /scripts/parse-file.sh /_setup/templates/Preferences.xml "/config/Library/Application Support/Plex Media Server/Preferences.xml"
-    #     user: root
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/Preferences.xml "/config/Library/Application Support/Plex Media Server/Preferences.xml"
+        user: root
+      - command: /scripts/execute-sql.sh "/config/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
+        user: root
