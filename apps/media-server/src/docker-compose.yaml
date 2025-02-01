@@ -103,6 +103,7 @@ services:
       - PLEX_USERNAME=${PLEX_USERNAME:?err}
       - PLEX_EMAIL=${PLEX_EMAIL:?err}
       - PLEX_MACHINE_IDENTIFIER=${PLEX_MACHINE_IDENTIFIER:?err}
+      - PLEX_FRIENDLY_NAME=${PLEX_FRIENDLY_NAME:?err}
     devices:
       - /dev/dri:/dev/dri	# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
     post_start:

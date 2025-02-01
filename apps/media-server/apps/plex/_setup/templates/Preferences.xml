@@ -5,8 +5,11 @@
     PlexOnlineMail="${PLEX_EMAIL}"
     customConnections="https://plex.${EXTERNAL_DOMAIN}/,https://plex.${MS_DOMAIN}/,http://${MS_HOST_IP}:${PORT_UI_PLEX}/"
     MachineIdentifier="${PLEX_MACHINE_IDENTIFIER}"
-    FriendlyName="media-server"
-
+    FriendlyName="${PLEX_FRIENDLY_NAME}"
+    CertificateUUID=""
+    ProcessedMachineIdentifier=""
+    AnonymousMachineIdentifier="" 
+  
     PublishServerOnPlexOnlineKey="0"
     EnableIPv6="0"
     PreferredNetworkInterface="eth0"
