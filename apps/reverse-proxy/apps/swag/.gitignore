@@ -11,4 +11,4 @@
 !nginx/site-confs/default.conf
 !nginx/ssl.conf
 !nginx/ssl-private.conf
-!nginx/ht-access.conf
+!nginx/htaccess.conf
