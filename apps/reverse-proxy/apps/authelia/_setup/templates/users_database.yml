@@ -1,0 +1,6 @@
+users:
+  ${USER_NAME}:
+    displayname: "${USER_NAME}"
+    password: "${USER_PASSWORD}"
+    email: ${USER_EMAIL}
+    groups: []
