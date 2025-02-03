@@ -27,7 +27,7 @@ services:
     command: ["/bin/sh", "-c", "/scripts/parse-folder.sh /_setup/templates/ /config"]
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.13"
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.33"
     volumes:
       - ${APPS_FOLDER:?err}/authelia:/config # config
       - ${APPS_FOLDER:?err}/authelia/_setup:/_setup # setup
@@ -52,7 +52,7 @@ services:
     restart: unless-stopped
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.22"
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.12"
     depends_on:
       authelia-pre-start:
         condition: service_completed_successfully 
@@ -122,7 +122,7 @@ services:
     command: ["/bin/sh", "-c", "/scripts/parse-file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf"]
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.21"
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
       - ${APPS_FOLDER:?err}/unbound/_setup:/_setup # setup
@@ -177,7 +177,7 @@ services:
     restart: unless-stopped
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.20"
+        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.21"
     user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_DDNS_UPDATER:?err}:${PORT_UI_DDNS_UPDATER:?err}/tcp
