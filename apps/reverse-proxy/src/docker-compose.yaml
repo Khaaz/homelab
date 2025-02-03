@@ -77,6 +77,7 @@ services:
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - MS_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
       - MM_DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - PM_DOMAIN=${PROXMOX_DOMAIN:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
       - PORT_UI_BAZARR=${PORT_UI_BAZARR:?err}
@@ -88,6 +89,7 @@ services:
       - PORT_UI_MAINTAINERR=${PORT_UI_MAINTAINERR:?err}
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - PORT_UI_PROXMOX=${PORT_UI_PROXMOX:?err}
     post_start:
       - command: /scripts/parse-folder.sh /_setup/templates/ /config
         user: root
@@ -114,6 +116,7 @@ services:
       - RP_HOST_IP=${REVERSE_PROXY_HOST_IP:?err}
       - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+      - PM_HOST_IP=${PROXMOX_HOST_IP:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
         user: root
