@@ -1,14 +1,14 @@
 DELETE FROM app;
-INSERT INTO app VALUES('pxidynz7p14nzno09w3866in','Overseer',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/overseerr.svg','http://overseerr.l.ab'),
-('qq9ip1i1m86ddutn0080hfd8','Radarr',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg','http://radarr.l.ab'),
-('su15mjnjauzr8ah2hglx6e5v','Radarr 4k',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg','http://radarr4k.l.ab'),
-('k5e2hgeiqxi5ntq1zfthi8z4','Sonarr 4K',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg','http://sonarr4k.l.ab'),
-('etdh2ag2a9x40vanrgq60mts','Sonarr',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg','http://sonarr.l.ab'),
-('cyobs6cgq6lh6h9pcdz64mjx','Qbittorrent',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/qbittorrent.svg','http://qbit.l.ab'),
-('orgbc3hfhlq4f3rhgx884s6y','Prowlarr',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/prowlarr.svg','http://prowlarr.l.ab'),
-('flaji8e3ijrn4phhgizsdx92','Plex',NULL,'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex.png','http://plex.l.ab'),
-('xkerauiy02lfi9kbuzvoxmbx','Bazarr',NULL,'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bazarr.png','http://bazarr.l.ab'),
-('l0k5fdrqyj7927g63iwg22a7','Maintainerr',NULL,'https://cdn.jsdelivr.net/gh/selfhst/icons/png/maintainerr.png','http://maintainerr.l.ab');
+INSERT INTO app VALUES('pxidynz7p14nzno09w3866in','Overseer',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/overseerr.svg','http://overseerr.${MEDIA_SERVER_DOMAIN}'),
+('qq9ip1i1m86ddutn0080hfd8','Radarr',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg','http://radarr.${MEDIA_MANAGEMENT_DOMAIN}'),
+('su15mjnjauzr8ah2hglx6e5v','Radarr 4k',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg','http://radarr4k.${MEDIA_MANAGEMENT_DOMAIN}'),
+('k5e2hgeiqxi5ntq1zfthi8z4','Sonarr 4K',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg','http://sonarr4k.${MEDIA_MANAGEMENT_DOMAIN}'),
+('etdh2ag2a9x40vanrgq60mts','Sonarr',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg','http://sonarr.${MEDIA_MANAGEMENT_DOMAIN}'),
+('cyobs6cgq6lh6h9pcdz64mjx','Qbittorrent',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/qbittorrent.svg','http://qbit.${MEDIA_MANAGEMENT_DOMAIN}'),
+('orgbc3hfhlq4f3rhgx884s6y','Prowlarr',NULL,'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/prowlarr.svg','http://prowlarr.${MEDIA_MANAGEMENT_DOMAIN}'),
+('flaji8e3ijrn4phhgizsdx92','Plex',NULL,'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex.png','http://plex.${MEDIA_SERVER_DOMAIN}'),
+('xkerauiy02lfi9kbuzvoxmbx','Bazarr',NULL,'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bazarr.png','http://bazarr.${MEDIA_MANAGEMENT_DOMAIN}'),
+('l0k5fdrqyj7927g63iwg22a7','Maintainerr',NULL,'https://cdn.jsdelivr.net/gh/selfhst/icons/png/maintainerr.png','http://maintainerr.${MEDIA_MANAGEMENT_DOMAIN}');
 
 DELETE FROM board;
 INSERT INTO board VALUES('vjek9rh6rx5ms6oa63y9u9ig','NAS',0,'vlupgbl2w26ro81hlx218xr7',NULL,NULL,NULL,NULL,NULL,'fixed','no-repeat','cover','#fa5252','#fd7e14',100,NULL,10);
@@ -54,13 +54,13 @@ INSERT INTO integrationSecret VALUES('apiKey','7e82f382e657d8e99faeca4ecb6ff194d
 
 
 DELETE FROM integration;
-INSERT INTO integration VALUES('c7slsh62si6v362pjf6qhko8','Sonarr','http://192.168.1.193:8989','sonarr'),
-('vcorj8fs080vri9erchhq1n9','Sonarr 4K','http://192.168.1.193:8988','sonarr'),
-('ba5boqlkgbqz26hohqi20wg2','qBittorrent','http://192.168.1.193:8200','qBittorrent'),
-('b2388yvmo1elxccy6n4m0vq4','Radarr','http://192.168.1.193:7878','radarr'),
-('sfsgrn45218gk6bhs3ihnjbx','Radarr 4K','http://192.168.1.193:7879','radarr'),
-('iu2i3pkkaub7pgdfhoapau14','Prowlarr','http://192.168.1.193:9696','prowlarr'),
-('j0lnfk0qmqwjqy4ju4llxa8h','Overseerr','http://192.168.1.193:5055','overseerr');
+INSERT INTO integration VALUES('c7slsh62si6v362pjf6qhko8','Sonarr','${MM_HOST_IP}:${PORT_UI_SONARR}','sonarr'),
+('vcorj8fs080vri9erchhq1n9','Sonarr 4K','${MM_HOST_IP}:${PORT_UI_SONARR4K}','sonarr'),
+('ba5boqlkgbqz26hohqi20wg2','qBittorrent','${MM_HOST_IP}:${PORT_UI_QBITTORRENT}','qBittorrent'),
+('b2388yvmo1elxccy6n4m0vq4','Radarr','${MM_HOST_IP}:${PORT_UI_RADARR}','radarr'),
+('sfsgrn45218gk6bhs3ihnjbx','Radarr 4K','${MM_HOST_IP}:${PORT_UI_RADARR4K}','radarr'),
+('iu2i3pkkaub7pgdfhoapau14','Prowlarr','${MM_HOST_IP}:${PORT_UI_PROWLARR}','prowlarr'),
+('j0lnfk0qmqwjqy4ju4llxa8h','Overseerr','${MM_HOST_IP}:${PORT_UI_OVERSEERR}','overseerr');
 
 
 DELETE FROM item;
