@@ -165,9 +165,9 @@ opensubtitles:
   vip: false
 opensubtitlescom:
   include_ai_translated: false
-  password: ''
+  password: ${OPENSUBTITLE_PASSWORD}
   use_hash: true
-  username: ''
+  username: ${OPENSUBTITLE_USERNAME}
 podnapisi:
   verify_ssl: true
 postgresql:
@@ -180,7 +180,7 @@ postgresql:
 proxy:
   exclude:
   - localhost
-  - ${HOST_IP}
+  - 127.0.0.1
   password: ''
   port: ''
   type: null
@@ -195,7 +195,7 @@ radarr:
   full_update_day: 6
   full_update_hour: 4
   http_timeout: 60
-  ip: ${HOST_IP}
+  ip: ${DOCKER_SUBNET}.22
   movies_sync: 60
   only_monitored: false
   port: 7878
@@ -226,7 +226,7 @@ sonarr:
   full_update_day: 6
   full_update_hour: 4
   http_timeout: 60
-  ip: ${HOST_IP}
+  ip: ${DOCKER_SUBNET}.24
   only_monitored: false
   port: 8989
   series_sync: 60
@@ -261,7 +261,7 @@ titulky:
   password: ''
   username: ''
 whisperai:
-  endpoint: http://${HOST_IP}:9000
+  endpoint: http://127.0.0.1:9000
   loglevel: INFO
   response: 5
   timeout: 3600

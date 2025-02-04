@@ -72,11 +72,23 @@ services:
       - VALIDATION=${VALIDATION:?err}
       - DNSPLUGIN=${DNSPLUGIN}
       - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
-      # - EXTRA_DOMAINS=${EXTRA_DOMAINS}
-      # - STAGING=${STAGING}
-      # setup env vars
+      # setup
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - MS_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
+      - MM_DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+      - PORT_UI_BAZARR=${PORT_UI_BAZARR:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
+      - PORT_UI_MAINTAINERR=${PORT_UI_MAINTAINERR:?err}
+      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
     post_start:
       - command: /scripts/parse-folder.sh /_setup/templates/ /config
         user: root
@@ -97,10 +109,13 @@ services:
       - ${APPS_FOLDER:?err}/unbound/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      # setup env vars
+      # setup
       - DOCKER_SUBNET=${REVERSE_PROXY_DOCKER_SUBNET:?err}
-      - HOST_IP=${HOST_IP:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - RP_HOST_IP=${REVERSE_PROXY_HOST_IP:?err}
+      - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
+      - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+      - NX_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
         user: root
@@ -127,7 +142,7 @@ services:
   ddns-updater:
     image: qmcgaw/ddns-updater:latest
     container_name: ddns-updater
-    restart: always
+    restart: unless-stopped
     networks:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.20"

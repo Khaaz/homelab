@@ -89,7 +89,7 @@
     {
       "id": "b4def3e4-c272-4f41-9c96-93f9211bfbd8",
       "name": "Overseer",
-      "url": "http://${HOST_IP}:${PORT_UI_OVERSEERR}",
+      "url": "http://${MS_HOST_IP}:${PORT_UI_OVERSEERR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/overseerr.svg",
         "appNameStatus": "normal",
@@ -110,7 +110,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://${HOST_IP}:${PORT_UI_OVERSEERR}"
+        "externalUrl": "http://overseerr.${DOMAIN}"
       },
       "area": {
         "type": "wrapper",
@@ -154,7 +154,7 @@
     {
       "id": "4ebe8135-78b0-4ef2-9b50-8bc0ef15425c",
       "name": "Radarr",
-      "url": "http://${HOST_IP}:${PORT_UI_RADARR}",
+      "url": "http://${DOCKER_SUBNET}.22:${PORT_UI_RADARR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg",
         "appNameStatus": "normal",
@@ -175,7 +175,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://${HOST_IP}:${PORT_UI_RADARR}"
+        "externalUrl": "http://radarr.${DOMAIN}"
       },
       "area": {
         "type": "wrapper",
@@ -219,7 +219,7 @@
     {
       "id": "53933e3e-2b6a-42db-8e75-603ca032d505",
       "name": "Radarr 4k",
-      "url": "http://${HOST_IP}:${PORT_UI_RADARR4K}",
+      "url": "http://${DOCKER_SUBNET}.23:${PORT_UI_RADARR4K}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/radarr.svg",
         "appNameStatus": "normal",
@@ -240,7 +240,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://${HOST_IP}:${PORT_UI_RADARR4K}"
+        "externalUrl": "http://radarr4k.${DOMAIN}"
       },
       "area": {
         "type": "wrapper",
@@ -284,7 +284,7 @@
     {
       "id": "a32c9076-2d71-4809-af5e-e0f4cad28854",
       "name": "Sonarr 4K",
-      "url": "http://${HOST_IP}:${PORT_UI_SONARR4K}",
+      "url": "http://${DOCKER_SUBNET}.25:${PORT_UI_SONARR4K}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg",
         "appNameStatus": "normal",
@@ -305,7 +305,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://${HOST_IP}:${PORT_UI_SONARR4K}"
+        "externalUrl": "http://sonarr4k.${DOMAIN}"
       },
       "area": {
         "type": "wrapper",
@@ -349,7 +349,7 @@
     {
       "id": "c5b943ad-cde4-4dc4-91d2-efe5b46d279a",
       "name": "Sonarr",
-      "url": "http://${HOST_IP}:${PORT_UI_SONARR}",
+      "url": "http://${DOCKER_SUBNET}.24:${PORT_UI_SONARR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/sonarr.svg",
         "appNameStatus": "normal",
@@ -370,7 +370,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://${HOST_IP}:${PORT_UI_SONARR}"
+        "externalUrl": "http://sonarr.${DOMAIN}"
       },
       "area": {
         "type": "wrapper",
@@ -414,7 +414,7 @@
     {
       "id": "7b4925be-0a43-4d27-aaab-762f3238510d",
       "name": "Qbittorrent",
-      "url": "http://${HOST_IP}:${PORT_UI_QBITTORRENT}",
+      "url": "http://${DOCKER_SUBNET}.10:${PORT_UI_QBITTORRENT}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/qbittorrent.svg",
         "appNameStatus": "normal",
@@ -435,7 +435,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://${HOST_IP}:${PORT_UI_QBITTORRENT}"
+        "externalUrl": "http://qbit.${DOMAIN}"
       },
       "area": {
         "type": "wrapper",
@@ -484,7 +484,7 @@
     {
       "id": "de0bcf1d-2a73-446b-ae29-d63e95ca79f8",
       "name": "Prowlarr",
-      "url": "http://${HOST_IP}:${PORT_UI_PROWLARR}",
+      "url": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
       "appearance": {
         "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/prowlarr.svg",
         "appNameStatus": "normal",
@@ -505,7 +505,7 @@
       },
       "behaviour": {
         "isOpeningNewTab": true,
-        "externalUrl": "http://${HOST_IP}:${PORT_UI_PROWLARR}"
+        "externalUrl": "http://prowlarr.${DOMAIN}"
       },
       "area": {
         "type": "wrapper",

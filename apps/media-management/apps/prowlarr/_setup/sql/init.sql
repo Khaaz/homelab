@@ -45,7 +45,7 @@ DELETE FROM Applications;
 INSERT INTO Applications (Id, Name, Implementation, Settings, ConfigContract, SyncLevel, Tags)
 VALUES
 (1, 'Sonarr', 'Sonarr', '{
-  "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
   "baseUrl": "http://${DOCKER_SUBNET}.24:${PORT_UI_SONARR}",
   "apiKey": "${API_KEY_SONARR}",
   "syncCategories": [
@@ -65,7 +65,7 @@ VALUES
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
 }', 'SonarrSettings', 2, '[]'),
 (2, 'Radarr', 'Radarr', '{
-  "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
   "baseUrl": "http://${DOCKER_SUBNET}.22:${PORT_UI_RADARR}",
   "apiKey": "${API_KEY_RADARR}",
   "syncCategories": [
@@ -84,7 +84,7 @@ VALUES
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
 }', 'RadarrSettings', 2, '[]'),
 (3, 'Radarr-4k', 'Radarr', '{
-  "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
   "baseUrl": "http://${DOCKER_SUBNET}.23:${PORT_UI_RADARR4K}",
   "apiKey": "${API_KEY_RADARR4K}",
   "syncCategories": [
@@ -103,7 +103,7 @@ VALUES
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
 }', 'RadarrSettings', 2, '[]'),
 (4,'Sonarr 4K','Sonarr','{
-  "prowlarrUrl": "http://${DOCKER_SUBNET}.10:${PORT_UI_PROWLARR}",
+  "prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
   "baseUrl": "http://${DOCKER_SUBNET}.23:${PORT_UI_SONARR4K}",
   "apiKey": "${API_KEY_SONARR4K}",
   "syncCategories": [
@@ -160,7 +160,7 @@ DELETE FROM IndexerProxies;
 INSERT INTO IndexerProxies (Id, Name, Settings, Implementation, ConfigContract, Tags)
 VALUES
 (1, 'FlareSolverr', '{
-  "host": "http://localhost:${PORT_SERVICE_FLARESOLVERR}/",
+  "host": "http://${DOCKER_SUBNET}.16:${PORT_SERVICE_FLARESOLVERR}/",
   "requestTimeout": 60
 }', 'FlareSolverr', 'FlareSolverrSettings', '[1]');
 

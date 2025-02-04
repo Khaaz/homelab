@@ -8,7 +8,7 @@
    "applicationUrl": "",
    "csrfProtection": false,
    "cacheImages": false,
-   "defaultPermissions": 8388768,
+   "defaultPermissions": 8388640,
    "defaultQuotas": {
     "movie": {
      "quotaLimit": 0,
@@ -30,7 +30,7 @@
   },
   "plex": {
    "name": "media-server",
-   "ip": "${HOST_IP}",
+   "ip": "${DOCKER_SUBNET}.10",
    "port": "${PORT_UI_PLEX}",
    "useSsl": false,
    "libraries": [
@@ -41,14 +41,14 @@
      "type": "movie"
     },
     {
-     "id": "3",
-     "name": "Anime",
-     "enabled": true,
-     "type": "show"
+      "id": "2",
+      "name": "Series",
+      "enabled": true,
+      "type": "show"
     },
     {
-     "id": "2",
-     "name": "Series",
+     "id": "3",
+     "name": "Anime",
      "enabled": true,
      "type": "show"
     }
@@ -59,19 +59,19 @@
   "radarr": [
    {
     "name": "Radarr 4K",
-    "hostname": "${HOST_IP}",
+    "hostname": "${MM_HOST_IP}",
     "port": "${PORT_UI_RADARR4K}",
     "apiKey": "${API_KEY_RADARR4K}",
     "useSsl": false,
     "activeProfileId": 5,
     "activeProfileName": "Ultra-HD",
     "activeDirectory": "/data/media/movies",
-    "is4k": true,
     "minimumAvailability": "announced",
     "tags": [
-     1
+      1
     ],
     "isDefault": true,
+    "is4k": true,
     "syncEnabled": true,
     "preventSearch": false,
     "tagRequests": true,
@@ -79,19 +79,19 @@
    },
    {
     "name": "Radarr",
-    "hostname": "${HOST_IP}",
+    "hostname": "${MM_HOST_IP}",
     "port": "${PORT_UI_RADARR}",
     "apiKey": "${API_KEY_RADARR}",
     "useSsl": false,
     "activeProfileId": 4,
     "activeProfileName": "HD-1080p",
     "activeDirectory": "/data/media/movies",
-    "is4k": false,
     "minimumAvailability": "announced",
     "tags": [
-     1
+      1
     ],
     "isDefault": true,
+    "is4k": false,
     "syncEnabled": true,
     "preventSearch": false,
     "tagRequests": true,
@@ -101,7 +101,7 @@
   "sonarr": [
    {
     "name": "Sonarr 4K",
-    "hostname": "${HOST_IP}",
+    "hostname": "${MM_HOST_IP}",
     "port": "${PORT_UI_SONARR4K}",
     "apiKey": "${API_KEY_SONARR4K}",
     "useSsl": false,
@@ -119,8 +119,8 @@
     "animeTags": [
      1
     ],
-    "is4k": true,
     "isDefault": true,
+    "is4k": true,
     "enableSeasonFolders": true,
     "syncEnabled": true,
     "preventSearch": false,
@@ -129,7 +129,7 @@
    },
    {
     "name": "Sonarr",
-    "hostname": "${HOST_IP}",
+    "hostname": "${MM_HOST_IP}",
     "port": "${PORT_UI_SONARR}",
     "apiKey": "${API_KEY_SONARR}",
     "useSsl": false,
@@ -146,8 +146,8 @@
     "animeTags": [
      1
     ],
-    "is4k": false,
     "isDefault": true,
+    "is4k": false,
     "enableSeasonFolders": true,
     "syncEnabled": true,
     "preventSearch": false,
@@ -174,7 +174,7 @@
      }
     },
     "discord": {
-     "enabled": true,
+     "enabled": false,
      "types": 152,
      "options": {
       "webhookUrl": "${WEBHOOK_OVERSERRR_DISCORD}",
