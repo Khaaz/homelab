@@ -73,6 +73,8 @@ services:
 #    devices:
 #      - /dev/dri/renderD128:/dev/dri/renderD128
 #      - /dev/dri/card0:/dev/dri/card0
+    devices:
+      - /dev/dri:/dev/dri	# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
     ports:
      - "${PORT_UI_PLEX:?err}:32400"
      - 1900:1900/udp
@@ -104,8 +106,6 @@ services:
       - PLEX_EMAIL=${PLEX_EMAIL:?err}
       - PLEX_MACHINE_IDENTIFIER=${PLEX_MACHINE_IDENTIFIER:?err}
       - PLEX_FRIENDLY_NAME=${PLEX_FRIENDLY_NAME:?err}
-    devices:
-      - /dev/dri:/dev/dri	# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/Preferences.xml "/config/Library/Application Support/Plex Media Server/Preferences.xml"
         user: root
