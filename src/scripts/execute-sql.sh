@@ -51,6 +51,7 @@ echo "$PREPROCESSED_SQL" | sqlite3 "$DB_PATH"
 
 if [ $? -eq 0 ]; then
   echo "INIT: Success => Successfully executed SQL script."
+  exit 0
 else
   echo "INIT: Error => Failed to execute SQL script."
   exit 1
