@@ -426,9 +426,9 @@ services:
       - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
-    # post_start:
-    #   - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
-    #     user: root
+    post_start:
+      - command: /scripts/execute-sql.sh /appdata/db/db.sqlite
+        user: root
 
 # Maintainerr - Management Dashboard
   maintainerr:
