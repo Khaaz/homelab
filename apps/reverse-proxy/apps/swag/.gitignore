@@ -1,14 +1,18 @@
 !_setup/**
 
 ### nginx
-
 ## conf
 # default
 !nginx/nginx.conf
 !nginx/proxy.conf
-
 # custom
 !nginx/site-confs/default.conf
+# access
+!nginx/htaccess.conf
+# SSL
 !nginx/ssl.conf
 !nginx/ssl-private.conf
-!nginx/htaccess.conf
+
+### authelia
+## conf
+!authelia/authelia-location.conf

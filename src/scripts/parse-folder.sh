@@ -50,6 +50,7 @@ process_files "$INPUT_DIR"
 
 if [ $? -eq 0 ]; then
   echo "INIT: Success => Successfully parsed folder."
+  exit 0
 else
   echo "INIT: Error => Failed to parse folder."
   exit 1

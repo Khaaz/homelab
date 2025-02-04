@@ -33,6 +33,7 @@ parse_file $INPUT_FILE > $OUTPUT_FILE
 
 if [ $? -eq 0 ]; then
   echo "INIT: Success => Successfully processed file. Output written to: $OUTPUT_FILE"
+  exit 0
 else
   echo "INIT: Error => Failed to process file."
   exit 1
