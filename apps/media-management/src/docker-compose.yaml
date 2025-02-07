@@ -101,8 +101,11 @@ services:
     depends_on:
       flaresolverr:
         condition: service_started
+        restart: false
     ports:
       - "${PORT_UI_PROWLARR:?err}:9696"
+    dns:
+      - 1.1.1.1
     volumes:
       - ${APPS_FOLDER:?err}/prowlarr:/config # config
       - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
@@ -143,6 +146,8 @@ services:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.16"
     ports:
       - "${PORT_SERVICE_FLARESOLVERR:?err}:8191"
+    dns:
+      - 1.1.1.1
     environment:
       - LOG_LEVEL=info
       - LOG_HTML=false
@@ -159,6 +164,7 @@ services:
     depends_on:
       gluetun:
         condition: service_started
+        restart: false
     volumes:
       - ${APPS_FOLDER:?err}/qbittorrent:/config # config
       - ${DATA_FOLDER:?err}/torrents:/data # data
@@ -241,10 +247,14 @@ services:
     depends_on:
       prowlarr:
         condition: service_started
+        restart: false
       qbittorrent:
         condition: service_started
+        restart: false
     ports:
       - "${PORT_UI_RADARR:?err}:7878"
+    dns:
+      - 1.1.1.1
     volumes:
       - ${APPS_FOLDER:?err}/radarr:/config # config
       - ${DATA_FOLDER:?err}:/data # data
@@ -279,10 +289,14 @@ services:
     depends_on:
       prowlarr:
         condition: service_started
+        restart: false
       qbittorrent:
         condition: service_started
+        restart: false
     ports:
       - "${PORT_UI_RADARR4K:?err}:7878"
+    dns:
+      - 1.1.1.1
     volumes:
       - ${APPS_FOLDER:?err}/radarr4k:/config # config
       - ${DATA_FOLDER:?err}:/data # data
@@ -317,10 +331,14 @@ services:
     depends_on:
       prowlarr:
         condition: service_started
+        restart: false
       qbittorrent:
         condition: service_started
+        restart: false
     ports:
       - "${PORT_UI_SONARR:?err}:8989"
+    dns:
+      - 1.1.1.1
     volumes:
       - ${APPS_FOLDER:?err}/sonarr:/config # config
       - ${DATA_FOLDER:?err}:/data # data
@@ -355,10 +373,14 @@ services:
     depends_on:
       prowlarr:
         condition: service_started
+        restart: false
       qbittorrent:
         condition: service_started
+        restart: false
     ports:
       - "${PORT_UI_SONARR4K:?err}:8989"
+    dns:
+      - 1.1.1.1
     volumes:
       - ${APPS_FOLDER:?err}/sonarr4k:/config # config
       - ${DATA_FOLDER:?err}:/data # data
