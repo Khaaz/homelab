@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Server name
+> FriendlyName
+
+Identify the owner
+> PlexOnlineUsername
+> PlexOnlineMail
+
+Identify the server instance itself as unique accross installation
+> PlexOnlineToken
+> MachineIdentifier
+
+Network Configuration
+URL for Plex access in/out of the network
+> customConnections
+URL for Plex access without auth
+> allowedNetworks
+
+Keep empty to make generation work
+> CertificateUUID
+> ProcessedMachineIdentifier
+> AnonymousMachineIdentifier
+
+Various settings
+> ...
+-->
 <Preferences 
-    PlexOnlineToken="${PLEX_CLAIM}"
+    FriendlyName="${PLEX_FRIENDLY_NAME}"
+    
     PlexOnlineUsername="${PLEX_USERNAME}"
     PlexOnlineMail="${PLEX_EMAIL}"
-    customConnections="https://plex.${EXTERNAL_DOMAIN}/,https://plex.${MS_DOMAIN}/,http://${MS_HOST_IP}:${PORT_UI_PLEX}/"
+    
+    PlexOnlineToken="${PLEX_CLAIM}"
     MachineIdentifier="${PLEX_MACHINE_IDENTIFIER}"
-    FriendlyName="${PLEX_FRIENDLY_NAME}"
+    
+    customConnections="https://plex.${EXTERNAL_DOMAIN}/,https://plex.${MS_DOMAIN}/,http://${MS_HOST_IP}:${PORT_UI_PLEX}/"
+    allowedNetworks="192.168.0.0/16,10.0.0.0/8,172.16.0.0/12"
+    
     CertificateUUID=""
     ProcessedMachineIdentifier=""
     AnonymousMachineIdentifier="" 
