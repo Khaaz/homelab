@@ -24,7 +24,7 @@ services:
   authelia-pre-start:
     image: alpine:latest
     container_name: authelia-pre-start
-    command: ["/bin/sh", "-c", "/scripts/parse-folder.sh /_setup/templates/ /config"]
+    command: ["/bin/sh", "-c", "/scripts/parse-folder.sh /_setup/templates /config"]
     networks:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.33"
@@ -114,7 +114,7 @@ services:
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
       - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
     post_start:
-      - command: /scripts/parse-folder.sh /_setup/templates/ /config
+      - command: /scripts/parse-folder.sh /_setup/templates /config
         user: root
 
   unbound-pre-start:
