@@ -53,8 +53,11 @@ services:
       - ${APPS_FOLDER:?err}/nextcloud/config:/var/www/html/config
       - ${DATA_FOLDER:?err}/nextcloud/data:/var/www/html/data
     entrypoint: >
-      sh -c "sleep 30 &&
-      su -s /bin/sh -c 'php /var/www/html/occ config:system:set trusted_domains 0 --value=\"*\"' www-data"
+      sh -c "sleep 5 &&
+      su -s /bin/sh -c ' \
+      php /var/www/html/occ config:system:set skeletondirectory --value=\"\" \
+      && php /var/www/html/occ config:system:set trusted_domains 0 --value=\"*\"' \ 
+      www-data" 
 
   nextclouddb:
     image: mariadb # offical mariadb image
