@@ -136,9 +136,6 @@ services:
       - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
       - NX_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
-    post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
-        user: root
 
 # DNSMask - DNS server for local resolution
   unbound:
