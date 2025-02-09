@@ -26,7 +26,7 @@ services:
       - ${APPS_FOLDER:?err}/nextcloud/html:/var/www/html # Map the /var/www/html directory in the container to the html folder in the same folder as the docker-compose.yml
       - ${APPS_FOLDER:?err}/nextcloud/custom_apps:/var/www/html/custom_apps # These volumes allow us to easily interact with the files in the container
       - ${APPS_FOLDER:?err}/nextcloud/config:/var/www/html/config
-      - ${APPS_FOLDER:?err}/nextcloud/data:/var/www/html/data
+      - ${DATA_FOLDER:?err}/nextcloud/data:/var/www/html/data
     environment:
       - PUID=${PUID:?err} # The user ids. Most likely both should be 1000. Incorrectly setting these will led to file permission issues
       - PGID=${PGID:?err} # Set these to whatever your user is.
@@ -38,6 +38,11 @@ services:
       - REDIS_HOST=redis # The redis container to use
       - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER:?err}
       - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD:?err}
+      - APACHE_SERVER_NAME=nextcloud.local
+    # command: >
+    #     sh -c "docker-php-entrypoint apache2-foreground &
+    #     sleep 20 &&
+    #     su -s /bin/sh -c 'php occ config:system:set trusted_domains 0 --value=\"*\"' www-data"
 
   nextclouddb:
     image: mariadb # offical mariadb image
