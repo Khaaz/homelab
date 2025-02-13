@@ -52,8 +52,9 @@ services:
       - ${APPS_FOLDER:?err}/nextcloud/custom_apps:/var/www/html/custom_apps
       - ${APPS_FOLDER:?err}/nextcloud/config:/var/www/html/config
       - ${DATA_FOLDER:?err}/nextcloud/data:/var/www/html/data
+    restart: "no"  # Do not restart after completion
     entrypoint: >
-      sh -c "sleep 5 &&
+      sh -c "sleep 30 &&
       su -s /bin/sh -c ' \
       php /var/www/html/occ config:system:set skeletondirectory --value=\"\" \
       && php /var/www/html/occ config:system:set trusted_domains 0 --value=\"*\"' \ 
