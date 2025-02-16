@@ -22,4 +22,4 @@ export ROOT_PATH=$SCRIPT_DIR
 echo "Root: $SCRIPT_DIR"
 
 # docker compose -f $COMPOSE_FILE --env-file $DEFAULT_ENV_FILE --env-file $NETWORKING_ENV_FILE --env-file $OVERRIDE_ENV_FILE $COMMAND "$@"
-docker compose -f $COMPOSE_FILE --env-file $DEFAULT_ENV_FILE --env-file $OVERRIDE_ENV_FILE $COMMAND "$@"
+docker compose -f $COMPOSE_FILE --env-file $DEFAULT_ENV_FILE --env-file $NETWORKING_ENV_FILE --env-file $OVERRIDE_ENV_FILE $COMMAND "$@"

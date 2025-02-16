@@ -1,12 +1,24 @@
+networks:
+  vaultwarden:
+    name: vaultwarden
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${VAULTWARDEN_DOCKER_SUBNET:?err}.0/24
+        gateway: ${VAULTWARDEN_DOCKER_SUBNET:?err}.1
+
 services:
   vaultwarden:
     image: vaultwarden/server:1.33.2
     container_name: vaultwarden
     restart: always
+    networks:
+      vaultwarden:
+        ipv4_address: "${VAULTWARDEN_DOCKER_SUBNET:?err}.40"
     volumes:
       - ./vw-data:/data
       - ${APPS_FOLDER:?err}/vw-data:/data # config
-      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - SIGNUPS_ALLOWED=true
       - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
