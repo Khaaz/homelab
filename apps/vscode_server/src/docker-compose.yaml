@@ -1,0 +1,43 @@
+networks:
+  code-server:
+    name: code-server
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${CODE_SERVER_DOCKER_SUBNET:?err}.0/24
+        gateway: ${CODE_SERVER_DOCKER_SUBNET:?err}.1
+
+services:
+  code-server-pre-start:
+    image: alpine:latest
+    container_name: code-server-pre-start
+    command: ["/bin/sh", "-c", "/scripts/parse-file.sh /_setup/templates/config.yaml /home/coder/.config/code-server/config.yaml"]
+    networks:
+      code-server:
+        ipv4_address: "${CODE_SERVER_DOCKER_SUBNET:?err}.45"
+    volumes:
+      - ${APPS_FOLDER?err}/.config:/home/coder/.config
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+      - ${ROOT_PATH:?err}/_setup:/_setup # setup
+
+  code-server:
+    image: codercom/code-server:latest
+    container_name: code-server
+    restart: always
+    user: "${PUID:?err}:${PGID:?err}" 
+    networks:
+      code-server:
+        ipv4_address: "${CODE_SERVER_DOCKER_SUBNET:?err}.45"
+    depends_on:
+      code-server-pre-start:
+        condition: service_completed_successfully 
+    volumes:
+      - ${APPS_FOLDER?err}/.local:/home/coder/.local
+      - ${APPS_FOLDER?err}/.config:/home/coder/.config
+      - ${ROOT_PATH:?err}../../:/home/coder/project
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+    ports:
+      - ${PORT_UI_VSCODE_SERVER:?err}:8080
