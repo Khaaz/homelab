@@ -1,0 +1,15 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.33.2
+    container_name: vaultwarden
+    restart: always
+    volumes:
+      - ./vw-data:/data
+      - ${APPS_FOLDER:?err}/vw-data:/data # config
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - SIGNUPS_ALLOWED=true
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+    ports:
+      - ${PORT_UI_VAULTWARDEN:?err}:80
+    

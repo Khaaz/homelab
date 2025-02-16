@@ -114,6 +114,7 @@ services:
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
       - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
+      - PORT_UI_VAULTWARDEN=${PORT_UI_VAULTWARDEN:?err}
     post_start:
       - command: /scripts/parse-folder.sh /_setup/templates /config
         user: root
@@ -137,6 +138,7 @@ services:
       - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
       - NX_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
+      - VW_HOST_IP=${VAULTWARDEN_HOST_IP:?err}
 
 # DNSMask - DNS server for local resolution
   unbound:
