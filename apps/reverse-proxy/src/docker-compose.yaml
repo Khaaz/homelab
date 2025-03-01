@@ -211,3 +211,19 @@ services:
       - LOG_LEVEL=info
       - LOG_CALLER=hidden
       - SHOUTRRR_ADDRESSES=
+
+# Cloudflare Tunnel
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: cloudflared
+  #   restart: unless-stopped
+  #   networks:
+  #     reverse-proxy:
+  #       ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.50"  # Assign an IP in your subnet
+  #   volumes:
+  #     - ${APPS_FOLDER:?err}/cloudflared:/etc/cloudflared  # Mount the configuration directory
+  #   command:  tunnel run --url http://10.0.0.193:32400
+  #   environment:
+  #     - TUNNEL_TOKEN=eyJhIjoiODBhMzY5OTAxOTBmNGY0NTY4M2ZhZWUxY2Q5ZDczZTIiLCJ0IjoiNTkyOGZjOTYtOWNhOC00ZGRiLWI1YzYtM2QwM2JkYmQxYTczIiwicyI6Ik5qZ3pNamswTlRJdFpEQTNPUzAwTVRRNUxXSTROR1l0T1RWbFl6azVPVE0wWTJJeSJ9  # Use your Cloudflare Tunnel token
+  #     - TUNNEL_NAME=Plex  # Name of your tunnel
+
