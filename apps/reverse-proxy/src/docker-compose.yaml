@@ -230,8 +230,10 @@ services:
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
       - VAULTWARDEN_HOST_IP=${VAULTWARDEN_HOST_IP:?err}
       - NEXTCLOUD_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
+      - VSCODE_HOST_IP=${VSCODE_HOST_IP:?err}
       - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
       - PORT_UI_VAULTWARDEN=${PORT_UI_VAULTWARDEN:?err}
+      - PORT_UI_VSCODE_SERVER=${PORT_UI_VSCODE_SERVER:?err}
 
   cloudflared:
     image: cloudflare/cloudflared:latest

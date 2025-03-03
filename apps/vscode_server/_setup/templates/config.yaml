@@ -1,1 +1,2 @@
-auth: none
+auth: password
+hashed-password: "$argon2id$v=19$m=65536,t=3,p=4$shkCcxI6ti3peE5gDuqVEQ$AYrJl3/r4QsPmZWZhH6vNf/tAhSoxhPMkxzbeWfalNk"
