@@ -15,12 +15,12 @@ services:
     restart: always
     networks:
       vaultwarden:
-        ipv4_address: "${VAULTWARDEN_DOCKER_SUBNET:?err}.40"
+        ipv4_address: ${VAULTWARDEN_DOCKER_SUBNET:?err}.30
     volumes:
       - ./vw-data:/data
       - ${APPS_FOLDER:?err}/vw-data:/data # config
     environment:
-      - SIGNUPS_ALLOWED=true
+      - SIGNUPS_ALLOWED=false
       - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
     ports:
       - ${PORT_UI_VAULTWARDEN:?err}:80
