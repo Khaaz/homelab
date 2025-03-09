@@ -412,7 +412,7 @@ services:
 
 # Homarr - Application Dashboard
   homarr:
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:v1.4.0
     container_name: homarr
     restart: unless-stopped
     networks:
@@ -421,11 +421,9 @@ services:
     ports:
       - "${PORT_UI_HOMARR:?err}:7575"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${APPS_FOLDER:?err}/homarr/configs:/app/data/configs # config
-      - ${APPS_FOLDER:?err}/homarr/data:/data # data
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - ${APPS_FOLDER:?err}/homarr/appdata:/appdata # data
       - ${APPS_FOLDER:?err}/homarr/_setup:/_setup # setup
-      - ${APPS_FOLDER:?err}/homarr/icons:/app/public/icons
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - PUID=${PUID:?err}
@@ -433,9 +431,12 @@ services:
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
       # setup
+      - SECRET_ENCRYPTION_KEY=4e5a82b5e1980417c677089857dcb6588956c3989ffd2c5f168fd34cb3b4589e
       - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
-      - DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - MEDIA_MANAGEMENT_DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - MEDIA_SERVER_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+      - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
       - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
       - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
@@ -450,7 +451,7 @@ services:
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
+      - command: /scripts/execute-sql.sh /appdata/db/db.sqlite
         user: root
 
 # Maintainerr - Management Dashboard
