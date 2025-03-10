@@ -70,6 +70,11 @@ services:
       - SERVER_REGIONS=${SERVER_REGIONS}
       - SERVER_CITIES=${SERVER_CITIES}
       - SERVER_HOSTNAMES=${SERVER_HOSTNAMES}
+      # - VPN_PORT_FORWARDING=on
+      # - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c "echo {{PORTS}}"
+      # - VPN_PORT_FORWARDING_LISTENING_PORT=32400
+      # - FIREWALL_VPN_INPUT_PORTS=32400,5055
+      # - FIREWALL_INPUT_PORTS=32400,5055
       - SERVER_CATEGORIES=${SERVER_CATEGORIES}
       - FIREWALL_OUTBOUND_SUBNETS=${LOCAL_SUBNET:?err}
       - HTTP_CONTROL_SERVER_ADDRESS=:${PORT_SERVICE_GLUETUN:?err}
@@ -494,10 +499,15 @@ services:
   lidatube:
     image: thewicklowwolf/lidatube:latest
     container_name: lidatube
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.77"
     volumes:
-      - ${APPS_FOLDER:?err}/lidatube/config:/lidatube/config
       - ${DATA_FOLDER:?err}/media/music:/lidatube/downloads
       - /etc/localtime:/etc/localtime:ro
+    environment:
+      - lidarr_api_key=${API_KEY_LIDARR:?err}
+      - lidarr_address=http://${MEDIA_MANAGEMENT_HOST_IP:?err}:${PORT_UI_LIDARR:?err}
     ports:
       - 5000:5000
     restart: unless-stopped
@@ -505,17 +515,38 @@ services:
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    volumes:
-      - ${APPS_FOLDER:?err}/lidarr/config:/lidarr/config
-      - ${DATA_FOLDER:?err}/media/music:/music # data
-      - ${DATA_FOLDER:?err}/torrents/music:/downloads # data
-    ports:
-      - 8686:8686
+    dns:
+      - 1.1.1.1
+    networks:
+      media-management:
+        ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.76"
+    depends_on:
+      prowlarr:
+        condition: service_started
+        restart: false
+      qbittorrent:
+        condition: service_started
+        restart: false
     restart: unless-stopped
+    ports:
+      - "${PORT_UI_LIDARR:?err}:8686"
+    volumes:
+      - ${APPS_FOLDER:?err}/lidarr/config:/config
+      - ${APPS_FOLDER:?err}/lidarr/music:/music
+      - ${DATA_FOLDER:?err}/media/music:/lidarr/downloads # data
+      - ${APPS_FOLDER:?err}/lidarr/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - TZ=Etc/UTC
+      - PORT_UI_LIDARR=${PORT_UI_LIDARR:?err}
+      - API_KEY_LIDARR=${API_KEY_LIDARR:?err}
+    post_start:
+      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+        user: root
+      - command: /scripts/execute-sql.sh /config/lidarr.db
+        user: root
 ###########################################################################
 ###########################################################################
 ## UTILITARY

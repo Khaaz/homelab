@@ -111,6 +111,8 @@ services:
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
       - PORT_UI_MAINTAINERR=${PORT_UI_MAINTAINERR:?err}
+      - PORT_UI_LIDARR=${PORT_UI_LIDARR:?err}
+      - PORT_UI_LIDATUBE=${PORT_UI_LIDATUBE:?err}
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
       - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
@@ -212,43 +214,43 @@ services:
       - LOG_CALLER=hidden
       - SHOUTRRR_ADDRESSES=
 
-  cloudflared-pre-start:
-    image: alpine:latest
-    container_name: cloudflared-pre-start
-    command: ["/bin/sh", "-c", "/scripts/parse-file.sh /_setup/config.yml /etc/cloudflared/config.yml && chown -R 65532:65532 /etc/cloudflared && chmod -R 644 /etc/cloudflared && find /etc/cloudflared -type d -exec chmod 755 {} +"]
-    networks:
-      reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.51"
-    volumes:
-      - ${APPS_FOLDER:?err}/cloudflared:/etc/cloudflared  # Mount the configuration directory
-      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
-      - ${APPS_FOLDER:?err}/cloudflared/_setup:/_setup # setup
-    environment:
-      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
-      - MEDIA_SERVER_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
-      - VAULTWARDEN_HOST_IP=${VAULTWARDEN_HOST_IP:?err}
-      - NEXTCLOUD_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
-      - MEDIA_MANAGEMENT_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
-      - VSCODE_HOST_IP=${VSCODE_HOST_IP:?err}
-      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
-      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
-      - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
-      - PORT_UI_VAULTWARDEN=${PORT_UI_VAULTWARDEN:?err}
-      - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
-      - PORT_UI_VSCODE_SERVER=${PORT_UI_VSCODE_SERVER:?err}
+  # cloudflared-pre-start:
+  #   image: alpine:latest
+  #   container_name: cloudflared-pre-start
+  #   command: ["/bin/sh", "-c", "/scripts/parse-file.sh /_setup/config.yml /etc/cloudflared/config.yml && chown -R 65532:65532 /etc/cloudflared && chmod -R 644 /etc/cloudflared && find /etc/cloudflared -type d -exec chmod 755 {} +"]
+  #   networks:
+  #     reverse-proxy:
+  #       ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.51"
+  #   volumes:
+  #     - ${APPS_FOLDER:?err}/cloudflared:/etc/cloudflared  # Mount the configuration directory
+  #     - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+  #     - ${APPS_FOLDER:?err}/cloudflared/_setup:/_setup # setup
+  #   environment:
+  #     - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+  #     - MEDIA_SERVER_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+  #     - VAULTWARDEN_HOST_IP=${VAULTWARDEN_HOST_IP:?err}
+  #     - NEXTCLOUD_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
+  #     - MEDIA_MANAGEMENT_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
+  #     - VSCODE_HOST_IP=${VSCODE_HOST_IP:?err}
+  #     - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+  #     - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+  #     - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
+  #     - PORT_UI_VAULTWARDEN=${PORT_UI_VAULTWARDEN:?err}
+  #     - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
+  #     - PORT_UI_VSCODE_SERVER=${PORT_UI_VSCODE_SERVER:?err}
 
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared
-    restart: unless-stopped
-    networks:
-      reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.50"  # Assign an IP in your subnet
-    depends_on:
-      cloudflared-pre-start:
-        condition: service_completed_successfully 
-    volumes:
-      - ${APPS_FOLDER:?err}/cloudflared:/etc/cloudflared  # Mount the configuration directory
-      - /root/.cloudflared:/etc/cloudflared  # Mount the configuration directory
-    command: tunnel --config /etc/cloudflared/config.yml run homelab
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: cloudflared
+  #   restart: unless-stopped
+  #   networks:
+  #     reverse-proxy:
+  #       ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.50"  # Assign an IP in your subnet
+  #   depends_on:
+  #     cloudflared-pre-start:
+  #       condition: service_completed_successfully 
+  #   volumes:
+  #     - ${APPS_FOLDER:?err}/cloudflared:/etc/cloudflared  # Mount the configuration directory
+  #     - /root/.cloudflared:/etc/cloudflared  # Mount the configuration directory
+  #   command: tunnel --config /etc/cloudflared/config.yml run homelab
         
