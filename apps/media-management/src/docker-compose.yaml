@@ -544,6 +544,8 @@ services:
       - TZ=Etc/UTC
       - PORT_UI_LIDARR=${PORT_UI_LIDARR:?err}
       - API_KEY_LIDARR=${API_KEY_LIDARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
         user: root

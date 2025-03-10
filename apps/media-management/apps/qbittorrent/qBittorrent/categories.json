@@ -5,6 +5,9 @@
     "movies": {
         "save_path": "/data/movies"
     },
+    "music": {
+        "save_path": "/data/music"
+    },
     "prowlarr": {
         "save_path": "/data/unsorted"
     },
