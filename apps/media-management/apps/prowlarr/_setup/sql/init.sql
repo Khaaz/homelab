@@ -121,7 +121,21 @@ VALUES
   ],
   "syncAnimeStandardFormatSearch": true,
   "syncRejectBlocklistedTorrentHashesWhileGrabbing": false
-}','SonarrSettings',2,'[]');
+}','SonarrSettings',2,'[]'),
+(5,'Lidarr','Lidarr',replace('{
+"prowlarrUrl": "http://${DOCKER_SUBNET}.15:${PORT_UI_PROWLARR}",
+"baseUrl": "http://http://${DOCKER_SUBNET}.76:${PORT_UI_LIDARR}",
+"apiKey": "${API_KEY_LIDARR}",
+"syncCategories": [
+  3000,
+  3010,
+  3030,
+  3040,
+  3050,
+  3060
+],
+"syncRejectBlocklistedTorrentHashesWhileGrabbing": false\n}','\n',char(10)),'LidarrSettings',2,'[]');
+
 
 -- Config
 DELETE FROM Config;
