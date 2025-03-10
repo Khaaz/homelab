@@ -31,6 +31,7 @@ umount /mnt/iso
 
 # add custom config
 cp -f $ROOT_PATH/config/isolinux/menu.cfg /root/extracted_iso/isolinux/menu.cfg
+cp $ROOT_PATH/config/boot/grub.cfg /root/extracted_iso/boot/grub/grub.cfg
 cp $ROOT_PATH/config/preseed.cfg /root/extracted_iso/preseed.cfg
 
 # change timeout
