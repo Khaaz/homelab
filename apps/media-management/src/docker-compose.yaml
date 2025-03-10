@@ -53,7 +53,6 @@ services:
       - "8388:8388/tcp"                         # Gluetun Local Network Shadowsocks
       - "8388:8388/udp"                         # Gluetun Local Network Shadowsocks
       - ${PORT_SERVICE_GLUETUN:?err}:${PORT_SERVICE_GLUETUN:?err} # Gluetun Status Port
-
       - "${PORT_UI_QBITTORRENT:?err}:${PORT_UI_QBITTORRENT:?err}"   # WebUI Portal: qBittorrent
       - "${PORT_SERVICE_QBITTORRENT:?err}:6881"                # Transmission Torrent Port
       # - "${WEBUI_PORT_UI_SABNZBD:?err}:8080"       # WebUI Portal: SABnzbd
@@ -492,6 +491,31 @@ services:
       - command: /scripts/execute-sql.sh /opt/data/maintainerr.sqlite
         user: root
 
+  lidatube:
+    image: thewicklowwolf/lidatube:latest
+    container_name: lidatube
+    volumes:
+      - ${APPS_FOLDER:?err}/lidatube/config:/lidatube/config
+      - ${DATA_FOLDER:?err}/media/music:/lidatube/downloads
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ${APPS_FOLDER:?err}/lidarr/config:/lidarr/config
+      - ${DATA_FOLDER:?err}/media/music:/music # data
+      - ${DATA_FOLDER:?err}/torrents/music:/downloads # data
+    ports:
+      - 8686:8686
+    restart: unless-stopped
 ###########################################################################
 ###########################################################################
 ## UTILITARY
