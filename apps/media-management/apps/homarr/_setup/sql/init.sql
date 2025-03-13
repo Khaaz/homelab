@@ -72,10 +72,6 @@ INSERT INTO onboarding VALUES('lc2eihxk3fmrtmlyxxu65crv','finish','settings');
 DELETE FROM user;
 INSERT INTO user VALUES('u7244dlnslslgi01127mzulv','dgladieux',NULL,NULL,NULL,'$2b$10$75yxqb.feX3VuABSy/G2F.pPq9Qs5uH4eKW5ISP/6AMgXqIFN1owi','$2b$10$75yxqb.feX3VuABSy/G2F.','credentials','ns7hsts5suts6mxnugtms5ao','ns7hsts5suts6mxnugtms5ao','yvviq23bbyr0mikdnfxomm6z',1,'dark',1,0);
 
-DELETE FROM group;
-INSERT INTO "group" VALUES('obt4z0lc32m17se4oh8hu3zr','everyone',NULL,NULL,NULL,-1);
-INSERT INTO "group" VALUES('k0v3k22ukrrq19semg7c7rtj','credentials-admin','u7244dlnslslgi01127mzulv',NULL,NULL,0);
-
 DELETE FROM item_layout;
 INSERT INTO item_layout VALUES('y9zotr7w1kn3xkoditevhnto','bltv81juwo31qs328mdnymzm','rb0u4pizeyaj0p31xwi11wpw',0,0,4,3);
 INSERT INTO item_layout VALUES('ugasdlqojdb3wel6459swwz5','bltv81juwo31qs328mdnymzm','rb0u4pizeyaj0p31xwi11wpw',4,0,2,3);

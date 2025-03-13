@@ -16,7 +16,8 @@ INSERT INTO library_sections (
     (3, NULL, 'Anime', NULL, 2, 'en-US', 'tv.plex.agents.series', 'Plex TV Series', 
     NULL, NULL, NULL, NULL, 1734389208, 1735842619, 1738360252, NULL, 
     '{"url":""}', 
-    NULL, NULL, 'fea48fbc-3ca8-48c7-accc-7326b8dbc7f4', 4737, 15758);
+    NULL, NULL, 'fea48fbc-3ca8-48c7-accc-7326b8dbc7f4', 4737, 15758),
+    (5,NULL,'Music','',8,'fr-FR','tv.plex.agents.music','Plex Music','','','',NULL,1741771073,1741771073,1741903696,NULL,'{"url":""}','',NULL,'018999b2-916f-4d45-9765-41f6540af508',62136,64284);
 
 DELETE FROM section_locations;
 INSERT INTO section_locations (
@@ -24,4 +25,5 @@ INSERT INTO section_locations (
 ) VALUES
 (1, 1, '/data/media/movies', 1, 1738360552, NULL, 1738360552),
 (2, 2, '/data/media/series', 1, 1738360552, NULL, 1738360552),
-(3, 3, '/data/media/anime', 1, 1738360252, NULL, 1738360252);
+(3, 3, '/data/media/anime', 1, 1738360252, NULL, 1738360252),
+(5, 5,'/data/media/music', 1, 1741903696, NULL, 1741903696);
