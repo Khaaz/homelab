@@ -488,6 +488,7 @@ services:
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - PLEX_FRIENDLY_NAME=${PLEX_FRIENDLY_NAME:?err}
       # - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
     post_start:
       - command: /scripts/execute-sql.sh /opt/data/maintainerr.sqlite
