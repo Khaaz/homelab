@@ -13,3 +13,14 @@ start the server, it should auto install
 TODO:
 - check network config? (if we even want to do that)
 - check how to "reset" server easily
+
+Remove current authorized key
+`ssh-keygen -R 192.168.1.109`
+
+`ssh-keygen -t rsa -b 4096 -f ../config/ssh/ansible/ansible_key`
+
+```
+sudo efibootmgr --create --disk "/dev/sda" --part "1" --loader "\EFI\Boot\bootx64.efi" --label "USB_installer"
+efibootmgr --bootnext "0000"
+sudo reboot
+```
