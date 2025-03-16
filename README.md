@@ -9,7 +9,7 @@ Homelab that runs Plex, Servarr, Home Assistant and other things, on a NAS/serve
 The setup is made to be entirely automated and customisable. Feel free to use anything from this repo if it helps you. It should be relatively easy for anyone to run a similar setup, by just tweaking the configuration / environment files.  
 
 Built with automation, ease of customisation and a particular focus on security in mind.  
-Some services are open to a few poeple of trust (eg: Plex, Overser...).  
+Some services are open to a few poeple of trust (eg: Plex, Overser...) from outside the network.  
 
 ### Hardware
 
@@ -24,10 +24,13 @@ Some services are open to a few poeple of trust (eg: Plex, Overser...).
 ### Software
 
 - media-server: Media server (Plex)
-- media-management: Media download / management (Starr stack)
+- media-management: Media download / management (Starr / Servarr stack)
 - reverse-proxy: Entry point / DNS
 - vpn: VPN to access home network from anywhere
 - home-assistant: Home Assistant
+- nextcloud: Cloud
+- vaultwarden: Selfhosted Bitwarden
+- vscode-server: Vscode server
 
 ## Architecture
 
