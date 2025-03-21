@@ -1,0 +1,20 @@
+---
+- name: Run on localhost
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Print a log message for localhost
+      debug:
+        msg: "Hello from Ansible on localhost!"
+
+- name: Run on homelab
+  hosts: homelab
+  gather_facts: false
+  tasks:
+    - name: List the contents of /home/ansible on homelab
+      command: ls -la /home/ansible
+      register: ls_output
+
+    - name: Show the output of ls on homelab
+      debug:
+        msg: "{{ ls_output.stdout }}"
