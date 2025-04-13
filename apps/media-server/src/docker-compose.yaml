@@ -10,17 +10,6 @@ networks:
 
 services:
 
-  # portainer:
-  #   image: portainer/portainer-ce:latest
-  #   container_name: portainer
-  #   restart: always
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ${APPS_FOLDER:?err}/portainer:/data
-  #   ports:
-  #     - "${PORT_UI_PORTAINER:?err}:9443"
-  #   network_mode: bridge
-
 # Overseer - Media Management
   overseerr:
     image: lscr.io/linuxserver/overseerr:latest
