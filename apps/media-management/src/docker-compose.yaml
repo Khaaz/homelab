@@ -18,17 +18,6 @@ networks:
 
 services:
 
-  # portainer:
-  #   image: portainer/portainer-ce:latest
-  #   container_name: portainer
-  #   restart: always
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ${APPS_FOLDER:?err}/portainer:/data
-  #   ports:
-  #     - "${PORT_UI_PORTAINER:?err}:9443"
-  #   network_mode: bridge
-
 ###########################################################################
 ###########################################################################
 ## CORE
@@ -234,6 +223,8 @@ services:
       - OPENSUBTITLE_USERNAME=${OPENSUBTITLE_USERNAME}
     post_start:
       - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.yaml
+        user: root
+      - command: /scripts/execute-sql.sh /config/db/bazarr.db
         user: root
 
 # Radarr - Movie library
@@ -461,7 +452,7 @@ services:
     networks:
       media-management:
         ipv4_address: "${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.32"
-    user:  ${PUID:?err}:${PGID:?err}
+    user: ${PUID:?err}:${PGID:?err}
     ports:
       - "${PORT_UI_MAINTAINERR:?err}:6246"
     volumes:
@@ -486,6 +477,7 @@ services:
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - PLEX_FRIENDLY_NAME=${PLEX_FRIENDLY_NAME:?err}
       # - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
     post_start:
       - command: /scripts/execute-sql.sh /opt/data/maintainerr.sqlite
