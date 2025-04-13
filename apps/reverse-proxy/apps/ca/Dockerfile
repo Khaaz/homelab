@@ -2,9 +2,13 @@ FROM golang:latest
 
 ENV DOMAIN="l.ab"
 
-# Clone minica
+COPY ./scripts /scripts
+
 WORKDIR /app
-RUN git clone https://github.com/jsha/minica.git
+# Clone minica
+# RUN git clone https://github.com/jsha/minica.git
+# Build from local source
+COPY ./minica minica
 
 # Build the Go executable
 WORKDIR /app/minica
