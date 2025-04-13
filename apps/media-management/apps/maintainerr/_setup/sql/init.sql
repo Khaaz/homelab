@@ -1,7 +1,7 @@
 -- Settings for Plex & Overseerr
 DELETE FROM settings;
 INSERT INTO settings (id, clientId, applicationTitle, applicationUrl, apikey, overseerr_url, locale, cacheImages, plex_name, plex_hostname, plex_port, plex_ssl, plex_auth_token, overseerr_api_key, collection_handler_job_cron, rules_handler_job_cron, tautulli_url, tautulli_api_key) VALUES
-(1, '4a7c22b5-ff4a-4e9c-a350-438b11bee4b3', 'Maintainerr', '${MM_HOST_IP}', '${API_KEY_MAINTAINERR}', '${MS_HOST_IP}:${PORT_UI_OVERSEERR}/', 'en', 1, 'media-server', '${MS_HOST_IP}', '${PORT_UI_PLEX}', 0, '${PLEX_CLAIM}', '${API_KEY_OVERSEERR}', '0 0-23/12 * * *', '0 0-23/8 * * *', NULL, NULL);
+(1, '4a7c22b5-ff4a-4e9c-a350-438b11bee4b3', 'Maintainerr', '${MM_HOST_IP}', '${API_KEY_MAINTAINERR}', '${MS_HOST_IP}:${PORT_UI_OVERSEERR}/', 'en', 1, '${PLEX_FRIENDLY_NAME}', '${MS_HOST_IP}', '${PORT_UI_PLEX}', 0, '${PLEX_CLAIM}', '${API_KEY_OVERSEERR}', '0 0-23/12 * * *', '0 0-23/8 * * *', NULL, NULL);
 
 -- Radarr Configuration
 DELETE FROM radarr_settings;
