@@ -1,0 +1,93 @@
+networks:
+  nextcloud:
+    name: nextcloud
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${NEXTCLOUD_DOCKER_SUBNET:?err}.0/24
+        gateway: ${NEXTCLOUD_DOCKER_SUBNET:?err}.1
+
+services:
+
+  # Nextcloud - Cloud
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    restart: unless-stopped
+    networks:
+      nextcloud:
+        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.10"
+    depends_on:
+      - mariadb 
+      - redis
+    ports:
+      - "${PORT_UI_NEXTCLOUD:?err}:80"
+    volumes: # These are important. This will map a file directory inside the container to a directory on your actual computer
+      - ${APPS_FOLDER:?err}/nextcloud/html:/var/www/html # Map the /var/www/html directory in the container to the html folder in the same folder as the docker-compose.yml
+      - ${APPS_FOLDER:?err}/nextcloud/custom_apps:/var/www/html/custom_apps # These volumes allow us to easily interact with the files in the container
+      - ${APPS_FOLDER:?err}/nextcloud/config:/var/www/html/config
+      - ${DATA_FOLDER:?err}/nextcloud/data:/var/www/html/data
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - TZ=${TIMEZONE:?err}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=${MYSQL_USER:?err}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?err}
+      - MYSQL_HOST=mariadb
+      - REDIS_HOST=redis # The redis container to use
+      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER:?err}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD:?err}
+      - APACHE_SERVER_NAME=nextcloud.local
+
+  nextcloud_post_processing:
+    image: nextcloud
+    container_name: nextcloud_post_processing
+    restart: "no"
+    networks:
+      nextcloud:
+        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.20"
+    depends_on:
+      - nextcloud
+    entrypoint: >
+      sh -c "sleep 30 &&
+      su -s /bin/sh -c ' \
+      php /var/www/html/occ config:system:set skeletondirectory --value=\"\" \
+      && php /var/www/html/occ config:system:set trusted_domains 0 --value=\"*\"' \ 
+      www-data" 
+    volumes:
+      - ${APPS_FOLDER:?err}/nextcloud/html:/var/www/html # Mount Nextcloud files
+      - ${APPS_FOLDER:?err}/nextcloud/custom_apps:/var/www/html/custom_apps
+      - ${APPS_FOLDER:?err}/nextcloud/config:/var/www/html/config
+      - ${DATA_FOLDER:?err}/nextcloud/data:/var/www/html/data
+  
+  # MariaDB - DB for Netcloud
+  mariadb:
+    image: mariadb
+    container_name: mariadb 
+    restart: unless-stopped 
+    networks:
+      nextcloud:
+        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.31"
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW # I honestly cant remember. If you know why let me know.
+    volumes:
+      - ${APPS_FOLDER:?err}/mariadb:/var/lib/mysql
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - TZ=${TIMEZONE:?err}
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=${MYSQL_USER:?err}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?err}
+      
+  # Redis - Redis for Nextcloud
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      nextcloud:
+        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.32"
+    volumes:
+      - ${APPS_FOLDER:?err}/redis:/data  
