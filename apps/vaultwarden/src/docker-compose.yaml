@@ -1,0 +1,27 @@
+networks:
+  vaultwarden:
+    name: vaultwarden
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${VAULTWARDEN_DOCKER_SUBNET:?err}.0/24
+        gateway: ${VAULTWARDEN_DOCKER_SUBNET:?err}.1
+
+services:
+
+  # Vaultwarden - Password Management
+  vaultwarden:
+    image: vaultwarden/server:1.33.2
+    container_name: vaultwarden
+    restart: always
+    networks:
+      vaultwarden:
+        ipv4_address: ${VAULTWARDEN_DOCKER_SUBNET:?err}.10
+    ports:
+      - ${PORT_UI_VAULTWARDEN:?err}:80
+    volumes:
+      - ${APPS_FOLDER:?err}/vaultwarden:/data # config
+    environment:
+      - SIGNUPS_ALLOWED=false
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
