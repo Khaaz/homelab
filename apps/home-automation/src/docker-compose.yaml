@@ -1,0 +1,27 @@
+networks:
+  home-automation:
+    name: home-automation
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${HOME_AUTOMATION_DOCKER_SUBNET:?err}.0/24
+        gateway: ${HOME_AUTOMATION_DOCKER_SUBNET:?err}.1
+
+services:
+    home-assistant:
+      image: lscr.io/linuxserver/homeassistant:latest
+      container_name: home-assistant
+      restart: unless-stopped
+      networks:
+        home-automation:
+          ipv4_address: "${HOME_AUTOMATION_DOCKER_SUBNET:?err}.10"
+      ports:
+        - "${PORT_UI_HOME_ASSISTANT:?err}:8123"
+        - 8123:8123 #optional
+      volumes:
+        - /path/to/homeassistant/data:/config
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Etc/UTC
