@@ -10,17 +10,6 @@ networks:
 
 services:
 
-  # portainer:
-  #   image: portainer/portainer-ce:latest
-  #   container_name: portainer
-  #   restart: always
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ${APPS_FOLDER:?err}/portainer:/data
-  #   ports:
-  #     - "${PORT_UI_PORTAINER:?err}:9443"
-  #   network_mode: bridge
-
   authelia-pre-start:
     image: alpine:latest
     container_name: authelia-pre-start
@@ -98,9 +87,21 @@ services:
       # setup
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - HA_DOMAIN=${HOME_AUTOMATION_DOMAIN:?err}
+      - IM_DOMAIN=${IMMICH_DOMAIN:?err}
       - MS_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
       - MM_DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - NC_DOMAIN=${NEXTCLOUD_DOMAIN:?err}
+      - VW_DOMAIN=${VAULTWARDEN_DOMAIN:?err}
+      - VSC_DOMAIN=${VSCODE_SERVER_DOMAIN:?err}
+      # ports
+      # - RP
       - PORT_UI_AUTHELIA=${PORT_UI_AUTHELIA:?err}
+      # - HA
+      - PORT_UI_HOME_ASSISTANT=${PORT_UI_HOME_ASSISTANT:?err}
+      # - IM
+      - PORT_UI_IMMICH=${PORT_UI_IMMICH:?err}
+      # - MM
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
       - PORT_UI_BAZARR=${PORT_UI_BAZARR:?err}
@@ -110,8 +111,15 @@ services:
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
       - PORT_UI_MAINTAINERR=${PORT_UI_MAINTAINERR:?err}
+      # - MS
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      # - NC
+      - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
+      # - VW
+      - PORT_UI_VAULTWARDEN=${PORT_UI_VAULTWARDEN:?err}
+      # - VSC
+      - PORT_UI_VSCODE_SERVER=${PORT_UI_VSCODE_SERVER:?err}
     post_start:
       - command: /scripts/parse-folder.sh /_setup/templates /config
         user: root
@@ -132,8 +140,13 @@ services:
       - DOCKER_SUBNET=${REVERSE_PROXY_DOCKER_SUBNET:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - RP_HOST_IP=${REVERSE_PROXY_HOST_IP:?err}
+      - HA_HOST_IP=${HOME_AUTOMATION_HOST_IP:?err}
+      - IM_HOST_IP=${IMMICH_HOST_IP:?err}
       - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
+      - NC_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
+      - VW_HOST_IP=${VAULTWARDEN_HOST_IP:?err}
+      - VSC_HOST_IP=${VSCODE_SERVER_HOST_IP:?err}
 
 # DNSMask - DNS server for local resolution
   unbound:
@@ -164,7 +177,7 @@ services:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.20"
     volumes:
       - ${APPS_FOLDER:?err}/ca/certs:/app/certs
-      - ${APPS_FOLDER:?err}/ca/scripts:/scripts
+      # - ${APPS_FOLDER:?err}/ca/scripts:/scripts
       - ${APPS_FOLDER:?err}/swag/keys-private:/swag/keys-private
       - ${APPS_FOLDER:?err}/swag/www:/swag/www
     environment:
