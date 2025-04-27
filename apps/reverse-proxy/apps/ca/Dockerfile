@@ -1,6 +1,7 @@
 FROM golang:latest
 
 ENV DOMAIN="l.ab"
+ENV ROOT_CN="Homelab"
 
 COPY ./scripts /scripts
 

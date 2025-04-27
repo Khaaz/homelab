@@ -20,19 +20,23 @@ Some services are open to a few poeple of trust (eg: Plex, Overser...) from outs
 - CPU fan: Be quiet! Pure Rock Slim 2
 - PSU: Cooler Master MWE 550 Bronze
 - HDD:
+  - Seagate Ironwolf red 8TB
 
 ### Software
 
-- media-server: Media server (Plex)
-- media-management: Media download / management (Starr / Servarr stack)
-- reverse-proxy: Entry point / DNS
-- vpn: VPN to access home network from anywhere
-- home-assistant: Home Assistant
-- nextcloud: Cloud
-- vaultwarden: Selfhosted Bitwarden
-- vscode-server: Vscode server
+- [home-automation](apps/home-automation/README.md): Home assistant and other home automation
+- [immich](apps/immich/README.md): Photo cloud and gallery
+- [media-server](apps/media-server/README.md): Media server (Plex and Overseerr)
+- [media-management](apps/media-management/README.md): Media download and management (Starr / Servarr stack)
+- [reverse-proxy](apps/reverse-proxy/README.md): Entry point, domain, routing and DNS
+- [nextcloud](apps/nextcloud/README.md): Cloud
+- [vaultwarden](apps/vaultwarden/README.md): Selfhosted Bitwarden
+- [vpn](apps/vpn/README.md): VPN to access home network from anywhere
+- [vscode-server](apps/vscode-server/README.md): Vscode server
 
 ## Architecture
+
+The server runs on Linux Debian, with proxmox ()
 
 ### Nas server
 
@@ -44,6 +48,13 @@ Some services are open to a few poeple of trust (eg: Plex, Overser...) from outs
 
 ## Setup
 
+### Hardware build
+
+### System install
+
 - debian preseed
 - proxmox
 - ansible / vagrant for automation
+
+### Software install
+

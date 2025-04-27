@@ -31,36 +31,14 @@ Indexer/Downloader:
 ### TODO
 
 - setup wireguard / use openvpn conf
-- Authelia
-- configs:
-  - automatisation des dernières config
-  - configuration
-    - communication de base
-    - languages (fr / en + vo avec sous titre pour anime)
-  - seeding des configs / query SQL etc pour que tout soit "en dur"
-  - faire marcher bazarr
-- workflow final:
-  - overseer into =>
-  - DL 4k / 1080p (check pour le double DL = sync dans la bibliothèque)
-  - DL anime (+ bonne langue)
-  - DL en FR / en selon le profile (multi langue si possible) 
 - VM with proxmox + test
 - ansible pour automatiser proxmox
 - Faire un petit guide / sortir les options a remplir ou pas en fonction de ce que on veut activer vs les trucs fonctionnels par defaut
 
 TODO conf:
 
-- OK:
-  - qbittorrent
-  - sonarr
-  - radarr
-  - radarr4k
-  - prowlarr
 - DATA SQL:
   - maintainerr
 - DATA CONFIG:
-  - overseer
-  - bazarr
   - homarr
-  - plex
 - AUTOMATISATION:

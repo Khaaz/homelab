@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ## Generate certs
-/app/minica/minica -ca-key root.key -ca-cert root.crt --domains $DOMAIN,*.$DOMAIN -common-name "Homelab"
+/app/minica/minica -ca-key root.key -ca-cert root.crt --domains $DOMAIN,*.$DOMAIN -common-name "$ROOT_CN"
 
 ## root
 # root cert

@@ -177,11 +177,11 @@ services:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.20"
     volumes:
       - ${APPS_FOLDER:?err}/ca/certs:/app/certs
-      # - ${APPS_FOLDER:?err}/ca/scripts:/scripts
       - ${APPS_FOLDER:?err}/swag/keys-private:/swag/keys-private
       - ${APPS_FOLDER:?err}/swag/www:/swag/www
     environment:
       - DOMAIN=${INTERNAL_DOMAIN}
+      - ROOT_CN=${ROOT_COMMON_NAME:?err}
 
 # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:
