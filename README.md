@@ -36,25 +36,82 @@ Some services are open to a few poeple of trust (eg: Plex, Overser...) from outs
 
 ## Architecture
 
-The server runs on Linux Debian, with proxmox ()
+### Server layout
 
-### Nas server
+The server runs Debian with **Proxmox** handling virtualization. Each
+application stack sits in its own virtual machine so services remain
+isolated from one another. The reverse proxy VM acts as the single entry
+point for all external traffic and forwards requests to the other VMs.
 
 ![proxmox](./assets/proxmox.png)
+
+The following VMs are planned:
+
+- `home-automation` – Home Assistant
+- `immich` – photo management
+- `media-management` – download automation tools
+- `media-server` – Plex and Overseerr
+- `nextcloud` – file storage
+- `reverse-proxy` – ingress, DNS and certificates
+- `vaultwarden` – password manager
+- `vscode-server` – remote development
+- `vpn` – remote access gateway
+
+Additional machines can easily be added using the Ansible playbooks.
 
 ### Network
 
 ![network](./assets/network.png)
 
+### Repository structure
+
+- `apps/` – Docker Compose projects for each service
+- `preseed/` – unattended Debian installer files
+- `src/` – automation code (Ansible playbooks and helper scripts)
+- `config/` – shared configuration such as SSH keys
+- `assets/` – diagrams and images
+
 ## Setup
+
+### Prerequisites
+
+- A server capable of running **Proxmox** or an existing Debian installation.
+- Ansible installed on the machine used to run the playbooks.
+- Git and SSH access to clone this repository.
+- (Optional) The Debian netinst ISO if you plan on using the preseed installer.
 
 ### Hardware build
 
+Assemble the hardware listed above or adapt the parts to your own
+requirements.
+
 ### System install
 
-- debian preseed
-- proxmox
-- ansible / vagrant for automation
+1. **Install Debian** – build the automated installer in `preseed/` and boot
+   from it. Skip this step if the machine already runs Debian or Proxmox and go
+   directly to step 2 or 3.
+2. **Provision the host** – run the playbooks in `src/ansible` to install and
+   configure Proxmox on Debian. If Proxmox is already installed, move to the next
+   step.
+3. **Create the virtual machines** – one VM per application. The playbooks can
+   create them automatically, but you may also create them manually if you
+   prefer.
+4. **Clone this repository** on the management VM or directly on the Proxmox
+   host.
 
 ### Software install
+
+1. For each application under `apps/`, copy
+   `src/config/networking.template.env` to `src/config/networking.env` within the
+   application's folder and set the VM IP address and subdomain.
+2. Copy `.env.template` to `.env` in the same folder and fill in the required
+   secrets (API keys, tokens and so on).
+3. Bring the stack online with `./compose.sh up -d`. Use `down` to stop it when
+   needed.
+
+### Automation
+
+Helper scripts will deploy and manage the VMs directly from Proxmox,
+keeping code and environment files up to date. They are located under
+`src/scripts` and will evolve alongside the infrastructure.
 
