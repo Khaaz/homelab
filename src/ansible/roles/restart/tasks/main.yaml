@@ -1,0 +1,8 @@
+---
+- name: Reboot system
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+- name: Wait for SSH to become available
+  ansible.builtin.wait_for_connection:
+    timeout: 600
+    delay: 5

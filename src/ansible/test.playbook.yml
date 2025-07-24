@@ -11,10 +11,6 @@
   hosts: homelab
   gather_facts: false
   tasks:
-    - name: List the contents of /home/ansible on homelab
-      command: ls -la /home/ansible
-      register: ls_output
-
-    - name: Show the output of ls on homelab
+    - name: Print a log message for homelab
       debug:
-        msg: "{{ ls_output.stdout }}"
+        msg: "Hello from Ansible on homelab!"
