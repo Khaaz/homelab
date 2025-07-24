@@ -7,6 +7,7 @@ for torrenting, Prowlarr for indexer management, Radarr and Sonarr for movies
 and series, plus supporting services like Bazarr, FlareSolverr and others.
 
 ### Services
+
 - qBittorrent – handles downloads
 - Prowlarr – manages indexers
 - Radarr/Radarr4K – movie organisation
@@ -26,12 +27,14 @@ connectivity via Gluetun.
 ## Setup
 
 ### Initial setup
+
 1. Copy `src/config/networking.template.env` to `src/config/networking.env` and
    update host IP, domain and port values as needed.
 2. Copy `src/config/.env.template` to `src/config/.env` and fill in VPN
    credentials, API keys and other settings.
 
 ### Environment files
+
 - `.env`
   - `VPN_SERVICE_PROVIDER` – provider name recognised by Gluetun
   - `VPN_USERNAME` / `VPN_PASSWORD` – account credentials for the VPN service
@@ -51,15 +54,18 @@ connectivity via Gluetun.
   - port variables allow overriding each service port if required
 
 ### Running
+
 Start the stack with `./compose.sh up -d`.
 
 ### _setup directory
+
 Each service provides templates and SQL files in its `_setup` folder which are
 applied on first launch.
 
 ## Details
 
 ### Services and ports
+
 - qBittorrent – `8200` (web UI), `6881` (service)
 - Prowlarr – `9696`
 - Radarr – `7878`
@@ -77,6 +83,16 @@ applied on first launch.
 
 - <https://trash-guides.info>
 - <https://MediaStack.Guide>
+- <https://www.qbittorrent.org/>
+- <https://wiki.servarr.com/prowlarr>
+- <https://wiki.servarr.com/radarr>
+- <https://wiki.servarr.com/sonarr>
+- <https://www.bazarr.media/>
+- <https://github.com/FlareSolverr/FlareSolverr>
+- <https://github.com/ajnart/homarr>
+- <https://github.com/jorenn92/maintainerr>
+- <https://github.com/qdm12/gluetun>
+- <https://docs.portainer.io/>
 
 ### Additional links
 
@@ -86,3 +102,4 @@ applied on first launch.
 - usenet:
   - <https://fmhy.net/downloadpiracyguide#usenet>
   - <https://docs.google.com/document/d/1TwUrRj982WlWUhrxvMadq6gdH0mPW0CGtHsTOFWprCo/mobilebasic>
+

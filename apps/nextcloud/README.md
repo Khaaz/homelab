@@ -6,6 +6,7 @@ Self-hosted file storage platform built with Nextcloud backed by MariaDB and
 Redis.
 
 ### Services
+
 - Nextcloud – main application
 - MariaDB – database
 - Redis – cache and lock management
@@ -19,12 +20,14 @@ container, all running on a dedicated Docker network.
 ## Setup
 
 ### Initial setup
+
 1. Copy `src/config/networking.template.env` to `src/config/networking.env` and
    set the host IP and desired subdomain.
 2. Copy `src/config/.env.template` to `src/config/.env` and provide database
    credentials.
 
 ### Environment files
+
 - `.env`
   - `NEXTCLOUD_ADMIN_USER` – administrator username
   - `NEXTCLOUD_ADMIN_PASSWORD` – administrator password
@@ -35,20 +38,26 @@ container, all running on a dedicated Docker network.
   - `NEXTCLOUD_DOMAIN` – subdomain served by the reverse proxy
 
 ### Running
+
 Start the stack with `./compose.sh up -d`.
 
 ### _setup directory
+
 Configuration templates in `_setup` are copied to the container during the
 first run.
 
 ## Details
 
 ### Services and ports
+
 - Nextcloud – `8081`
 - MariaDB – internal only
 - Redis – internal only
 - Post-processing helper – internal only
 
 ### Documentation
+
 - <https://docs.nextcloud.com/>
+- <https://mariadb.com/kb/en/documentation/>
+- <https://redis.io/docs/>
 - <https://chrisgrime.medium.com/deploy-nextcloud-with-docker-compose-935a76a5eb78>

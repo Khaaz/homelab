@@ -8,14 +8,15 @@ automation.
 
 ## Architecture
 
-The folder contains the preseed configuration and a script to build a bootable
-ISO image.
+The folder contains the preseed configuration and scripts used to build a
+bootable ISO image.
 
-- `config/` – preseed files and bootloader configuration
-- `config/custom/` – additional scripts executed during install
+- `config/` – final preseed and bootloader files
+- `config/custom/` – helper scripts and SSH keys copied during install
 - `iso/` – output directory for the generated ISO
-- `log/` – logs and generated files for debugging (ex: preseed generated file)
+- `log/` – logs and generated files for debugging
 - `create_preseeded_iso.sh` – utility script to build the ISO
+- `generate_preseed_cfg.sh` – builds `config/preseed.cfg` from the template
 
 ### Preseed contents
 
@@ -33,6 +34,15 @@ executes a small post-install script. Key actions include:
     `reset_server.sh` script adjusts the EFI boot order so the machine can boot
     again from the USB installer when needed
 - rebooting automatically once installation completes
+
+After installation the system provides both the `homelab` account and an
+`ansible` user configured with your SSH key. The helper script `reset_server.sh`
+can be executed on the server to adjust the EFI boot order and reboot from the
+USB installer when required:
+
+```bash
+sudo /root/bin/reset_server.sh /dev/sdX
+```
 
 ## Setup
 
@@ -54,16 +64,29 @@ executes a small post-install script. Key actions include:
 
 ### Environment files
 
+Copy `src/config/.env.template` to `src/config/.env` and edit the values:
+
+- `DOMAIN` – domain appended to `HOSTNAME`
+- `HOSTNAME` – machine hostname
+- `IP_GATEWAY` – default gateway
+- `IP_NAMESERVER` – DNS server
+- `IP_SERVER` – static IP address assigned during install
+- `DISK` – installation disk (e.g. `/dev/sda`)
+- `ROOT_PASSWORD_CRYPTED` – hashed root password (`openssl passwd -6 'pass'`)
+- `USER_PASSWORD_CRYPTED` – hashed password for the `homelab` user
+
 ### Running
 
 1. Adjust `config/preseed.cfg` if you need to change the language, network
    configuration or disk target. The file uses `/dev/sda` by default but you can
-   replace it with `/dev/nvme0n1` or another drive.
-2. Generate the installer ISO in `iso/<image>_preseed.iso`.
-  ```
-  `sudo ./create_preseeded_iso.sh --preseed-cfg`
-  ```
-  The `--preseed-cfg` option allows to generate the preseed with dynamic values extracted from env files in config/.env 
+   replace it with `/dev/nvme0n1` or another drive. Running the script with
+   `--preseed-cfg` automatically fills the template using values from
+   `src/config/.env`. If omitted, the default `config/preseed.cfg` is used
+   unchanged.
+2. Generate the installer ISO in `iso/<image>_preseed.iso`:
+   ```bash
+   sudo ./create_preseeded_iso.sh --preseed-cfg
+   ```
 3. Flash the ISO to a USB key, e.g.:
    ```bash
    sudo dd if=iso/debian-12.9.0-amd64-netinst_preseed.iso of=/dev/sdX bs=4M status=progress && sync
@@ -84,17 +107,17 @@ executes a small post-install script. Key actions include:
 
 ### Utilities
 
-`netstat -rn` => gateway + ip (ou `ifconfig -a`, `ipconfig /all`)
+Check network information with `netstat -rn` (or `ip addr`).
+Remove saved SSH host keys with `ssh-keygen -R <ip>` if the server has been reinstalled.
+Generate a fresh Ansible key pair:
 
-Remove current authorized key
-`ssh-keygen -R 192.168.1.109`
-
-generate ssh key for ansible
-`ssh-keygen -t rsa -b 4096 -f ../config/ssh/ansible/ansible_key`
-
-how to force rebooting on the disk (this is as script bundled in the preseeded install)
+```bash
+ssh-keygen -t rsa -b 4096 -f ../config/ssh/ansible/ansible_key
 ```
-sudo efibootmgr --create --disk "/dev/sda" --part "1" --loader "\EFI\Boot\bootx64.efi" --label "USB_installer"
-efibootmgr --bootnext "0000"
-sudo reboot
+
+The preseeded system includes `reset_server.sh` under `/root/bin`.
+Run it on the server to reboot from the USB installer again:
+
+```bash
+sudo /root/bin/reset_server.sh /dev/sda
 ```
