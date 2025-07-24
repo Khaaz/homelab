@@ -1,21 +1,47 @@
-# in linux/wsl as root
+#!/bin/sh
 
+# Prerequesites
 get_script_dir() {
   # Get the directory of the currently running script
   local script_dir=$(dirname "$(realpath "$0")")
   echo "$script_dir"
 }
-
 DIRNAME=$(get_script_dir)
 
+ISO="debian-12.9.0-amd64-netinst"
+GENERATE_PRESEED_CFG=false
+while [ $# -gt 0 ]; do
+  case $1 in
+    --iso)
+      ISO="$2"
+      shift 2
+      ;;
+    --preseed-cfg)
+      GENERATE_PRESEED_CFG=true
+      shift 1
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+
+echo "LOG: Start preseed process"
+
+
 # target ISO
-IMAGE="debian-12.9.0-amd64-netinst"
+IMAGE=$ISO
 # preseed folder
-ROOT_PATH=$DIRNAME
+ROOT_PATH="$DIRNAME/.."
 # temporary working folder (extracted iso)
 EXTRACTED_PATH="/root/extracted_iso"
 
-echo "LOG: Root path: $ROOT_PATH"
+echo "LOG: Context - Root path: $ROOT_PATH"
+echo "LOG: Context - Build folder: $EXTRACTED_PATH"
+echo "LOG: Context - ISO: $ROOT_PATH/iso/$IMAGE.iso"
+echo "LOG: Context - Preseeded iso will be: $ROOT_PATH/iso/${IMAGE}_preseed.iso"
 
 ### prerequesites
 
@@ -49,13 +75,25 @@ dd if="${ROOT_PATH}/iso/${IMAGE}.iso" bs=512 count=1 of=$EXTRACTED_PATH/isolinux
 # add custom config
 cp $ROOT_PATH/config/isolinux/menu.cfg $EXTRACTED_PATH/isolinux/menu.cfg # (= legacy BIOS compatbility =)
 cp $ROOT_PATH/config/boot/grub.cfg $EXTRACTED_PATH/boot/grub/grub.cfg # (= EFI =)
-cp $ROOT_PATH/config/preseed.cfg $EXTRACTED_PATH/preseed.cfg
+# If --generate-preseed-cfg is set, generate and replace preseed.cfg in extracted data
+echo "LOG: Copying preseed.cfg"
+if [ "$GENERATE_PRESEED_CFG" = true ]; then
+  echo "LOG: Generating custom preseed.cfg using generate_preseed_cfg.sh"
+  $ROOT_PATH/src/generate_preseed_cfg.sh "$EXTRACTED_PATH/preseed.cfg"
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to generate preseed.cfg"
+    exit 1
+  fi
+  cp $EXTRACTED_PATH/preseed.cfg $ROOT_PATH/log/preseed.cfg
+else
+  cp $ROOT_PATH/config/preseed.cfg $EXTRACTED_PATH/preseed.cfg
+fi
 
 # add custom
 mkdir $EXTRACTED_PATH/custom
-cp -R $ROOT_PATH/custom/scripts $EXTRACTED_PATH/custom/scripts
+cp -R $ROOT_PATH/config/custom/scripts $EXTRACTED_PATH/custom/scripts
 mkdir $EXTRACTED_PATH/custom/ssh
-cp $ROOT_PATH/custom/ssh/ansible.sudoers $EXTRACTED_PATH/custom/ssh/ansible.sudoers
+cp $ROOT_PATH/config/custom/ssh/ansible.sudoers $EXTRACTED_PATH/custom/ssh/ansible.sudoers
 # fetch ansible_key from root config
 cp $ROOT_PATH/../config/ssh/ansible/ansible_key.pub $EXTRACTED_PATH/custom/ssh/ansible_key.pub
 
@@ -83,4 +121,5 @@ xorriso -as mkisofs \
 
 cp /root/debian_preseed.iso ${ROOT_PATH}/iso/${IMAGE}_preseed.iso
 
-echo "Preseed image written to ${ROOT_PATH}/iso/${IMAGE}_preseed.iso"
+echo "LOG: End preseed process"
+echo "LOG: Preseeded image written to ${ROOT_PATH}/iso/${IMAGE}_preseed.iso"

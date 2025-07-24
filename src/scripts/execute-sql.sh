@@ -1,7 +1,11 @@
 #!/bin/sh
 
-# prerequesites
-. /scripts/lib/get-script-dir.sh
+# Prerequesites
+get_script_dir() {
+  # Get the directory of the currently running script
+  local script_dir=$(dirname "$(realpath "$0")")
+  echo "$script_dir"
+}
 DIRNAME=$(get_script_dir)
 
 # Import the dependencies function
@@ -46,13 +50,13 @@ install_dependencies sqlite gettext
 PREPROCESSED_SQL=$(preprocess_sql_script "$SQL_SCRIPT_PATH")
 
 # Execute DB file
-echo "INIT: Executing SQL script '$SQL_SCRIPT_PATH' against database '$DB_PATH'..."
+echo "SQL_EXECUTOR: Executing SQL script '$SQL_SCRIPT_PATH' against database '$DB_PATH'..."
 echo "$PREPROCESSED_SQL" | sqlite3 "$DB_PATH"
 
 if [ $? -eq 0 ]; then
-  echo "INIT: Success => Successfully executed SQL script."
+  echo "SQL_EXECUTOR: Success => Successfully executed SQL script."
   exit 0
 else
-  echo "INIT: Error => Failed to execute SQL script."
+  echo "SQL_EXECUTOR: Error => Failed to execute SQL script."
   exit 1
 fi

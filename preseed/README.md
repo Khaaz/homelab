@@ -52,6 +52,8 @@ with rufus => write the debian_preseed iso on the key
 insert key in USB 2.0 port
 start the server, it should auto install
 
+`netstat -rn` => gateway + ip (ou `ifconfig -a`, `ipconfig /all`)
+
 TODO:
 - check network config? (if we even want to do that)
 - check how to "reset" server easily

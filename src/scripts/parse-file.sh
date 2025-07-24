@@ -1,6 +1,11 @@
 #!/bin/sh
 
-. /scripts/lib/get-script-dir.sh
+# Prerequesites
+get_script_dir() {
+  # Get the directory of the currently running script
+  local script_dir=$(dirname "$(realpath "$0")")
+  echo "$script_dir"
+}
 DIRNAME=$(get_script_dir)
 
 # Import the parse file function
@@ -28,13 +33,13 @@ fi
 ## Core
 install_dependencies gettext
 
-echo "INIT: Processing file '$INPUT_FILE' as '$OUTPUT_FILE'..."
+echo "FILE_PARSER: Processing file '$INPUT_FILE' as '$OUTPUT_FILE'..."
 parse_file $INPUT_FILE > $OUTPUT_FILE
 
 if [ $? -eq 0 ]; then
-  echo "INIT: Success => Successfully processed file. Output written to: $OUTPUT_FILE"
+  echo "FILE_PARSER: Success => Successfully processed file. Output written to: $OUTPUT_FILE"
   exit 0
 else
-  echo "INIT: Error => Failed to process file."
+  echo "FILE_PARSER: Error => Failed to process file."
   exit 1
 fi

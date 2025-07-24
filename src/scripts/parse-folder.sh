@@ -1,6 +1,11 @@
 #!/bin/sh
 
-. /scripts/lib/get-script-dir.sh
+# Prerequesites
+get_script_dir() {
+  # Get the directory of the currently running script
+  local script_dir=$(dirname "$(realpath "$0")")
+  echo "$script_dir"
+}
 DIRNAME=$(get_script_dir)
 
 ## Usage
@@ -46,12 +51,13 @@ process_files() {
 }
 
 # Start the processing from the input directory
+echo "FOLDER_PARSER: Processing folder '$INPUT_DIR' as '$OUTPUT_DIR'..."
 process_files "$INPUT_DIR"
 
 if [ $? -eq 0 ]; then
-  echo "INIT: Success => Successfully parsed folder."
+  echo "FOLDER_PARSER: Success => Successfully parsed folder."
   exit 0
 else
-  echo "INIT: Error => Failed to parse folder."
+  echo "FOLDER_PARSER: Error => Failed to parse folder."
   exit 1
 fi
