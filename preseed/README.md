@@ -12,8 +12,9 @@ The folder contains the preseed configuration and a script to build a bootable
 ISO image.
 
 - `config/` – preseed files and bootloader configuration
-- `custom/` – additional scripts executed during install
+- `config/custom/` – additional scripts executed during install
 - `iso/` – output directory for the generated ISO
+- `log/` – logs and generated files for debugging (ex: preseed generated file)
 - `create_preseeded_iso.sh` – utility script to build the ISO
 
 ### Preseed contents
@@ -35,7 +36,7 @@ executes a small post-install script. Key actions include:
 
 ## Setup
 
-### Prerequisites
+### Initial setup
 
 - Download the official Debian netinst ISO referenced in `create_preseeded_iso.sh`
   (by default `debian-12.9.0-amd64-netinst.iso`) and place it in the `iso/`
@@ -51,11 +52,18 @@ executes a small post-install script. Key actions include:
   sudo apt-get update && sudo apt-get install -y xorriso
   ```
 
+### Environment files
+
+### Running
+
 1. Adjust `config/preseed.cfg` if you need to change the language, network
    configuration or disk target. The file uses `/dev/sda` by default but you can
    replace it with `/dev/nvme0n1` or another drive.
-2. Execute `sudo ./create_preseeded_iso.sh` to generate the installer ISO in
-   `iso/<image>_preseed.iso`.
+2. Generate the installer ISO in `iso/<image>_preseed.iso`.
+  ```
+  `sudo ./create_preseeded_iso.sh --preseed-cfg`
+  ```
+  The `--preseed-cfg` option allows to generate the preseed with dynamic values extracted from env files in config/.env 
 3. Flash the ISO to a USB key, e.g.:
    ```bash
    sudo dd if=iso/debian-12.9.0-amd64-netinst_preseed.iso of=/dev/sdX bs=4M status=progress && sync
@@ -69,47 +77,24 @@ executes a small post-install script. Key actions include:
 
 ### Documentation
 
-- <https://pve.proxmox.com/wiki/Install_Proxmox_VE_on_Debian_12_Bookworm>
-- <https://pve.proxmox.com/wiki/Unattended_installation_of_Proxmox>
+- <https://www.debian.org/releases/bookworm/example-preseed.txt>
+- <https://gist.githubusercontent.com/zyra83/fd9409d618944ecb71269a86830805b6/raw/8049c3aa3bbd8a7951e579d44892150b77171ad1/amd64-main-full.txt>
+- <https://github.com/yannbreizh/debian-installer/blob/master/preseed-192.168.10.35.cfg>
+- <https://github.com/Tontonjo/debian/blob/master/preseed/jo/preseed.cfg>
 
-Sources:
-https://www.debian.org/releases/bookworm/example-preseed.txt
-https://gist.githubusercontent.com/zyra83/fd9409d618944ecb71269a86830805b6/raw/8049c3aa3bbd8a7951e579d44892150b77171ad1/amd64-main-full.txt
-https://github.com/yannbreizh/debian-installer/blob/master/preseed-192.168.10.35.cfg
-https://github.com/Tontonjo/debian/blob/master/preseed/jo/preseed.cfg
-
-
-config/
-boot/ => UEFI setup
-isolinux/ => Legacy/BIOS mode
-
-in wsl, as root
-`./create_preseeded_iso.sh`
-
-with rufus => write the debian_preseed iso on the key
-insert key in USB 2.0 port
-start the server, it should auto install
+### Utilities
 
 `netstat -rn` => gateway + ip (ou `ifconfig -a`, `ipconfig /all`)
-
-TODO:
-- check network config? (if we even want to do that)
-- check how to "reset" server easily
 
 Remove current authorized key
 `ssh-keygen -R 192.168.1.109`
 
+generate ssh key for ansible
 `ssh-keygen -t rsa -b 4096 -f ../config/ssh/ansible/ansible_key`
 
+how to force rebooting on the disk (this is as script bundled in the preseeded install)
 ```
 sudo efibootmgr --create --disk "/dev/sda" --part "1" --loader "\EFI\Boot\bootx64.efi" --label "USB_installer"
 efibootmgr --bootnext "0000"
 sudo reboot
 ```
-
-
-TODO:
-add root password as env var or as param in the command line
-sed preseed to replace the value with the root password
-sed preseed to replace network config
-make network config work (?)

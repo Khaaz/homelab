@@ -74,5 +74,15 @@ applied on first launch.
 - Portainer – `9000`
 
 ### Documentation
+
 - <https://trash-guides.info>
 - <https://MediaStack.Guide>
+
+### Additional links
+
+- <https://fmhy.net/downloadpiracyguide>
+- torrent:
+  - <https://fmhy.net/videopiracyguide#torrent-sites>
+- usenet:
+  - <https://fmhy.net/downloadpiracyguide#usenet>
+  - <https://docs.google.com/document/d/1TwUrRj982WlWUhrxvMadq6gdH0mPW0CGtHsTOFWprCo/mobilebasic>

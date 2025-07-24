@@ -51,3 +51,4 @@ first run.
 
 ### Documentation
 - <https://docs.nextcloud.com/>
+- <https://chrisgrime.medium.com/deploy-nextcloud-with-docker-compose-935a76a5eb78>
