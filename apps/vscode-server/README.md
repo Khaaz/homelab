@@ -2,51 +2,126 @@
 
 ## Context
 
-Web-based VS Code instance for managing this repository remotely.
+### Overview
+
+Web-based VS Code instance for managing this repository remotely. This stack provides secure, remote development access to your homelab codebase.
 
 ### Services
 
-- code-server – remote VS Code instance
+- **code-server**: Remote VS Code instance
 
 ## Architecture
 
-Two containers prepare the environment and run `code-server` on a dedicated
-Docker network.
+### Schema
+
+(To be added)
+
+### Features
+
+- Multi-container deployment: All services run in dedicated containers on an isolated Docker network for security and reliability.
+- Configuration templates: Initial configuration is applied from the `_setup` directory on first start.
+- Reverse proxy integration: Designed to work with a reverse proxy for secure external access and custom domains.
+- Extensible: Add functionality with integrations, add-ons, and custom scripts.
+
+### File structure
+
+- `apps/`: Contains all apps for this stack.
+  - `vscode-server/`
+- `src/`: Docker Compose file and configuration templates for vscode-server.
+  - `docker-compose.yaml`
+  - `config/`: Stores environment files and configuration templates.
+- `compose.sh`: main script to start the stack
+
+### _setup directory
+
+A `_setup` directory can be added in each app in the stack to help automating the setup of the app.
+
+Configuration templates stored in `_setup` are automatically applied the first time the container is started, ensuring a consistent initial setup. 
+
+- SQL files in `_setup/sql` are executed against the database (if any)
+- Template files in `_setup/templates` are parsed and filled with environment variable values. 
+
+These operations are handled via the `post_start` hook in the Docker Compose configuration, using scripts located in `src/scripts` at the root of the monorepo.
+
+A setup directory look like this:
+- `_setup/`: Initial configuration templates applied on first container start.
+  - `_setup/sql/`: SQL files to be executed against the database (if any).
+  - `_setup/templates/`: Template files parsed and filled with environment variable values.
 
 ## Setup
 
 ### Initial setup
 
-1. Copy `src/config/networking.template.env` to `src/config/networking.env` and
-   set the host IP and domain.
-2. Copy `src/config/.env.template` to `src/config/.env` and set a password in
-   `VSCODE_SERVER_PASSWORD`.
+1. Copy the networking environment template:
+   ```bash
+   cp src/config/networking.template.env src/config/networking.env
+   ```
+   Adjust the environment variables, see next section.
+2. Copy the main environment template:
+   ```bash
+   cp src/config/.env.template src/config/.env
+   ```
+   Adjust the environment variables, see next section.
 
 ### Environment files
 
-- `.env`
-  - `VSCODE_SERVER_PASSWORD` – hashed password generated with
-    `./src/scripts/utils/encrypt-argon <password>`
-- `networking.env`
-  - `VSCODE_SERVER_HOST_IP` – IP address of the VM
-  - `VSCODE_SERVER_DOMAIN` – subdomain for the code server
+- **.env**: Used to override values from `default.env` if needed. Set the hashed password (generate with `./src/scripts/utils/encrypt-argon <password>`).
+- **networking.env**: Used to configure network settings for the stack.
 
-### Running
+| Variable                   | Description                                         | Example           |
+|----------------------------|-----------------------------------------------------|-------------------|
+| VSCODE_SERVER_HOST_IP      | IP address of the VM                                | 192.168.1.107     |
+| VSCODE_SERVER_DOMAIN       | Main domain served by the reverse proxy             | code.l.ab         |
+| VSCODE_SERVER_PASSWORD     | Hashed password for code-server                     | $argon2id$...     |
 
-Start the stack with `./compose.sh up -d`.
+### Running service
 
-### _setup directory
+Start the stack with:
 
-Initial configuration files are taken from the `_setup` directory when the
-container starts for the first time.
+```bash
+./compose.sh up -d
+```
+
+This will launch the code-server container and apply configuration templates from `_setup` on first start.
+
+### Accessing service
+
+- **URL:** `http://127.0.0.1:8086` (or your reverse proxy domain)
+- **Default port:** `8086`
+
+### Environment files
+
+**networking.env**
+| Variable               | Description                                 | Example         |
+|------------------------|---------------------------------------------|-----------------|
+| VSCODE_SERVER_HOST_IP  | IP of the machine that hosts this stack     | 192.168.1.107   |
+| VSCODE_SERVER_DOMAIN   | Custom subdomain (root domain should match) | code.l.ab       |
+
+**.env**
+| Variable                | Description                                 | Example         |
+|------------------------|---------------------------------------------|-----------------|
+| VSCODE_SERVER_PASSWORD | Hashed password for code-server (see instructions above) | $argon2id$...   |
+
+You may override any other environment variable as needed in either file.
 
 ## Details
 
 ### Services and ports
 
-- code-server – `8086`
+- code-server - `8086`
+
+### Use cases
+
+- Remote development
+- Secure codebase access
 
 ### Documentation
 
-- <https://github.com/coder/code-server>
-- <https://coder.com/docs/code-server/latest>
+- [code-server Main Site](https://github.com/coder/code-server)
+- [code-server Docs](https://coder.com/docs/code-server/latest)
+
+### Troubleshooting
+
+- Check container logs with `docker logs <container_name>`
+- Review configuration files in `src/config/`
+- For network issues, verify your reverse proxy and DNS settings

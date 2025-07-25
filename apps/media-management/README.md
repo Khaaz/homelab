@@ -2,97 +2,157 @@
 
 ## Context
 
-Automates downloads and organises the media library. It combines qBittorrent
-for torrenting, Prowlarr for indexer management, Radarr and Sonarr for movies
-and series, plus supporting services like Bazarr, FlareSolverr and others.
+### Overview
+
+Automates downloads and organizes the media library. This stack combines qBittorrent for torrenting, Prowlarr for indexer management, Radarr and Sonarr for movies and series, plus supporting services like Bazarr, FlareSolverr, Homarr, Maintainerr, Gluetun (VPN), and Portainer.
 
 ### Services
 
-- qBittorrent – handles downloads
-- Prowlarr – manages indexers
-- Radarr/Radarr4K – movie organisation
-- Sonarr/Sonarr4K – series organisation
-- Bazarr – subtitle management
-- FlareSolverr – bypasses Cloudflare checks
-- Homarr – dashboard for quick links
-- Maintainerr – health overview
-- Gluetun – optional VPN tunnel
-- Portainer – container management UI
+- **qBittorrent**: Handles downloads
+- **Prowlarr**: Manages indexers
+- **Radarr/Radarr4K**: Movie organization
+- **Sonarr/Sonarr4K**: Series organization
+- **Bazarr**: Subtitle management
+- **FlareSolverr**: Bypasses Cloudflare checks
+- **Homarr**: Dashboard for quick links
+- **Maintainerr**: Health overview
+- **Gluetun**: Optional VPN tunnel
+- **Portainer**: Container management UI
 
 ## Architecture
 
-Multiple containers share a dedicated Docker network with optional VPN
-connectivity via Gluetun.
+### Schema
+
+(To be added)
+
+### Features
+
+- Multi-container deployment: All services run in dedicated containers on an isolated Docker network for security and reliability.
+- Configuration templates: Initial configuration is applied from the `_setup` directory on first start.
+- Reverse proxy integration: Designed to work with a reverse proxy for secure external access and custom domains.
+- VPN support: Gluetun provides optional VPN connectivity for privacy.
+- Extensible: Add functionality with integrations, add-ons, and custom scripts.
+
+### File structure
+
+- `apps/`: Contains all apps for this stack.
+  - `bazarr/`, `gluetun/`, `homarr/`, `maintainerr/`, `prowlarr/`, `qbittorrent/`, `radarr/`, `radarr4k/`, `sabnzbd/`, `sonarr/`, `sonarr4k/`, `tdarr/`, `unpackerr/`, etc.
+- `src/`: Docker Compose file and configuration templates for media-management.
+  - `docker-compose.yaml`
+  - `config/`: Stores environment files and configuration templates.
+- `compose.sh`: main script to start the stack
+
+### _setup directory
+
+A `_setup` directory can be added in each app in the stack to help automating the setup of the app.
+
+Configuration templates stored in `_setup` are automatically applied the first time the container is started, ensuring a consistent initial setup. 
+
+- SQL files in `_setup/sql` are executed against the database (if any)
+- Template files in `_setup/templates` are parsed and filled with environment variable values. 
+
+These operations are handled via the `post_start` hook in the Docker Compose configuration, using scripts located in `src/scripts` at the root of the monorepo.
+
+A setup directory look like this:
+- `_setup/`: Initial configuration templates applied on first container start.
+  - `_setup/sql/`: SQL files to be executed against the database (if any).
+  - `_setup/templates/`: Template files parsed and filled with environment variable values.
 
 ## Setup
 
 ### Initial setup
 
-1. Copy `src/config/networking.template.env` to `src/config/networking.env` and
-   update host IP, domain and port values as needed.
-2. Copy `src/config/.env.template` to `src/config/.env` and fill in VPN
-   credentials, API keys and other settings.
+1. Copy the networking environment template:
+   ```bash
+   cp src/config/networking.template.env src/config/networking.env
+   ```
+   Adjust the environment variables, see next section.
+2. Copy the main environment template:
+   ```bash
+   cp src/config/.env.template src/config/.env
+   ```
+   Adjust the environment variables, see next section.
 
 ### Environment files
 
-- `.env`
-  - `VPN_SERVICE_PROVIDER` – provider name recognised by Gluetun
-  - `VPN_USERNAME` / `VPN_PASSWORD` – account credentials for the VPN service
-  - `API_KEY_PROWLARR` – API key for Prowlarr (any random string)
-  - `API_KEY_BAZARR` – API key for Bazarr (any random string)
-  - `API_KEY_RADARR` / `API_KEY_RADARR4K` – API keys for the Radarr instances
-  - `API_KEY_SONARR` / `API_KEY_SONARR4K` – API keys for the Sonarr instances
-  - `API_KEY_MAINTAINERR` – API key for Maintainerr
-  - `API_KEY_OVERSEERR` – key used by Overseerr when connecting to this stack
-  - `PLEX_CLAIM` – Plex claim token from <https://plex.tv/claim> (optional)
-  - `PLEX_FRIENDLY_NAME` – name of the Plex server
-  - `OPENSUBTITLE_USERNAME` / `OPENSUBTITLE_PASSWORD` – credentials from
-    <https://www.opensubtitles.com/> (optional)
-- `networking.env`
-  - `MEDIA_MANAGEMENT_HOST_IP` – IP address of the VM
-  - `MEDIA_MANAGEMENT_DOMAIN` – subdomain routed to this stack
-  - port variables allow overriding each service port if required
+**networking.env**
+| Variable                  | Description                                 | Example         |
+|---------------------------|---------------------------------------------|-----------------|
+| MEDIA_MANAGEMENT_HOST_IP  | IP of the machine that hosts this stack     | 192.168.1.102   |
+| MEDIA_MANAGEMENT_DOMAIN   | Custom subdomain (root domain should match) | media.l.ab      |
 
-### Running
+**.env**
+| Variable                  | Description                                 | Example           |
+|---------------------------|---------------------------------------------|-------------------|
+| VPN_SERVICE_PROVIDER      | VPN provider name (e.g., nordvpn, protonvpn)| protonvpn          |
+| VPN_USERNAME              | VPN account username                        | user               |
+| VPN_PASSWORD              | VPN account password                        | pass               |
+| API_KEY_PROWLARR          | API key for Prowlarr                        | randomstring       |
+| API_KEY_BAZARR            | API key for Bazarr                          | randomstring       |
+| API_KEY_RADARR            | API key for Radarr                          | randomstring       |
+| API_KEY_RADARR4K          | API key for Radarr4K                        | randomstring       |
+| API_KEY_SONARR            | API key for Sonarr                          | randomstring       |
+| API_KEY_SONARR4K          | API key for Sonarr4K                        | randomstring       |
+| API_KEY_MAINTAINERR       | API key for Maintainerr                     | randomstring       |
+| API_KEY_OVERSEERR         | API key for Overseerr                       | randomstring       |
+| PLEX_CLAIM                | Plex claim token (https://plex.tv/claim)     | claim-xxxx         |
+| PLEX_FRIENDLY_NAME        | Name of the Plex server                      | media-server       |
+| OPENSUBTITLE_USERNAME     | OpenSubtitles username (optional)            | user               |
+| OPENSUBTITLE_PASSWORD     | OpenSubtitles password (optional)            | pass               |
 
-Start the stack with `./compose.sh up -d`.
+You may override any other environment variable as needed in either file.
 
-### _setup directory
+### Running service
 
-Each service provides templates and SQL files in its `_setup` folder which are
-applied on first launch.
+Start the stack with:
+
+```bash
+./compose.sh up -d
+```
+
+This will launch all containers and apply configuration templates from `_setup` on first start.
+
+### Accessing service
+
+- **URL:** Service URLs depend on your reverse proxy and port configuration.
 
 ## Details
 
 ### Services and ports
 
-- qBittorrent – `8200` (web UI), `6881` (service)
-- Prowlarr – `9696`
-- Radarr – `7878`
-- Radarr4K – `7879`
-- Sonarr – `8989`
-- Sonarr4K – `8988`
-- Bazarr – `6767`
-- FlareSolverr – `8191`
-- Homarr – `7575`
-- Maintainerr – `6246`
-- Gluetun – `8320`
-- Portainer – `9000`
+- qBittorrent - `8080`
+- Prowlarr - `9696`
+- Radarr - `7878`
+- Radarr4k - `7879`
+- Sonarr - `8989`
+- Sonarr4k - `8988`
+- Bazarr - `6767`
+- Homarr - `7575`
+- Maintainerr - `8081`
+- Gluetun - internal only
+
+### Use cases
+
+- Automated downloads and organization of media
+- Subtitle management
+- Health monitoring
+- VPN privacy for downloads
 
 ### Documentation
 
+- [qBittorrent](https://www.qbittorrent.org/)
+- [Prowlarr](https://wiki.servarr.com/prowlarr)
+- [Radarr](https://wiki.servarr.com/radarr)
+- [Sonarr](https://wiki.servarr.com/sonarr)
+- [Bazarr](https://wiki.servarr.com/bazarr)
+- [Bazarr](https://www.bazarr.media/)
+- [Homarr](https://github.com/ajnart/homarr)
+- [Maintainerr](https://github.com/jorenn92/maintainerr)
+- [Qbittorrent](https://www.qbittorrent.org/)
+- [Flaresolverr](https://github.com/FlareSolverr/FlareSolverr)
+- [Gluetun](https://github.com/qdm12/gluetun)
 - <https://trash-guides.info>
 - <https://MediaStack.Guide>
-- <https://www.qbittorrent.org/>
-- <https://wiki.servarr.com/prowlarr>
-- <https://wiki.servarr.com/radarr>
-- <https://wiki.servarr.com/sonarr>
-- <https://www.bazarr.media/>
-- <https://github.com/FlareSolverr/FlareSolverr>
-- <https://github.com/ajnart/homarr>
-- <https://github.com/jorenn92/maintainerr>
-- <https://github.com/qdm12/gluetun>
-- <https://docs.portainer.io/>
 
 ### Additional links
 
@@ -103,3 +163,11 @@ applied on first launch.
   - <https://fmhy.net/downloadpiracyguide#usenet>
   - <https://docs.google.com/document/d/1TwUrRj982WlWUhrxvMadq6gdH0mPW0CGtHsTOFWprCo/mobilebasic>
 
+### Troubleshooting
+
+- Check container logs with `docker logs <container_name>`
+- Review configuration files in `src/config/`
+- For network issues, verify your reverse proxy and DNS settings
+
+Each service provides templates and SQL files in its `_setup` folder which are
+applied on first launch.
