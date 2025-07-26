@@ -32,14 +32,12 @@ OPENSUBTITLE_PASSWORD=""
 # duplicate from media-server
 API_KEY_OVERSEERR=""
 PLEX_CLAIM=""
-PLEX_FRIENDLY_NAME=""
 
 [media-server]
 PLEX_CLAIM=""
 PLEX_USERNAME=""
 PLEX_EMAIL=""
 PLEX_MACHINE_IDENTIFIER=""
-PLEX_FRIENDLY_NAME=""
 
 # duplicate from media-management
 API_KEY_OVERSEERR=""
