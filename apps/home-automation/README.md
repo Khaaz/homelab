@@ -65,19 +65,20 @@ A setup directory look like this:
   Adjust the environment variables, see next section.
 2. Copy the main environment template:
    ```bash
-   cp src/config/.env.template src/config/.env
+   cp src/config/template.env src/config/.env
    ```
   Adjust the environment variables, see next section.
 
 ### Environment files
 
-**networking.env**
+**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
+
 | Variable                | Description                                 | Example         |
 |-------------------------|---------------------------------------------|-----------------|
 | HOME_AUTOMATION_HOST_IP | IP of the machine that hosts this stack     | 192.168.1.100   |
-| HOME_AUTOMATION_DOMAIN  | Custom subdomain (root domain should match) | l.ab            |
 
-**.env**
+**.env**: Used to override values from `default.env` if needed (see `template.env`).
+
 | Variable     | Description                                 | Example |
 |--------------|---------------------------------------------|---------|
 | (none)       | No secrets required for this stack           |         |

@@ -94,14 +94,16 @@ A setup directory look like this:
 
 ### Environment files
 
-**networking.env**
+**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
+
 | Variable               | Description                                 | Example         |
 |------------------------|---------------------------------------------|-----------------|
 | REVERSE_PROXY_HOST_IP  | IP of the machine that hosts this stack     | 192.168.1.105   |
 
-**.env**
+**.env**: Used to override values from `default.env` if needed (see `template.env`).
+
 | Variable                  | Description                                                      | Example                |
-|--------------------------|------------------------------------------------------------------|------------------------|
+|--------------------------|-------------------------------------------------------------------|------------------------|
 | INTERNAL_DOMAIN          | Internal domain for DNS and certificates                          | l.ab                   |
 | EXTERNAL_DOMAIN          | External domain for public access                                 | example.com            |
 | ROOT_COMMON_NAME         | Common name for root certificate (minica)                         | Homelab                |
@@ -110,7 +112,7 @@ A setup directory look like this:
 | AUTHELIA_ENCRYPTION_KEY  | Encryption key for Authelia DB (min 20 chars)                     | randomstring           |
 | AUTHELIA_USER_NAME       | Authelia admin username                                           | admin                  |
 | AUTHELIA_USER_EMAIL      | Authelia admin email                                              | admin@gmail.com        |
-| AUTHELIA_USER_PASSWORD   | Authelia admin password hash (see instructions in template)        | $argon2id$...          |
+| AUTHELIA_USER_PASSWORD   | Authelia admin password hash (see instructions in template)       | $argon2id$...          |
 
 You may override any other environment variable as needed in either file.
 

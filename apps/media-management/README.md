@@ -69,21 +69,23 @@ A setup directory look like this:
    Adjust the environment variables, see next section.
 2. Copy the main environment template:
    ```bash
-   cp src/config/.env.template src/config/.env
+   cp src/config/template.env src/config/.env
    ```
    Adjust the environment variables, see next section.
 
 ### Environment files
 
-**networking.env**
+**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
+
 | Variable                  | Description                                 | Example         |
 |---------------------------|---------------------------------------------|-----------------|
 | MEDIA_MANAGEMENT_HOST_IP  | IP of the machine that hosts this stack     | 192.168.1.102   |
-| MEDIA_MANAGEMENT_DOMAIN   | Custom subdomain (root domain should match) | media.l.ab      |
 
-**.env**
-| Variable                  | Description                                 | Example           |
-|---------------------------|---------------------------------------------|-------------------|
+**.env**: Used to override values from `default.env` if needed (see `template.env`).
+
+| Variable                  | Description                                 | Example            |
+|---------------------------|---------------------------------------------|--------------------|
+| INTERNAL_DOMAIN           | Internal domain                             | l.ab               |
 | VPN_SERVICE_PROVIDER      | VPN provider name (e.g., nordvpn, protonvpn)| protonvpn          |
 | VPN_USERNAME              | VPN account username                        | user               |
 | VPN_PASSWORD              | VPN account password                        | pass               |
@@ -95,8 +97,8 @@ A setup directory look like this:
 | API_KEY_SONARR4K          | API key for Sonarr4K                        | randomstring       |
 | API_KEY_MAINTAINERR       | API key for Maintainerr                     | randomstring       |
 | API_KEY_OVERSEERR         | API key for Overseerr                       | randomstring       |
-| PLEX_CLAIM                | Plex claim token (https://plex.tv/claim)     | claim-xxxx         |
-| PLEX_FRIENDLY_NAME        | Name of the Plex server                      | media-server       |
+| PLEX_CLAIM                | Plex claim token (https://plex.tv/claim)    | claim-xxxx         |
+| PLEX_FRIENDLY_NAME        | Name of the Plex server (default: media-server) | media-server       |
 | OPENSUBTITLE_USERNAME     | OpenSubtitles username (optional)            | user               |
 | OPENSUBTITLE_PASSWORD     | OpenSubtitles password (optional)            | pass               |
 

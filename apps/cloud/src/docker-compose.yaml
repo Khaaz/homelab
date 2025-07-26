@@ -1,12 +1,12 @@
 networks:
-  nextcloud:
-    name: nextcloud
+  cloud:
+    name: cloud
     driver: bridge
     ipam:
       driver: default
       config:
-      - subnet: ${NEXTCLOUD_DOCKER_SUBNET:?err}.0/24
-        gateway: ${NEXTCLOUD_DOCKER_SUBNET:?err}.1
+      - subnet: ${CLOUD_DOCKER_SUBNET:?err}.0/24
+        gateway: ${CLOUD_DOCKER_SUBNET:?err}.1
 
 services:
 
@@ -16,8 +16,8 @@ services:
     container_name: nextcloud
     restart: unless-stopped
     networks:
-      nextcloud:
-        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.10"
+      cloud:
+        ipv4_address: "${CLOUD_DOCKER_SUBNET:?err}.10"
     depends_on:
       - mariadb 
       - redis
@@ -46,8 +46,8 @@ services:
     container_name: nextcloud_post_processing
     restart: "no"
     networks:
-      nextcloud:
-        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.20"
+      cloud:
+        ipv4_address: "${CLOUD_DOCKER_SUBNET:?err}.20"
     depends_on:
       - nextcloud
     entrypoint: >
@@ -68,8 +68,8 @@ services:
     container_name: mariadb 
     restart: unless-stopped 
     networks:
-      nextcloud:
-        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.31"
+      cloud:
+        ipv4_address: "${CLOUD_DOCKER_SUBNET:?err}.31"
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW # I honestly cant remember. If you know why let me know.
     volumes:
       - ${APPS_FOLDER:?err}/mariadb:/var/lib/mysql
@@ -87,7 +87,7 @@ services:
     image: redis:alpine
     container_name: redis
     networks:
-      nextcloud:
-        ipv4_address: "${NEXTCLOUD_DOCKER_SUBNET:?err}.32"
+      cloud:
+        ipv4_address: "${CLOUD_DOCKER_SUBNET:?err}.32"
     volumes:
       - ${APPS_FOLDER:?err}/redis:/data  

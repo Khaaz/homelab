@@ -60,29 +60,29 @@ A setup directory look like this:
    Adjust the environment variables, see next section.
 2. Copy the main environment template:
    ```bash
-   cp src/config/.env.template src/config/.env
+   cp src/config/template.env src/config/.env
    ```
    Adjust the environment variables, see next section.
 
 ### Environment files
 
-**networking.env**: Used to configure network settings for the stack.
+**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
 
 | Variable              | Description                                      | Example           |
 |-----------------------|--------------------------------------------------|-------------------|
 | MEDIA_SERVER_HOST_IP  | IP of the machine that hosts this stack          | 192.168.1.103     |
-| MEDIA_SERVER_DOMAIN   | Custom subdomain (root domain should match)      | plex.l.ab         |
 
-**.env**: Used to override values from `default.env` if needed.
+**.env**: Used to override values from `default.env` if needed (see `template.env`).
 
-| Variable                   | Description                                                        | Example                |
-|----------------------------|--------------------------------------------------------------------|------------------------|
-| EXTERNAL_DOMAIN            | External domain for Plex (reverse proxy)                            | example.com            |
+| Variable                   | Description                                                         | Example                |
+|----------------------------|---------------------------------------------------------------------|------------------------|
+| EXTERNAL_DOMAIN            | External domain (reverse proxy)                                     | example.com            |
+| INTERNAL_DOMAIN            | Internal domain (reverse proxy)                                     | l.ab            |
 | PLEX_CLAIM                 | Plex claim token (from https://plex.tv/claim or Preferences.xml)    | claim-xxxx             |
-| PLEX_MACHINE_IDENTIFIER    | Plex server machine identifier (Preferences.xml)                     | xxxxxxxx               |
+| PLEX_MACHINE_IDENTIFIER    | Plex server machine identifier (Preferences.xml)                    | xxxxxxxx               |
 | PLEX_USERNAME              | Plex account username                                               | user                   |
 | PLEX_EMAIL                 | Plex account email                                                  | user@email.com         |
-| PLEX_FRIENDLY_NAME         | Name of your Plex server in the UI                                  | media-server           |
+| PLEX_FRIENDLY_NAME         | Name of your Plex server in the UI (default: media-server)          | media-server           |
 | API_KEY_OVERSEERR          | API key for Overseerr to access Plex                                | randomstring           |
 | WEBHOOK_OVERSEERR_DISCORD  | Discord webhook URL for Overseerr notifications (optional)          | webhook-url            |
 | API_KEY_RADARR4K           | API key for Radarr4K (shared with media-management stack)           | randomstring           |

@@ -59,19 +59,22 @@ A setup directory look like this:
    Adjust the environment variables, see next section.
 2. Copy the main environment template:
    ```bash
-   cp src/config/.env.template src/config/.env
+   cp src/config/template.env src/config/.env
    ```
    Adjust the environment variables, see next section.
 
 ### Environment files
 
-- **.env**: Used to override values from `default.env` if needed. Set the hashed password (generate with `./src/scripts/utils/encrypt-argon <password>`).
-- **networking.env**: Used to configure network settings for the stack.
+**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
 
 | Variable                   | Description                                         | Example           |
 |----------------------------|-----------------------------------------------------|-------------------|
 | VSCODE_SERVER_HOST_IP      | IP address of the VM                                | 192.168.1.107     |
-| VSCODE_SERVER_DOMAIN       | Main domain served by the reverse proxy             | code.l.ab         |
+
+**.env**: Used to override values from `default.env` if needed (see `template.env`).
+
+| Variable                   | Description                                         | Example           |
+|----------------------------|-----------------------------------------------------|-------------------|
 | VSCODE_SERVER_PASSWORD     | Hashed password for code-server                     | $argon2id$...     |
 
 ### Running service

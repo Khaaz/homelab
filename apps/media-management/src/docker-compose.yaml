@@ -425,7 +425,7 @@ services:
       - TZ=${TIMEZONE:?err}
       # setup
       - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
-      - DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
+      - DOMAIN=${INTERNAL_DOMAIN:?err}
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
       - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}

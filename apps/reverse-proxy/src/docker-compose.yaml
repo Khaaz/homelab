@@ -87,13 +87,6 @@ services:
       # setup
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
-      - HA_DOMAIN=${HOME_AUTOMATION_DOMAIN:?err}
-      - IM_DOMAIN=${IMMICH_DOMAIN:?err}
-      - MS_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
-      - MM_DOMAIN=${MEDIA_MANAGEMENT_DOMAIN:?err}
-      - NC_DOMAIN=${NEXTCLOUD_DOMAIN:?err}
-      - VW_DOMAIN=${VAULTWARDEN_DOMAIN:?err}
-      - VSC_DOMAIN=${VSCODE_SERVER_DOMAIN:?err}
       # ports
       # - RP
       - PORT_UI_AUTHELIA=${PORT_UI_AUTHELIA:?err}
@@ -140,12 +133,12 @@ services:
       - DOCKER_SUBNET=${REVERSE_PROXY_DOCKER_SUBNET:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - RP_HOST_IP=${REVERSE_PROXY_HOST_IP:?err}
+      - CLD_HOST_IP=${CLOUD_HOST_IP:?err}
       - HA_HOST_IP=${HOME_AUTOMATION_HOST_IP:?err}
       - IM_HOST_IP=${IMMICH_HOST_IP:?err}
       - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
-      - NC_HOST_IP=${NEXTCLOUD_HOST_IP:?err}
-      - VW_HOST_IP=${VAULTWARDEN_HOST_IP:?err}
+      - VLT_HOST_IP=${VAULT_HOST_IP:?err}
       - VSC_HOST_IP=${VSCODE_SERVER_HOST_IP:?err}
 
 # DNSMask - DNS server for local resolution
@@ -181,7 +174,7 @@ services:
       - ${APPS_FOLDER:?err}/swag/www:/swag/www
     environment:
       - DOMAIN=${INTERNAL_DOMAIN}
-      - ROOT_CN=${ROOT_COMMON_NAME:?err}
+      - ROOT_CN=${ROOT_CA_COMMON_NAME:?err}
 
 # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:

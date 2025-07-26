@@ -62,8 +62,8 @@ services:
 #    devices:
 #      - /dev/dri/renderD128:/dev/dri/renderD128
 #      - /dev/dri/card0:/dev/dri/card0
-    devices:
-      - /dev/dri:/dev/dri	# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
+#      - /dev/dri:/dev/dri
+# Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
     ports:
      - "${PORT_UI_PLEX:?err}:32400"
      - 1900:1900/udp
@@ -88,7 +88,7 @@ services:
       # setup
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
-      - MS_DOMAIN=${MEDIA_SERVER_DOMAIN:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
       - PLEX_CLAIM=${PLEX_CLAIM:?err}
       - PLEX_USERNAME=${PLEX_USERNAME:?err}

@@ -1,12 +1,12 @@
 networks:
-  vaultwarden:
-    name: vaultwarden
+  vault:
+    name: vault
     driver: bridge
     ipam:
       driver: default
       config:
-      - subnet: ${VAULTWARDEN_DOCKER_SUBNET:?err}.0/24
-        gateway: ${VAULTWARDEN_DOCKER_SUBNET:?err}.1
+      - subnet: ${VAULT_DOCKER_SUBNET:?err}.0/24
+        gateway: ${VAULT_DOCKER_SUBNET:?err}.1
 
 services:
 
@@ -16,8 +16,8 @@ services:
     container_name: vaultwarden
     restart: always
     networks:
-      vaultwarden:
-        ipv4_address: ${VAULTWARDEN_DOCKER_SUBNET:?err}.10
+      vault:
+        ipv4_address: ${VAULT_DOCKER_SUBNET:?err}.10
     ports:
       - ${PORT_UI_VAULTWARDEN:?err}:80
     volumes:

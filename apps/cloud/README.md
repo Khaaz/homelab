@@ -1,14 +1,17 @@
-# vaultwarden
+# cloud
 
 ## Context
 
 ### Overview
 
-Self-hosted password manager compatible with Bitwarden clients. This stack provides secure, private password management for your home or organization.
+Self-hosted cloud/file storage platform built with Nextcloud, backed by MariaDB and Redis. This stack provides secure, private cloud storage and collaboration tools for your home or organization.
 
 ### Services
 
-- **Vaultwarden**: Password manager
+- **Nextcloud**: Main application for file storage and collaboration
+- **MariaDB**: Database for Nextcloud
+- **Redis**: Cache and lock management
+- **Post-processing helper**: Additional automation tasks
 
 ## Architecture
 
@@ -18,7 +21,7 @@ Self-hosted password manager compatible with Bitwarden clients. This stack provi
 
 ### Features
 
-- Single-container deployment: Vaultwarden runs in a dedicated Docker container on its own isolated Docker network for security and reliability.
+- Multi-container deployment: All services run in dedicated containers on an isolated Docker network for security and reliability.
 - Configuration templates: Initial configuration is applied from the `_setup` directory on first start.
 - Reverse proxy integration: Designed to work with a reverse proxy for secure external access and custom domains.
 - Extensible: Add functionality with integrations, add-ons, and custom scripts.
@@ -26,8 +29,8 @@ Self-hosted password manager compatible with Bitwarden clients. This stack provi
 ### File structure
 
 - `apps/`: Contains all apps for this stack.
-  - `vaultwarden/`
-- `src/`: Docker Compose file and configuration templates for Vaultwarden.
+  - `nextcloud/`, `mariadb/`, `redis/`
+- `src/`: Docker Compose file and configuration templates for Nextcloud.
   - `docker-compose.yaml`
   - `config/`: Stores environment files and configuration templates.
 - `compose.sh`: main script to start the stack
@@ -59,22 +62,26 @@ A setup directory look like this:
    Adjust the environment variables, see next section.
 2. Copy the main environment template:
    ```bash
-   cp src/config/.env.template src/config/.env
+   cp src/config/template.env src/config/.env
    ```
    Adjust the environment variables, see next section.
 
 ### Environment files
 
-**networking.env**
-| Variable              | Description                                 | Example         |
-|-----------------------|---------------------------------------------|-----------------|
-| VAULTWARDEN_HOST_IP   | IP of the machine that hosts this stack     | 192.168.1.106   |
-| VAULTWARDEN_DOMAIN    | Custom subdomain (root domain should match) | vault.l.ab      |
+**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
 
-**.env**
+| Variable           | Description                                 | Example         |
+|--------------------|---------------------------------------------|-----------------|
+| CLOUD_HOST_IP      | IP of the machine that hosts this stack     | 192.168.1.104   |
+
+**.env**: Used to override values from `default.env` if needed (see `template.env`).
+
 | Variable                | Description                                 | Example         |
-|------------------------|---------------------------------------------|-----------------|
-| VAULTWARDEN_ADMIN_TOKEN| Hashed admin token (see instructions above) | $argon2id$...   |
+|-------------------------|---------------------------------------------|-----------------|
+| NEXTCLOUD_ADMIN_USER    | Nextcloud administrator username            | nextcloud       |
+| NEXTCLOUD_ADMIN_PASSWORD| Nextcloud administrator password            | long_password   |
+| MYSQL_USER              | Database user                               | nextcloud       |
+| MYSQL_PASSWORD          | Database password (generate with openssl)   | long_password   |
 
 You may override any other environment variable as needed in either file.
 
@@ -86,28 +93,33 @@ Start the stack with:
 ./compose.sh up -d
 ```
 
-This will launch the Vaultwarden container and apply configuration templates from `_setup` on first start.
+This will launch all containers and apply configuration templates from `_setup` on first start.
 
 ### Accessing service
 
-- **URL:** `http://127.0.0.1:8087` (or your reverse proxy domain)
-- **Default port:** `8087`
+- **URL:** `http://127.0.0.1:8081` (or your reverse proxy domain)
+- **Default port:** `8081`
 
 ## Details
 
 ### Services and ports
 
-- Vaultwarden - `8087`
+- Nextcloud - `8081`
+- MariaDB - internal only
+- Redis - internal only
+- Post-processing helper - internal only
 
 ### Use cases
 
-- Secure password management
-- Bitwarden client compatibility
+- Private cloud storage
+- File sharing and collaboration
 
 ### Documentation
 
-- [Vaultwarden Main Site](https://github.com/dani-garcia/vaultwarden)
-- [Vaultwarden Wiki](https://github.com/dani-garcia/vaultwarden/wiki)
+- [Nextcloud Documentation](https://docs.nextcloud.com/)
+- <https://mariadb.com/kb/en/documentation/>
+- <https://redis.io/docs/>
+- <https://chrisgrime.medium.com/deploy-nextcloud-with-docker-compose-935a76a5eb78>
 
 ### Troubleshooting
 
