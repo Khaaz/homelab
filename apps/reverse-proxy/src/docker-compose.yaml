@@ -82,11 +82,12 @@ services:
       - URL=${EXTERNAL_DOMAIN:?err}
       - SUBDOMAINS=${SUBDOMAINS}
       - VALIDATION=${VALIDATION:?err}
-      - DNSPLUGIN=${DNSPLUGIN}
+      - DNSPLUGIN=${DNS_PROVIDER}
       - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
       # setup
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - DNS_PROVIDER_TOKEN=${DNS_PROVIDER_TOKEN:?err}
       # ports
       # - RP
       - PORT_UI_AUTHELIA=${PORT_UI_AUTHELIA:?err}
