@@ -44,6 +44,7 @@ Configuration templates stored in `_setup` are automatically applied the first t
 These operations are handled via the `post_start` hook in the Docker Compose configuration, using scripts located in `src/app-bootstrap` at the root of the monorepo.
 
 A setup directory look like this:
+
 - `_setup/`: Initial configuration templates applied on first container start.
   - `_setup/sql/`: SQL files to be executed against the database (if any).
   - `_setup/templates/`: Template files parsed and filled with environment variable values.
@@ -94,16 +95,17 @@ This will launch the code-server container and apply configuration templates fro
 
 ### Environment files
 
-**networking.env**
+**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
+
 | Variable               | Description                                 | Example         |
 |------------------------|---------------------------------------------|-----------------|
 | VSCODE_SERVER_HOST_IP  | IP of the machine that hosts this stack     | 192.168.1.107   |
-| VSCODE_SERVER_DOMAIN   | Custom subdomain (root domain should match) | code.l.ab       |
 
-**.env**
-| Variable                | Description                                 | Example         |
+**.env**: Used to override values from `default.env` if needed (see `template.env`).
+
+| Variable               | Description                                 | Example         |
 |------------------------|---------------------------------------------|-----------------|
-| VSCODE_SERVER_PASSWORD | Hashed password for code-server (see instructions above) | $argon2id$...   |
+| VSCODE_SERVER_PASSWORD | Hashed password for code-server             | $argon2id$...   |
 
 You may override any other environment variable as needed in either file.
 

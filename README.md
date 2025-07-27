@@ -24,15 +24,15 @@ Some services are open to a few poeple of trust (eg: Plex, Overser...) from outs
 
 ### Software
 
-- [home-automation](apps/home-automation/README.md): Home assistant and other home automation
-- [immich](apps/immich/README.md): Photo cloud and gallery
-- [media-server](apps/media-server/README.md): Media server (Plex and Overseerr)
-- [media-management](apps/media-management/README.md): Media download and management (Starr / Servarr stack)
-- [reverse-proxy](apps/reverse-proxy/README.md): Entry point, domain, routing and DNS
-- [nextcloud](apps/nextcloud/README.md): Cloud
-- [vaultwarden](apps/vaultwarden/README.md): Selfhosted Bitwarden
-- [vpn](apps/vpn/README.md): VPN to access home network from anywhere
-- [vscode-server](apps/vscode-server/README.md): Vscode server
+- ~ | [cloud](apps/cloud/README.md): Cloud (nextcloud)
+- X | [home-automation](apps/home-automation/README.md): Home assistant and other home automation
+- ~ | [immich](apps/immich/README.md): Photo cloud and gallery
+- V | [media-server](apps/media-server/README.md): Media server (Plex and Overseerr)
+- V | [media-management](apps/media-management/README.md): Media download and mana| gement (Starr / Servarr stack)
+- V | [reverse-proxy](apps/reverse-proxy/README.md): Entry point, domain, routing and DNS
+- ~ | [vault](apps/vault/README.md): Selfhosted password manager (vaultwarden (Bitwarden))
+- X | [vpn](apps/vpn/README.md): VPN to access home network from anywhere
+- ~ | [vscode-server](apps/vscode-server/README.md): Vscode server
 
 ## Architecture
 
@@ -47,13 +47,13 @@ point for all external traffic and forwards requests to the other VMs.
 
 The following VMs are planned:
 
+- `cloud` – file storage
 - `home-automation` – Home Assistant
 - `immich` – photo management
 - `media-management` – download automation tools
 - `media-server` – Plex and Overseerr
-- `nextcloud` – file storage
 - `reverse-proxy` – ingress, DNS and certificates
-- `vaultwarden` – password manager
+- `vault` – password manager
 - `vscode-server` – remote development
 - `vpn` – remote access gateway
 
@@ -65,11 +65,12 @@ Additional machines can easily be added using the Ansible playbooks.
 
 ### Repository structure
 
-- `apps/` – Docker Compose projects for each service
-- `preseed/` – unattended Debian installer files
-- `src/` – automation code (Ansible playbooks and helper scripts)
-- `config/` – shared configuration such as SSH keys
-- `assets/` – diagrams and images
+- `apps/` – Docker Compose projects for each app stack
+- `iac/` – Infra as Code (ansible, terraform) for automatic deployment
+- `preseed/` – Unattended / automatic Debian installer files
+- `src/` – Scripts and utils for the repo
+- `config/` – Shared and global configuration (global config and SSH keys)
+- `assets/` – Diagrams and images
 
 ## Setup
 
@@ -115,3 +116,39 @@ Helper scripts will deploy and manage the VMs directly from Proxmox,
 keeping code and environment files up to date. They are located under
 `src/app-bootstrap` and will evolve alongside the infrastructure.
 
+### Notes
+
+TODO mvp:
+
+- terraform + provision VMs
+- setup VM + loading repo + conf
+- setup on server
+- handle "data" path
+- handle plex hardware passthrough
+- root README
+- architecture schemas
+
+TODO:
+
+- finalise (setup + fixes + automation) cloud, immich, vault, vscode-server
+- media-management/homarr
+- global dashboard (root domain)
+- whiteboard
+- notes / todolist?
+- vpn (in)
+- truenas
+- rebound/backup/master server (raspi?)
+- setup HA
+- pi hole / DNS filtering
+
+Other tools todo:
+
+- media-sharing: selfhostable transfer file: https://github.com/robinkarlberg/transfer.zip-web
+- link sharing
+- url shortener
+- shopping list
+- recipes?
+
+Links:
+
+- dashboard: https://trymotherboard.com/?utm_source=tldrfounders

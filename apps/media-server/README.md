@@ -45,6 +45,7 @@ Configuration templates stored in `_setup` are automatically applied the first t
 These operations are handled via the `post_start` hook in the Docker Compose configuration, using scripts located in `src/app-bootstrap` at the root of the monorepo.
 
 A setup directory look like this:
+
 - `_setup/`: Initial configuration templates applied on first container start.
   - `_setup/sql/`: SQL files to be executed against the database (if any).
   - `_setup/templates/`: Template files parsed and filled with environment variable values.
