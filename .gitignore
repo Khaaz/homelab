@@ -1,4 +1,5 @@
 .env
+generated.env
 networking.env
 .vscode/** 
 **/.DS_Store/**

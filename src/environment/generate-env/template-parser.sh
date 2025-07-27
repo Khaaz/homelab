@@ -9,7 +9,7 @@ get_script_dir() {
 DIRNAME=$(get_script_dir)
 
 APP_CONFIG_FILE="src/config/app-config.template.toml"
-ENV_FILE="src/config/.env.test"
+ENV_FILE="src/config/generated.env"
 
 # Replace all ${key} placeholders in a line using config values
 replace_placeholders() {
