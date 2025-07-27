@@ -8,7 +8,7 @@ get_script_dir() {
 }
 DIRNAME=$(get_script_dir)
 
-# Import the dependencies function
+# Import the strip comment function
 . $DIRNAME/lib/strip-comment.sh
 
 ## Variables
@@ -105,6 +105,16 @@ for app_path in $APPS_PATH/*; do
             value_escaped="${value//\//\\/}"
             line="${line//$placeholder/$value_escaped}"
         done
+
+        # Detect and apply specific behaviour: function in template (eg: password())
+        if [[ "$line" =~ password\(\$?\{?([A-Za-z0-9_.-]+)\}?\) ]]; then
+            password_value="${BASH_REMATCH[1]}"
+
+            hashed_password=$("$DIRNAME/../utils/encrypt-sha512.sh" "$password_value")
+            hashed_password_escaped="${hashed_password//\//\\/}"
+            # Replace the function call with the result
+            line="$(echo "$line" | sed "s|password($password_value)|$hashed_password_escaped|")"
+        fi
 
         echo "$line" >> "$output_file"
     done < "$template_file"
