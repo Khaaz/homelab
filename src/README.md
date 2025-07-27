@@ -14,12 +14,13 @@ Scripts and utilities for configuration parsing, file operations, and automation
 
 ### File structure
 
-- `scripts/`: Shell utilities and helper scripts
+- `app-bootstrap/`: Shell utilities and helper scripts that can be bundled in deployed app to easy initialisation
   - `execute-sql.sh`: Run SQL files against a specified database
   - `parse-file.sh`: Expand environment variables in a file and write the result elsewhere
   - `parse-folder.sh`: Recursively apply `parse-file.sh` to a directory
   - `lib/`: Shared shell functions
-  - `utils/`: Utility scripts
+- `utils/`: Utility scripts (generate password etc)
+- `environment/`: Initialise and setup environment variables and other necessay tooling
 
 ## Usage
 

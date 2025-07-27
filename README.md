@@ -113,5 +113,5 @@ requirements.
 
 Helper scripts will deploy and manage the VMs directly from Proxmox,
 keeping code and environment files up to date. They are located under
-`src/scripts` and will evolve alongside the infrastructure.
+`src/app-bootstrap` and will evolve alongside the infrastructure.
 

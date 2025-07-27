@@ -8,18 +8,22 @@ get_script_dir() {
 }
 DIRNAME=$(get_script_dir)
 
-GLOBAL_CONFIG_FILE="${DIRNAME}/../config/global-config.toml"
-APPS_PATH="${DIRNAME}/../apps"
+# Import the dependencies function
+. $DIRNAME/lib/strip-comment.sh
+
+## Variables
+GLOBAL_CONFIG_FILE="${DIRNAME}/../../config/global-config.toml"
+APPS_PATH="${DIRNAME}/../../apps"
 APP_CONFIG_FILE="src/config/app-config.template.toml"
 ENV_FILE="src/config/.env.test"
 
 declare -A config_values
 
-# --- Step 1: Load config.toml into a config_values map ---
+## 1 - Parse global config file: config/global-config.toml
 echo "LOG: Load config-global.toml: $GLOBAL_CONFIG_FILE"
 current_section=""
 while IFS= read -r line || [[ -n "$line" ]]; do
-    line="${line%%#*}"                              # Remove comments
+    line=$(strip_comment "$line") # Remove comments at the end of the line without removing "#" withing variable value
     line="$(echo "$line" | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')"  # Trim
 
     [[ -z "$line" ]] && continue
@@ -38,18 +42,28 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 done < "$GLOBAL_CONFIG_FILE"
 echo "LOG: Loaded config-global.toml"
 
+## Debug
 echo "DEBUG: config_values >"
 for k in "${!config_values[@]}"; do
   echo "DEBUG: $k = ${config_values[$k]}"
 done
 echo "DEBUG: config_values <"
 
-# --- Step 2: Process each app's template file ---
+## 2 - Parse each app's template file: apps/*/src/config/app-config.template.toml
 echo "LOG: Generating .env for each app stack in $APPS_PATH/*"
 for app_path in $APPS_PATH/*; do
     [ -d "$app_path" ] || continue
 
     app=$(basename "$app_path")
+
+    # Check if app is enabled
+    enabled_key="$app.enabled"
+    enabled_value="${config_values[$enabled_key]}"
+    if [[ "${enabled_value,,}" == "false" ]]; then
+        echo "LOG: Skipping disabled app: $app"
+        continue
+    fi
+
     echo "LOG: ==> Processing app: $app <=="
 
     template_file="$app_path/$APP_CONFIG_FILE"
@@ -65,7 +79,6 @@ for app_path in $APPS_PATH/*; do
     # Process each line of the app template file
     while IFS= read -r line || [[ -n "$line" ]]; do
         original_line="$line"
-        line="${line%%#*}"                              # Strip comment
         line="$(echo "$line" | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')"  # Trim
 
         [[ -z "$line" ]] && continue
