@@ -73,7 +73,7 @@ sudo /root/bin/reset_server.sh /dev/sdX
 
 ### Environment files
 
-Copy `src/config/.env.template` to `src/config/.env` and edit values:
+Copy `src/config/template.env` to `src/config/.env` and edit values:
 
 - `DOMAIN` – domain appended to `HOSTNAME`
 - `HOSTNAME` – machine hostname

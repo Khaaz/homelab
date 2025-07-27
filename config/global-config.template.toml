@@ -1,6 +1,21 @@
 [global]
+# Domain used for local name resolution
 INTERNAL_DOMAIN="l.ab"
+# Domain used for external name resolution (internet)
 EXTERNAL_DOMAIN="example.com"
+
+[infra]
+IP_GATEWAY="192.168.1.254"
+IP_NAMESERVER="192.168.1.254"
+IP_SERVER="192.168.1.100"
+
+[preseed]
+enabled=true
+
+DISK="/dev/sda"
+# passwords will automatically be hashed with sha512
+ROOT_PASSWORD="long_root_password1!"
+USER_PASSWORD='long_password1!'
 
 [cloud]
 enabled=false
@@ -21,10 +36,13 @@ DB_PASSWORD=""
 [media-management]
 enabled=true
 
+# VPN provider credentials. Example: nordvpn, protonvpn
 VPN_SERVICE_PROVIDER="protonvpn"
 VPN_USERNAME=""
 VPN_PASSWORD=""
 
+# Provide any value you want that will be used as API key
+# https://it-tools.tech/token-generator
 API_KEY_PROWLARR=""
 API_KEY_BAZARR=""
 API_KEY_RADARR=""
@@ -33,25 +51,40 @@ API_KEY_SONARR=""
 API_KEY_SONARR4K=""
 API_KEY_MAINTAINERR=""
 
+# Create an account here: https://www.opensubtitles.com/
 OPENSUBTITLE_USERNAME=""
 OPENSUBTITLE_PASSWORD=""
 
 [media-server]
 enabled=true
+
+# Token for the Plex server. It is generated the first time, when the server is claimed.
 PLEX_CLAIM=""
+# Id of the machine for your Plex server. It is generated the first time, when the server is claimed.
+PLEX_MACHINE_IDENTIFIER=""
+# Username and Email for the account linked with the Plex server.
 PLEX_USERNAME=""
 PLEX_EMAIL=""
-PLEX_MACHINE_IDENTIFIER=""
+
+# Provide any value you want that will be used as API key
+# https://it-tools.tech/token-generator
+API_KEY_OVERSEERR=""
 
 [reverse-proxy]
 enabled=true
 
 DNSPLUGIN="cloudflare"
-AUTHELIA_JWT_SECRET=""
-AUTHELIA_ENCRYPTION_KEY=""
-AUTHELIA_USER_NAME=""
-AUTHELIA_USER_EMAIL=""
-AUTHELIA_USER_PASSWORD=""
+
+# The secret key used to sign and verify the JWT. 
+AUTHELIA_JWT_SECRET="a_very_important_secret"
+# The encryption key that is used to encrypt sensitive information in the database. 
+# min length: 20
+AUTHELIA_ENCRYPTION_KEY="you_must_generate_a_random_string_of_more_than_twenty_chars"
+# The user used to authenticate to Authelia
+AUTHELIA_USER_NAME="admin"
+AUTHELIA_USER_EMAIL="admin@gmail.com"
+# password will automatically be hashed with argon2
+AUTHELIA_USER_PASSWORD="long_password1!"
 
 [vault]
 enabled=false
