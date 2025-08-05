@@ -29,7 +29,7 @@ else
 fi
 
 # Call the parse-file script
-SCRIPT_ROOT="$DIRNAME/../../src/scripts/parse-file.sh"
+SCRIPT_ROOT="$DIRNAME/../../src/app-bootstrap/parse-file.sh"
 if [ ! -f "$SCRIPT_ROOT" ]; then
   echo "Error: parse-file.sh not found at $SCRIPT_ROOT"
   exit 1
