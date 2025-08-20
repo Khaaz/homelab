@@ -1,2 +1,5 @@
 *.pub
 *_key
+
+!*_key.dev
+!*_key.dev.pub
