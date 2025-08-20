@@ -4,5 +4,30 @@
 			"path": "."
 		}
 	],
-	"settings": {}
-}
+	"settings": {
+		"editor.insertSpaces": false,
+        "editor.autoIndent": "full",
+
+        "editor.wordWrap": "off",
+		
+        "files.eol": "\n",
+		"files.insertFinalNewline": true,
+
+		"files.associations": {
+            ".env.*": "env",
+            "networking.env.*": "env"
+        }
+	},
+	"extensions": {
+        "recommendations": [
+            "yzhang.markdown-all-in-one",
+			"davidanson.vscode-markdownlint",
+            "IronGeek.vscode-env",
+			"ms-azuretools.vscode-docker",
+			"redhat.ansible",
+			"hashicorp.hcl",
+			"4ops.packer",
+			"hashicorp.terraform"
+        ]
+    },
+} 
