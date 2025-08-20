@@ -110,7 +110,7 @@ Copy `src/config/template.env` to `src/config/.env` and edit values:
 ### Utilities
 
 - Check network info: `netstat -rn` or `ip addr`
-- Remove saved SSH host keys: `ssh-keygen -R <ip>` (if server reinstalled)
+- Remove saved SSH host keys: `ssh-keygen -R <ip>` (if server reinstalledand signature changed)
 - Generate a fresh Ansible key pair:
   ```bash
   ssh-keygen -t rsa -b 4096 -f ../config/ssh/ansible/ansible_key

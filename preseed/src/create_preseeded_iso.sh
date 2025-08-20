@@ -6,10 +6,11 @@ get_script_dir() {
   local script_dir=$(dirname "$(realpath "$0")")
   echo "$script_dir"
 }
-DIRNAME=$(get_script_dir)
+SCRIPT_DIR=$(get_script_dir)
 
 ISO="debian-12.9.0-amd64-netinst"
 GENERATE_PRESEED_CFG=false
+DEV_MODE=
 while [ $# -gt 0 ]; do
   case $1 in
     --iso)
@@ -20,28 +21,33 @@ while [ $# -gt 0 ]; do
       GENERATE_PRESEED_CFG=true
       shift 1
       ;;
+    --dev)
+      DEV_MODE=true
+      shift 1
+      ;;
     *)
-      echo "Unknown option: $1"
+      echo "Usage: $0 [--iso <path>] [--preseed-cfg] [--dev]"
       exit 1
       ;;
   esac
 done
 
-
 echo "LOG: Start preseed process"
-
 
 # target ISO
 IMAGE=$ISO
 # preseed folder
-ROOT_PATH="$DIRNAME/.."
+ROOT_PATH="$SCRIPT_DIR/.."
 # temporary working folder (extracted iso)
 EXTRACTED_PATH="/root/extracted_iso"
+# Target volume name (for preseed)
+TARGET_VOLUME_NAME="DEBIAN_PRESEED"
 
 echo "LOG: Context - Root path: $ROOT_PATH"
 echo "LOG: Context - Build folder: $EXTRACTED_PATH"
 echo "LOG: Context - ISO: $ROOT_PATH/iso/$IMAGE.iso"
 echo "LOG: Context - Preseeded iso will be: $ROOT_PATH/iso/${IMAGE}_preseed.iso"
+echo "LOG: Context - Preseeded iso will have volume named: $TARGET_VOLUME_NAME"
 
 ### prerequesites
 
@@ -51,7 +57,7 @@ apt-get install -y xorriso
 ### cleanup
 
 echo "LOG: Cleanup"
-chmod +w -R /mnt/iso
+chmod +w -R /mnt/iso 2>/dev/null
 rm -rf /mnt/iso
 rm -rf $EXTRACTED_PATH
 umount /mnt/iso 2>/dev/null
@@ -59,8 +65,8 @@ umount /mnt/iso 2>/dev/null
 ### mount
 
 echo "LOG: Mount and unpack"
+mkdir -p /mnt/iso
 # mount iso (/mnt/iso)
-mkdir /mnt/iso
 mount -o loop "${ROOT_PATH}/iso/${IMAGE}.iso" /mnt/iso
 # copy file and unmount (/root/extracted_iso)
 cp -r /mnt/iso "$EXTRACTED_PATH"
@@ -95,7 +101,7 @@ cp -R $ROOT_PATH/config/custom/scripts $EXTRACTED_PATH/custom/scripts
 mkdir $EXTRACTED_PATH/custom/ssh
 cp $ROOT_PATH/config/custom/ssh/ansible.sudoers $EXTRACTED_PATH/custom/ssh/ansible.sudoers
 # fetch ansible_key from root config
-cp $ROOT_PATH/../config/ssh/ansible/ansible_key.pub $EXTRACTED_PATH/custom/ssh/ansible_key.pub
+cp $ROOT_PATH/../config/ssh/ansible/ansible_key${DEV_MODE:+.dev}.pub $EXTRACTED_PATH/custom/ssh/ansible_key.pub
 
 # change timeout
 chmod +w $EXTRACTED_PATH/isolinux/isolinux.cfg
@@ -116,6 +122,7 @@ xorriso -as mkisofs \
   -c isolinux/boot.cat \
   -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot \
   -e boot/grub/efi.img -no-emul-boot -isohybrid-gpt-basdat \
+  -V "$TARGET_VOLUME_NAME" \
   -o /root/debian_preseed.iso \
   $EXTRACTED_PATH
 
