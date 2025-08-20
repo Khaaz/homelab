@@ -24,11 +24,14 @@ Infrastructure as Code stack for provisioning and maintaining the homelab. Uses 
 ### File structure
 
 - `ansible/`: Playbooks, roles, templates for provisioning and configuration
+  - `logs/`: ansible logs
+  - `playbooks/`: ansible playbook
+    - `proxmox-setup.playbook.yml`: Setup proxmox on a debian server
+    - `test.playbook.yml`: Test ansible connection
   - `roles/`: reusable tasks
   - `templates/`: jinja files
+  - `ansible.cfg`
   - `inventory.ini`
-  - `setup_proxmox.playbook.yml`: Setup proxmox on a debian server
-  - `test.playbook.yml`: Test ansible connection
 
 ## Network
 
@@ -58,10 +61,16 @@ Templates define network interfaces:
 
 ### Running IaC
 
+Check ansible connection:
+
+```bash
+ansible-playbook playbooks/test.playbook.yml
+```
+
 Run the Proxmox setup playbook:
 
 ```bash
-ansible-playbook -i inventory.ini setup_proxmox.playbook.yml
+ansible-playbook playbooks/proxmox-setup.playbook.yml
 ```
 
 ## Details

@@ -1,0 +1,186 @@
+- name: Configure Proxmox automation users with fresh API tokens (CLI-only)
+  hosts: homelab
+  gather_facts: false
+  become: true
+
+  vars:
+    # ------------------------
+    # Packer
+    # ------------------------
+    packer_user: "packer@pve"
+    packer_password: "packer-password"
+    packer_role: "PackerRole"
+    packer_token: "packer-token"   # token-id (name)
+    packer_token_comment: "API token for Packer automation"
+
+    # ------------------------
+    # Terraform
+    # ------------------------
+    terraform_user: "terraform@pve"
+    terraform_password: "terraform-password"
+    terraform_role: "TerraformRole"
+    terraform_token: "terraform-token"  # token-id (name)
+    terraform_token_comment: "API token for Terraform automation"
+
+  tasks:
+    # Users
+    - name: Create Packer user
+      ansible.builtin.shell: >
+        pveum user add {{ packer_user }} --password '{{ packer_password }}'  --enable 1 --expire 0
+      register: packer_user_add
+      changed_when: packer_user_add.rc == 0
+      failed_when: false
+
+    - name: Create Terraform user
+      ansible.builtin.shell: >
+        pveum user add {{ terraform_user }} --password '{{ terraform_password }}'  --enable 1 --expire 0
+      register: terraform_user_add
+      changed_when: terraform_user_add.rc == 0
+      failed_when: false
+    
+    # Roles
+    # Create + modify (ensure idempotency) 
+    - name: Create Or modify Packer role
+      vars:
+        packer_privs:
+          - Datastore.Allocate
+          - Datastore.AllocateSpace
+          - Datastore.Audit
+          - Pool.Allocate
+          - Sys.Audit
+          - Sys.Console
+          - Sys.Modify
+          - VM.Allocate
+          - VM.Audit
+          - VM.Clone
+          - VM.Config.CDROM
+          - VM.Config.Cloudinit
+          - VM.Config.CPU
+          - VM.Config.Disk
+          - VM.Config.HWType
+          - VM.Config.Memory
+          - VM.Config.Network
+          - VM.Config.Options
+          - VM.Console
+          - VM.Migrate
+          - VM.Monitor
+          - VM.PowerMgmt
+          - SDN.Use
+      ansible.builtin.shell: >
+        pveum role add {{ packer_role }} -privs '{{ packer_privs | join(" ") }}' 
+        || pveum role modify {{ packer_role }} -privs '{{ packer_privs | join(" ") }}'
+      changed_when: false
+
+    - name: Create Or modify Terraform role
+      vars:
+        terraform_privs:
+          - VM.Allocate
+          - VM.Audit
+          - VM.Config.Disk
+          - VM.Config.CDROM
+          - VM.Config.CPU
+          - VM.Config.Memory
+          - VM.Config.Network
+          - VM.Config.Options
+          - VM.Console
+          - VM.Monitor
+          - Datastore.AllocateSpace
+          - Datastore.Allocate
+          - Sys.Modify
+          - Sys.Audit
+      ansible.builtin.shell: >
+        pveum role add {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}' 
+        || pveum role modify {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}'
+      changed_when: false
+
+    # ACLs
+    - name: Assign Packer role to user on /
+      ansible.builtin.shell: >
+        pveum acl modify / -user {{ packer_user }} -role {{ packer_role }} -propagate 1
+      changed_when: false
+      failed_when: false
+
+    - name: Assign Terraform role to user on /
+      ansible.builtin.shell: >
+        pveum acl modify / -user {{ terraform_user }} -role {{ terraform_role }} -propagate 1
+      changed_when: false
+      failed_when: false
+
+    # Tokens (delete first, then create fresh; parse JSON)
+    - name: Delete existing Packer token if present
+      ansible.builtin.shell: >
+        pveum user token delete {{ packer_user }} {{ packer_token }}
+      register: delete_packer_token
+      changed_when: delete_packer_token.rc == 0
+      failed_when: false
+
+    - name: Create fresh Packer API token (JSON)
+      ansible.builtin.shell: >
+        pveum user token add {{ packer_user }} {{ packer_token }}
+        --comment "{{ packer_token_comment }}" --expire 0 -privsep 0 --output-format json
+      register: packer_token_create
+      changed_when: packer_token_create.rc == 0
+      failed_when: packer_token_create.rc != 0
+
+    - name: Parse Packer token JSON
+      ansible.builtin.set_fact:
+        _packer_token_json: "{{ (packer_token_create.stdout | trim) | from_json }}"
+
+    - name: Delete existing Terraform token if present
+      ansible.builtin.shell: >
+        pveum user token delete {{ terraform_user }} {{ terraform_token }}
+      register: delete_terraform_token
+      changed_when: delete_terraform_token.rc == 0
+      failed_when: false
+
+    - name: Create fresh Terraform API token (JSON)
+      ansible.builtin.shell: >
+        pveum user token add {{ terraform_user }} {{ terraform_token }}
+        --comment "{{ terraform_token_comment }}" --expire 0 -privsep 0 --output-format json
+      register: terraform_token_create
+      changed_when: terraform_token_create.rc == 0
+      failed_when: terraform_token_create.rc != 0
+
+    - name: Parse Terraform token JSON
+      ansible.builtin.set_fact:
+        _terraform_token_json: "{{ (terraform_token_create.stdout | trim) | from_json }}"
+
+
+  post_tasks:
+
+    - name: Extract Packer token id + secret
+      ansible.builtin.set_fact:
+        PACKER_TOKEN_ID: "{{ packer_user }}!{{ packer_token }}"
+        PACKER_TOKEN_SECRET: >-
+          {%- if _packer_token_json is mapping -%}
+            {{ _packer_token_json.value | default(_packer_token_json.data.value | default('')) }}
+          {%- elif _packer_token_json is sequence -%}
+            {{ (_packer_token_json|first).value | default(((_packer_token_json|first).data.value) | default('')) }}
+          {%- else -%}
+          {%- endif -%}
+
+    - name: Extract Terraform token id + secret
+      ansible.builtin.set_fact:
+        TERRAFORM_TOKEN_ID: "{{ terraform_user }}!{{ terraform_token }}"
+        TERRFORM_TOKEN_SECRET: >-
+          {%- if _terraform_token_json is mapping -%}
+            {{ _terraform_token_json.value | default(_terraform_token_json.data.value | default('')) }}
+          {%- elif _terraform_token_json is sequence -%}
+            {{ (_terraform_token_json|first).value | default(((_terraform_token_json|first).data.value) | default('')) }}
+          {%- else -%}
+          {%- endif -%}
+
+    # .env output
+    - name: Write .env with tokens (CLI-only)
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/.env"
+        mode: "0600"
+        content: |-
+          # Generated by Ansible (CLI-only)
+          PACKER_TOKEN_ID={{ PACKER_TOKEN_ID }}
+          PACKER_TOKEN_SECRET={{ PACKER_TOKEN_SECRET }}
+          TERRAFORM_TOKEN_ID={{ TERRAFORM_TOKEN_ID }}
+          TERRFORM_TOKEN_SECRET={{ TERRFORM_TOKEN_SECRET }}
+      delegate_to: localhost
+      vars:
+        ansible_become: false

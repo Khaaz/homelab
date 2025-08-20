@@ -1,14 +1,3 @@
----
-- name: Wait for new Debian server to be reachable
-  hosts: homelab
-  gather_facts: false
-  tasks:
-    # Prepare, wait for initial server boot
-    - name: Wait for SSH to become available
-      ansible.builtin.wait_for_connection:
-        timeout: 600
-        delay: 5
-
 - name: Configure Proxmox and System Settings
   hosts: homelab
   become: true
@@ -16,7 +5,7 @@
     ip_nameserver: 10.0.2.3
 
   tasks:
-    # Phase 1 - Setup    
+    # Phase 1 - Setup
     - name: Add Proxmox VE no-subscription repository
       ansible.builtin.copy:
         content: "deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription\n"
@@ -40,46 +29,6 @@
         name: proxmox-default-kernel
         state: present
 
-    # Phase OPT-1 - Run dhclient to assign IPs on interfaces without IP address in case there is an issue
-    # ---
-    - name: Create systemd service to run dhclient on interfaces without IP
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/dhclient-fallback.service
-        mode: '0644'
-        content: |
-          [Unit]
-          Description=Run dhclient on interfaces without IPv4
-          After=network-pre.target
-          Wants=network.target
-          Before=network.target
-          DefaultDependencies=no
-
-          [Service]
-          Type=oneshot
-          ExecStart=/usr/local/bin/run-dhclient.sh
-          RemainAfterExit=true
-
-          [Install]
-          WantedBy=multi-user.target
-
-    - name: Create dhclient fallback script
-      ansible.builtin.copy:
-        dest: /usr/local/bin/run-dhclient.sh
-        mode: '0755'
-        content: |
-          #!/bin/bash
-          for iface in $(ip -o link show | awk -F': ' '{print $2}' | grep -v lo); do
-            if ! ip -4 addr show "$iface" | grep -q 'inet '; then
-              dhclient "$iface"
-            fi
-          done
-
-    - name: Enable the dhclient-fallback service
-      ansible.builtin.systemd:
-        name: dhclient-fallback.service
-        enabled: yes
-    # ---
-
     - name: Restart system after kernel install
       import_role:
         name: restart
@@ -101,6 +50,12 @@
           - chrony
         state: present
     
+    - name: Remove os-prober package
+      ansible.builtin.apt:
+        name: os-prober
+        state: absent
+        purge: yes
+    
     # Phase 4 - Override kernel and cleanup
     - name: Check if a Proxmox kernel is installed
       ansible.builtin.shell: ls /boot/vmlinuz-*pve || true
@@ -121,50 +76,40 @@
       ansible.builtin.command: update-grub
       changed_when: true
 
-    - name: Remove os-prober package
-      ansible.builtin.apt:
-        name: os-prober
-        state: absent
-        purge: yes
-
     - name: Restart system after grub update
       import_role:
         name: restart
 
-    # Phase 5 - Networking setup
+    # Phase 5 - Cleanup
+    - name: Remove enterprise repositories
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        update_cache: false
+        state: absent
+      loop:
+        - deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
+        - deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
+
+    - name: disable proxmox subscription popup
+      ansible.builtin.replace:
+        path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+        regexp: '^(.*)Ext\.Msg\.show\(\{(.*)$\n^(.*)No valid subscription(.*)$'
+        replace: '\1void({\2\n\3No valid subscription\4'
+
+    # Phase 6 - Networking setup
     - name: Print default interface facts
       debug:
         var: ansible_default_ipv4
 
     - name: Write new /etc/network/interfaces
       ansible.builtin.template:
-        src: "proxmox/interfaces.j2"
+        src: "interfaces.j2"
         dest: /etc/network/interfaces
         mode: '0644'
     
-    - name: Restart system after kernel install
+    - name: Restart system after network setup
       import_role:
         name: restart
-
-    # Phase OPT-2 - Remove systemd dhclient job
-    # ---
-    - name: Disable dhclient-fallback service after static config is applied
-      ansible.builtin.systemd:
-        name: dhclient-fallback.service
-        enabled: false
-        state: stopped
-        masked: true
-
-    - name: Remove dhclient fallback systemd service
-      ansible.builtin.file:
-        path: /etc/systemd/system/dhclient-fallback.service
-        state: absent
-
-    - name: Remove dhclient fallback script
-      ansible.builtin.file:
-        path: /usr/local/bin/run-dhclient.sh
-        state: absent
-    # ---
 
     - name: End playbook
       meta: end_play

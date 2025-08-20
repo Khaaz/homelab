@@ -1,0 +1,9 @@
+---
+- name: Wait for new Debian server to be reachable
+  hosts: "{{ target_group }}"
+  gather_facts: false
+  tasks:
+    # Prepare, wait for initial server boot
+    - name: Wait for SSH to become available
+      import_role:
+        name: wait-for-connection
