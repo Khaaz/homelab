@@ -2,7 +2,7 @@
 
 # Check if the user provided a disk as an argument
 if [ -z "$1" ]; then
-    echo "Error: No disk specified. Usage: $0 /dev/sdX"
+    echo "Error: No disk specified. Usage: $0 <disk (/dev/sdX)>"
     exit 1
 fi
 

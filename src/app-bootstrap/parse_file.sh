@@ -9,14 +9,14 @@ get_script_dir() {
 DIRNAME=$(get_script_dir)
 
 # Import the parse file function
-. $DIRNAME/lib/parse-file.sh
+. $DIRNAME/lib/parse_file.sh
 
 # Import the dependencies function
-. $DIRNAME/lib/install-dependencies.sh
+. $DIRNAME/lib/install_dependencies.sh
 
 ## Usage
 if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 <input-file> <output-file>"
+  echo "Usage: $0 <path_to_input_file> <path_to_output_file>"
   exit 1
 fi
 

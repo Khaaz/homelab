@@ -9,10 +9,10 @@ get_script_dir() {
 DIRNAME=$(get_script_dir)
 
 # Import the dependencies function
-. $DIRNAME/lib/install-dependencies.sh
+. $DIRNAME/lib/install_dependencies.sh
 
 # Import the parse file function
-. $DIRNAME/lib/parse-file.sh
+. $DIRNAME/lib/parse_file.sh
 
 preprocess_sql_script() {
   local input_file="$1"

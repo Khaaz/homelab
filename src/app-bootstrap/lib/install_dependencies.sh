@@ -8,10 +8,10 @@ get_script_dir() {
 DIRNAME=$(get_script_dir)
 
 # Import the OS detection function
-. $DIRNAME/lib/is-command-installed.sh
+. $DIRNAME/lib/is_command_installed.sh
 
 # Import the OS detection function
-. $DIRNAME/lib/get-os.sh
+. $DIRNAME/lib/get_os.sh
 
 # Install the appropriate packages: (sqlite, gettext)
 install_dependencies() {

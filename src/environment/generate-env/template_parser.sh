@@ -1,15 +1,15 @@
 #!/bin/bash
-# Processes app config templates into .env files using config_values
+# Processes app config templates into .env.generated files using config_values
 
 get_script_dir() {
     local script_dir
     script_dir=$(dirname "$(realpath "$0")")
     echo "$script_dir"
 }
-DIRNAME=$(get_script_dir)
+SCRIPT_DIR=$(get_script_dir)
 
 APP_CONFIG_FILE="src/config/app-config.template.toml"
-ENV_FILE="src/config/generated.env"
+ENV_FILE="src/config/.env.generated"
 
 # Replace all ${key} placeholders in a line using config values
 replace_placeholders() {
@@ -49,7 +49,7 @@ replace_password_functions() {
     if [[ "$current_line" =~ password_sha512\(\$?\{?([^\)]*)\}?\) ]]; then
         local password_value="${BASH_REMATCH[1]}"
 
-        local hashed_password=$("$DIRNAME/../../utils/encrypt-sha512.sh" "$password_value")
+        local hashed_password=$("$SCRIPT_DIR/../../utils/encrypt_sha512.sh" "$password_value")
 
         local hashed_password_escaped="${hashed_password//\//\\/}"
         current_line="$(echo "$current_line" | sed "s|password_sha512($password_value)|$hashed_password_escaped|")"
@@ -57,7 +57,7 @@ replace_password_functions() {
     elif [[ "$current_line" =~ password_argon\(\$?\{?([^\)]*)\}?\) ]]; then
         local password_value="${BASH_REMATCH[1]}"
 
-        local hashed_password=$("$DIRNAME/../../utils/encrypt-argon.sh" "$password_value")
+        local hashed_password=$("$SCRIPT_DIR/../../utils/encrypt_argon.sh" "$password_value")
 
         local hashed_password_escaped="${hashed_password//\//\\/}"
         current_line="$(echo "$current_line" | sed "s|password_argon($password_value)|$hashed_password_escaped|")"

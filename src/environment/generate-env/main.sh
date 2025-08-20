@@ -6,18 +6,18 @@ get_script_dir() {
   script_dir=$(dirname "$(realpath "$0")")
   echo "$script_dir"
 }
-DIRNAME=$(get_script_dir)
+SCRIPT_DIR=$(get_script_dir)
 
-# Import strip-comment function
-. "$DIRNAME/../lib/strip-comment.sh"
+# Import strip_comment function
+. "$SCRIPT_DIR/../lib/strip_comment.sh"
 
 # Import subfunctions
-. "$DIRNAME/config-parser.sh"
-. "$DIRNAME/template-parser.sh"
+. "$SCRIPT_DIR/config_parser.sh"
+. "$SCRIPT_DIR/template_parser.sh"
 
 # --- Variables ---
-GLOBAL_CONFIG_FILE="${DIRNAME}/../../../config/global-config.toml"
-APPS_PATH="${DIRNAME}/../../../apps"
+GLOBAL_CONFIG_FILE="${SCRIPT_DIR}/../../../config/global-config.toml"
+APPS_PATH="${SCRIPT_DIR}/../../../apps"
 
 declare -A global_config
 
@@ -51,7 +51,7 @@ for app_path in $APPS_PATH/*; do
     echo "INFO: Generated .env for $app"
 done
 
-PRESEED_PATH="${DIRNAME}/../../../preseed"
+PRESEED_PATH="${SCRIPT_DIR}/../../../preseed"
 echo "LOG: Generating .env for infrastructure (preseed and IaC)"
 
 echo "INFO: ==> Processing preseed conf: $PRESEED_PATH <=="

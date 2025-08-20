@@ -6,7 +6,7 @@ get_script_dir() {
   local script_dir=$(dirname "$(realpath "$0")")
   echo "$script_dir"
 }
-DIRNAME=$(get_script_dir)
+SCRIPT_DIR=$(get_script_dir)
 
-# Execute the generate-env command
-$DIRNAME/generate-env/main.sh
+# Execute the generate_env command
+$SCRIPT_DIR/generate_env/main.sh

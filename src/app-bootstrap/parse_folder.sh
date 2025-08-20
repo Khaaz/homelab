@@ -10,7 +10,7 @@ DIRNAME=$(get_script_dir)
 
 ## Usage
 if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 <input-directory> <output-directory>"
+  echo "Usage: $0 <path_to_input_directory> <path_to_output_directory>"
   exit 1
 fi
 
@@ -45,7 +45,7 @@ process_files() {
       # If it's a file, parse it and save to the corresponding output folder
       output_file="$(echo "$file" | sed "s|^$INPUT_DIR|$OUTPUT_DIR|")"
       mkdir -p "$(dirname "$output_file")"
-      $DIRNAME/parse-file.sh "$file" "$output_file"
+      $DIRNAME/parse_file.sh "$file" "$output_file"
     fi
   done
 }
