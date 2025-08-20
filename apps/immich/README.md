@@ -60,12 +60,12 @@ A setup directory look like this:
 
 1. Copy the networking environment template:
    ```bash
-   cp src/config/networking.template.env src/config/networking.env
+   cp src/config/networking.env.template src/config/networking.env
    ```
    Adjust the environment variables, see next section.
 2. Copy the main environment template:
    ```bash
-   cp src/config/template.env src/config/.env
+   cp src/config/.env.template src/config/.env
    ```
    Adjust the environment variables, see next section.
 
@@ -77,7 +77,7 @@ A setup directory look like this:
 |-----------------|---------------------------------------------|-----------------|
 | IMMICH_HOST_IP  | IP of the machine that hosts this stack     | 192.168.1.101   |
 
-**.env**: Used to override values from `default.env` if needed (see `template.env`).
+**.env**: Used to override values from `.env.default` if needed (see `.env.template`).
 
 | Variable     | Description                                 | Example           |
 |--------------|---------------------------------------------|-------------------|

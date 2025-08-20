@@ -13,7 +13,7 @@ services:
   authelia-pre-start:
     image: alpine:latest
     container_name: authelia-pre-start
-    command: ["/bin/sh", "-c", "/scripts/parse-folder.sh /_setup/templates /config"]
+    command: ["/bin/sh", "-c", "/scripts/parse_folder.sh /_setup/templates /config"]
     networks:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.33"
@@ -115,13 +115,13 @@ services:
       # - VSC
       - PORT_UI_VSCODE_SERVER=${PORT_UI_VSCODE_SERVER:?err}
     post_start:
-      - command: /scripts/parse-folder.sh /_setup/templates /config
+      - command: /scripts/parse_folder.sh /_setup/templates /config
         user: root
 
   unbound-pre-start:
     image: alpine:latest
     container_name: unbound-pre-start
-    command: ["/bin/sh", "-c", "/scripts/parse-file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf"]
+    command: ["/bin/sh", "-c", "/scripts/parse_file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf"]
     networks:
       reverse-proxy:
         ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"

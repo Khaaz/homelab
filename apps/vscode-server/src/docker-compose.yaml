@@ -16,7 +16,7 @@ services:
     networks:
       vscode-server:
         ipv4_address: "${VSCODE_SERVER_DOCKER_SUBNET:?err}.11"
-    command: ["/bin/sh", "-c", "/scripts/parse-file.sh /_setup/templates/config.yaml /home/coder/.config/code-server/config.yaml"]
+    command: ["/bin/sh", "-c", "/scripts/parse_file.sh /_setup/templates/config.yaml /home/coder/.config/code-server/config.yaml"]
     volumes:
       - ${APPS_FOLDER?err}/vscode-server/.config:/home/coder/.config
       - ${APPS_FOLDER:?err}/vscode-server/_setup:/_setup # setup

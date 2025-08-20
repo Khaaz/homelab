@@ -120,9 +120,9 @@ services:
       - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/prowlarr.db
+      - command: /scripts/execute_sql.sh /config/prowlarr.db
         user: root
 
 # Flaresolverr - Cloudflare Proxy Server 
@@ -222,9 +222,9 @@ services:
       - OPENSUBTITLE_PASSWORD=${OPENSUBTITLE_PASSWORD}
       - OPENSUBTITLE_USERNAME=${OPENSUBTITLE_USERNAME}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/config.yaml /config/config/config.yaml
+      - command: /scripts/parse_file.sh /_setup/templates/config.yaml /config/config/config.yaml
         user: root
-      - command: /scripts/execute-sql.sh /config/db/bazarr.db
+      - command: /scripts/execute_sql.sh /config/db/bazarr.db
         user: root
 
 # Radarr - Movie library
@@ -264,9 +264,9 @@ services:
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/radarr.db
+      - command: /scripts/execute_sql.sh /config/radarr.db
         user: root
 
 # Radarr - Movie library (4k)
@@ -306,9 +306,9 @@ services:
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/radarr.db
+      - command: /scripts/execute_sql.sh /config/radarr.db
         user: root
 
 # Sonarr - Serie library
@@ -348,9 +348,9 @@ services:
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/sonarr.db
+      - command: /scripts/execute_sql.sh /config/sonarr.db
         user: root
 
 # Sonarr - Serie library (4K)
@@ -390,9 +390,9 @@ services:
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/config.xml /config/config.xml
+      - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
-      - command: /scripts/execute-sql.sh /config/sonarr.db
+      - command: /scripts/execute_sql.sh /config/sonarr.db
         user: root
 
 ###########################################################################
@@ -441,7 +441,7 @@ services:
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
-      - command: /scripts/parse-file.sh /_setup/templates/default.json /app/data/configs/default.json
+      - command: /scripts/parse_file.sh /_setup/templates/default.json /app/data/configs/default.json
         user: root
 
 # Maintainerr - Management Dashboard
@@ -480,7 +480,7 @@ services:
       - PLEX_FRIENDLY_NAME=${PLEX_FRIENDLY_NAME:?err}
       # - DEBUG=true # uncomment (remove the hashtag) to enable debug logs
     post_start:
-      - command: /scripts/execute-sql.sh /opt/data/maintainerr.sqlite
+      - command: /scripts/execute_sql.sh /opt/data/maintainerr.sqlite
         user: root
 
 ###########################################################################
