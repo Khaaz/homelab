@@ -1,0 +1,13 @@
+net-tools
+dnsutils
+iproute2
+ping
+nmap
+netcat
+traceroute
+openssh-client
+vim
+git
+xorriso
+unzip
+jq
