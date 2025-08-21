@@ -5,4 +5,6 @@ networking.env
 
 # other
 .vscode/** 
+!.vscode/cmder.cmd
+!.vscode/wsl.cmd
 **/.DS_Store/**
