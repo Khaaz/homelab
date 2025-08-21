@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# --- Init & Imports ---
+# Prerequesites
 get_script_dir() {
-  local script_dir
-  script_dir=$(dirname "$(realpath "$0")")
-  echo "$script_dir"
+	local script_dir
+	script_dir=$(dirname "$(realpath "$0")")
+	echo "$script_dir"
 }
 SCRIPT_DIR=$(get_script_dir)
 
@@ -28,32 +28,38 @@ echo "LOG: Loaded config-global.toml"
 
 echo "DEBUG: global_config >"
 for k in "${!global_config[@]}"; do
-    echo "DEBUG: $k = ${global_config[$k]}"
+	echo "DEBUG: $k = ${global_config[$k]}"
 done
 echo "DEBUG: global_config <"
 
 # --- 2: Process each app template ---
 echo "LOG: Generating .env for each app stack in $APPS_PATH/*"
 for app_path in $APPS_PATH/*; do
-    [ -d "$app_path" ] || continue
-    app=$(basename "$app_path")
+	[ -d "$app_path" ] || continue
+	app=$(basename "$app_path")
 
-    # Enabled check
-    enabled_key="$app.enabled"
-    enabled_value="${global_config[$enabled_key]}"
-    if [[ "${enabled_value,,}" == "false" ]]; then
-        echo "LOG: Skipping disabled app: $app"
-        continue
-    fi
+	# Enabled check
+	enabled_key="$app.enabled"
+	enabled_value="${global_config[$enabled_key]}"
+	if [[ "${enabled_value,,}" == "false" ]]; then
+		echo "LOG: Skipping disabled app: $app"
+		continue
+	fi
 
-    echo "INFO: ==> Processing app: $app <=="
-    process_app_template "$app" "$app_path" global_config
-    echo "INFO: Generated .env for $app"
+	echo "INFO: ==> Processing app: $app <=="
+	process_app_template "$app" "$app_path" global_config
+	echo "INFO: Generated .env for $app"
 done
 
 PRESEED_PATH="${SCRIPT_DIR}/../../../preseed"
+IAC_PATH="${SCRIPT_DIR}/../../../iac"
+
 echo "LOG: Generating .env for infrastructure (preseed and IaC)"
 
 echo "INFO: ==> Processing preseed conf: $PRESEED_PATH <=="
 process_app_template "preseed" "$PRESEED_PATH" global_config
 echo "INFO: Generated .env for preseed"
+
+echo "INFO: ==> Processing iac conf: $IAC_PATH <=="
+process_app_template "iac" "$IAC_PATH" global_config
+echo "INFO: Generated .env for iac"

@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ -z "$1" ]; then
-    echo "Usage: $0 <password>"
-    exit 1
+	echo "Usage: $0 <password>"
+	exit 1
 fi
 
-password="$1"
+PASSWORD="$1"
 
-echo -n "$password" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4
+echo -n "$PASSWORD" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4

@@ -19,13 +19,21 @@ INPUT_FILE="$SCRIPT_DIR/templates/preseed.cfg"
 
 ## Core
 # Source environment variables from ./config/.env (standard env file)
+GENERATED_ENV_FILE="$SCRIPT_DIR/config/generated.env"
 ENV_FILE="$SCRIPT_DIR/config/.env"
+if [ -f "$GENERATED_ENV_FILE" ]; then
+  set -a
+  . "$GENERATED_ENV_FILE"
+  set +a
+else
+  echo "Warning: .env.generated file not found: $GENERATED_ENV_FILE"
+fi
 if [ -f "$ENV_FILE" ]; then
   set -a
   . "$ENV_FILE"
   set +a
 else
-  echo "Warning: Env file not found: $ENV_FILE"
+  echo "Warning: .env file not found: $ENV_FILE"
 fi
 
 # Call the parse_file script

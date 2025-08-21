@@ -1,74 +1,73 @@
 Vagrant.configure("2") do |config|
-
-  # Disable folder sync
-  config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.allow_fstab_modification = false
-
-  # SSH
-  config.ssh.host = "192.168.1.200"
-  config.ssh.username = "homelab"
-  config.ssh.password = "homelab!"
-  config.ssh.insert_key = false
-  config.ssh.private_key_path = []
-
-  # On provision (first start / creation of the VM), execute this script
-  # reconfigure grub so it uses correct disk
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
-    echo "Provision script - start"
-    PASS="homelab!"
-    if dpkg -l | grep "^ii  grub-pc"; then
-      echo "Detected grub-pc -> adjust grub config"
-
-      echo "grub-pc grub-pc/install_devices multiselect /dev/sda" > tmp
-      echo "grub-pc grub-pc/install_devices_empty boolean false" >> tmp
-      echo $PASS | sudo -S debconf-set-selections tmp
-      echo $PASS | sudo -S DEBIAN_FRONTEND=noninteractive dpkg --configure -a
-      rm tmp
-      fi
-    echo "Provision script - end"
-
-  SHELL
-
-  # -----------------------------
-  # VirtualBox-specific settings
-  config.vm.provider "virtualbox" do |vb, override|
-    vb.name = "ProxmoxVM"
-    vb.memory = 4096
-    vb.cpus = 2
-
-    # We do not need guest additions
-    vb.check_guest_additions = false
-
-    # Enable UEFI
-    # vb.customize ["modifyvm", :id, "--firmware", "efi"]
-
-    # Use the local VirtualBox box file
-    override.vm.box = "local-virtualbox"
-    override.vm.box_url = "file://#{File.expand_path('boxes/virtualbox.box', __dir__)}"
-
-    # Use bridged network exclusively
-    override.vm.network "public_network",
-      bridge: "Realtek Gaming 2.5GbE Family Controller",
-      adapter: 1,
-      use_dhcp_assigned_default_route: true,
-      auto_config: false
-  end
-
-  # -----------------------------
-  # Hyper-V-specific settings
-  config.vm.provider "hyperv" do |hv, override|
-    hv.vmname = "ProxmoxVM"
-    hv.memory = 4096
-    hv.cpus = 2
-    hv.enable_virtualization_extensions = true
-
-    override.vm.box = "local-hyperv"
-    override.vm.box_url = "file://#{File.expand_path('boxes/hyperv.box', __dir__)}"
-
-    # Use bridged network exclusively
-    override.vm.network "public_network",
-      bridge: "External",   # replace with your External vSwitch name
-      adapter: 1,
-      auto_config: false
-  end
+	
+	# Disable folder sync
+	config.vm.synced_folder ".", "/vagrant", disabled: true
+	config.vm.allow_fstab_modification = false
+	
+	# SSH
+	config.ssh.host = "192.168.1.200"
+	config.ssh.username = "homelab"
+	config.ssh.password = "homelab!"
+	config.ssh.insert_key = false
+	config.ssh.private_key_path = []
+	
+	# On provision (first start / creation of the VM), execute this script
+	# reconfigure grub so it uses correct disk
+	config.vm.provision "shell", privileged: false, inline: <<-SHELL
+		echo "Provision script - start"
+		PASS="homelab!"
+		if dpkg -l | grep "^ii  grub-pc"; then
+			echo "Detected grub-pc -> adjust grub config"
+			
+			echo "grub-pc grub-pc/install_devices multiselect /dev/sda" > tmp
+			echo "grub-pc grub-pc/install_devices_empty boolean false" >> tmp
+			echo $PASS | sudo -S debconf-set-selections tmp
+			echo $PASS | sudo -S DEBIAN_FRONTEND=noninteractive dpkg --configure -a
+			rm tmp
+			fi
+		echo "Provision script - end"
+	SHELL
+	
+	# -----------------------------
+	# VirtualBox-specific settings
+	config.vm.provider "virtualbox" do |vb, override|
+		vb.name = "ProxmoxVM"
+		vb.memory = 4096
+		vb.cpus = 2
+		
+		# We do not need guest additions
+		vb.check_guest_additions = false
+		
+		# Enable UEFI
+		# vb.customize ["modifyvm", :id, "--firmware", "efi"]
+		
+		# Use the local VirtualBox box file
+		override.vm.box = "local-virtualbox"
+		override.vm.box_url = "file://#{File.expand_path('boxes/virtualbox.box', __dir__)}"
+		
+		# Use bridged network exclusively
+		override.vm.network "public_network",
+		bridge: "Realtek Gaming 2.5GbE Family Controller",
+		adapter: 1,
+		use_dhcp_assigned_default_route: true,
+		auto_config: false
+	end
+	
+	# -----------------------------
+	# Hyper-V-specific settings
+	config.vm.provider "hyperv" do |hv, override|
+		hv.vmname = "ProxmoxVM"
+		hv.memory = 4096
+		hv.cpus = 2
+		hv.enable_virtualization_extensions = true
+		
+		override.vm.box = "local-hyperv"
+		override.vm.box_url = "file://#{File.expand_path('boxes/hyperv.box', __dir__)}"
+		
+		# Use bridged network exclusively
+		override.vm.network "public_network",
+		bridge: "External",   # replace with your External vSwitch name
+		adapter: 1,
+		auto_config: false
+	end
 end

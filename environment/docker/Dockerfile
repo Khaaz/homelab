@@ -6,22 +6,22 @@ ARG ENV_PATH=/workspace/environment/docker
 
 # Install default tools and dependencies
 RUN apt-get update && \
-    apt-get install -y \
-        lsb-release \
-        gnupg \
-        curl \
-        wget \
-        sudo \
-        python3 \
-        python3-venv \
-        python3-pip \
-        pipx 
+	apt-get install -y \
+	lsb-release \
+	gnupg \
+	curl \
+	wget \
+	sudo \
+	python3 \
+	python3-venv \
+	python3-pip \
+	pipx 
 
 # Install other useful apt tool from packages.txt
 RUN if [ -s ${ENV_PATH}/packages.txt ]; then \
-        xargs -r -a /${ENV_PATH}/packages.txt apt-get install -y --no-install-recommends && \
-        rm -rf /var/lib/apt/lists/* ; \
-    fi
+		xargs -r -a /${ENV_PATH}/packages.txt apt-get install -y --no-install-recommends && \
+		rm -rf /var/lib/apt/lists/* ; \
+	fi
 
 # Add /sbin to path for some commands
 ENV PATH="/sbin:/usr/sbin:${PATH}"
@@ -30,12 +30,12 @@ ENV PATH="/sbin:/usr/sbin:${PATH}"
 
 # Create a virtualenv
 RUN python3 -m venv /venv \
-    && /venv/bin/pip install --upgrade pip
+	&& /venv/bin/pip install --upgrade pip
 
 # Install python libs into the venv from requirement.txt
 RUN if [ -s ${ENV_PATH}/requirements.txt ]; then \
-        /venv/bin/pip install -r /workspace/requirements.txt ; \
-    fi
+		/venv/bin/pip install -r /workspace/requirements.txt ; \
+	fi
 
 # Add venv to path by default
 ENV PATH="/venv/bin:$PATH"
@@ -50,8 +50,8 @@ ENV PATH="/root/.local/bin:$PATH"
 
 # Ansible-galaxy
 RUN if [ -s ${ENV_PATH}/ansible-galaxy.yml ]; then \
-        ansible-galaxy install -r ${ENV_PATH}/ansible-galaxy.yml ; \
-    fi
+		ansible-galaxy install -r ${ENV_PATH}/ansible-galaxy.yml ; \
+	fi
 
 ### Hashicorp
 

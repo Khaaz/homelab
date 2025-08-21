@@ -32,7 +32,7 @@ This folder contains the preseed configuration and scripts to build a bootable I
 - `iso/` – output directory for the generated ISO
 - `log/` – logs and generated files for debugging
 - `src/`
-  - `create_preseeded_iso.sh` – utility script to build the ISO
+  - `create_preseed_iso.sh` – utility script to build the ISO
   - `generate_preseed_cfg.sh` – builds `config/preseed.cfg` from the template
 
 ### Preseed contents
@@ -59,7 +59,7 @@ sudo /root/bin/reset_server.sh /dev/sdX
 
 ### Initial setup
 
-1. Download the official Debian netinst ISO referenced in `create_preseeded_iso.sh` (default: `debian-12.9.0-amd64-netinst.iso`) and place it in the `iso/` directory:
+1. Download the official Debian netinst ISO referenced in `create_preseed_iso.sh` (default: `debian-12.9.0-amd64-netinst.iso`) and place it in the `iso/` directory:
    ```bash
    curl -L -o iso/debian-12.9.0-amd64-netinst.iso \
      https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.9.0-amd64-netinst.iso
@@ -89,7 +89,7 @@ Copy `src/config/template.env` to `src/config/.env` and edit values:
 1. Adjust `config/preseed.cfg` if you need to change language, network, or disk target. The file uses `/dev/sda` by default; replace with `/dev/nvme0n1` or another drive as needed. Running the script with `--preseed-cfg` fills the template using values from `src/config/.env`. If omitted, the default `config/preseed.cfg` is used unchanged.
 2. Generate the installer ISO in `iso/<image>_preseed.iso`:
    ```bash
-   sudo ./create_preseeded_iso.sh --preseed-cfg
+   sudo ./create_preseed_iso.sh --preseed-cfg
    ```
 3. Flash the ISO to a USB key:
    ```bash
@@ -110,7 +110,7 @@ Copy `src/config/template.env` to `src/config/.env` and edit values:
 ### Utilities
 
 - Check network info: `netstat -rn` or `ip addr`
-- Remove saved SSH host keys: `ssh-keygen -R <ip>` (if server reinstalledand signature changed)
+- Remove saved SSH host keys: `ssh-keygen -R <ip>` (if server reinstalled and signature changed)
 - Generate a fresh Ansible key pair:
   ```bash
   ssh-keygen -t rsa -b 4096 -f ../config/ssh/ansible/ansible_key

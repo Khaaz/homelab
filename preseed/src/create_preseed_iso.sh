@@ -2,9 +2,9 @@
 
 # Prerequesites
 get_script_dir() {
-  # Get the directory of the currently running script
-  local script_dir=$(dirname "$(realpath "$0")")
-  echo "$script_dir"
+	# Get the directory of the currently running script
+	local script_dir=$(dirname "$(realpath "$0")")
+	echo "$script_dir"
 }
 SCRIPT_DIR=$(get_script_dir)
 
@@ -12,24 +12,24 @@ ISO="debian-12.9.0-amd64-netinst"
 GENERATE_PRESEED_CFG=false
 DEV_MODE=
 while [ $# -gt 0 ]; do
-  case $1 in
-    --iso)
-      ISO="$2"
-      shift 2
-      ;;
-    --preseed-cfg)
-      GENERATE_PRESEED_CFG=true
-      shift 1
-      ;;
-    --dev)
-      DEV_MODE=true
-      shift 1
-      ;;
-    *)
-      echo "Usage: $0 [--iso <path>] [--preseed-cfg] [--dev]"
-      exit 1
-      ;;
-  esac
+	case $1 in
+		--iso)
+			ISO="$2"
+			shift 2
+			;;
+		--preseed-cfg)
+			GENERATE_PRESEED_CFG=true
+			shift 1
+			;;
+		--dev)
+			DEV_MODE=true
+			shift 1
+			;;
+		*)
+			echo "Usage: $0 [--iso <path>] [--preseed-cfg] [--dev]"
+			exit 1
+			;;
+	esac
 done
 
 echo "LOG: Start preseed process"
@@ -84,15 +84,15 @@ cp $ROOT_PATH/config/boot/grub.cfg $EXTRACTED_PATH/boot/grub/grub.cfg # (= EFI =
 # If --generate-preseed-cfg is set, generate and replace preseed.cfg in extracted data
 echo "LOG: Copying preseed.cfg"
 if [ "$GENERATE_PRESEED_CFG" = true ]; then
-  echo "LOG: Generating custom preseed.cfg using generate_preseed_cfg.sh"
-  $ROOT_PATH/src/generate_preseed_cfg.sh "$EXTRACTED_PATH/preseed.cfg"
-  if [ $? -ne 0 ]; then
-    echo "Error: Failed to generate preseed.cfg"
-    exit 1
-  fi
-  cp $EXTRACTED_PATH/preseed.cfg $ROOT_PATH/log/preseed.cfg
+	echo "LOG: Generating custom preseed.cfg using generate_preseed_cfg.sh"
+	$ROOT_PATH/src/generate_preseed_cfg.sh "$EXTRACTED_PATH/preseed.cfg"
+	if [ $? -ne 0 ]; then
+		echo "Error: Failed to generate preseed.cfg"
+		exit 1
+	fi
+	cp $EXTRACTED_PATH/preseed.cfg $ROOT_PATH/log/preseed.cfg
 else
-  cp $ROOT_PATH/config/preseed.cfg $EXTRACTED_PATH/preseed.cfg
+ 	cp $ROOT_PATH/config/preseed.cfg $EXTRACTED_PATH/preseed.cfg
 fi
 
 # add custom

@@ -1,114 +1,119 @@
 {
-  "folders": [
-    {
-      "path": "."
-    }
-  ],
-  "settings": {
-    "editor.insertSpaces": false,
-    "editor.autoIndent": "full",
-    
-    "editor.wordWrap": "off",
-    
-    "files.eol": "\n",
-    "files.insertFinalNewline": true,
-    
-    "files.associations": {
-      ".env.*": "env",
-      "networking.env.*": "env"
-    },
-    
-    "task.allowAutomaticTasks": "on"
-  },
-  "extensions": {
-    "recommendations": [
-      "yzhang.markdown-all-in-one",
-      "davidanson.vscode-markdownlint",
-      "IronGeek.vscode-env",
-      "ms-azuretools.vscode-docker",
-      "redhat.ansible",
-      "hashicorp.hcl",
-      "4ops.packer",
-      "hashicorp.terraform"
-    ]
-  },
-  
-  // Run manually: CTRL-SHIFT-B 
-  "tasks": {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "env",
-        "type": "process",
-        "osx":    { "command": "exec \"$SHELL\" -l" },
-        "linux":  { "command": "exec \"$SHELL\" -l" },
-        "windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd"},
-        "options": { "cwd": "${workspaceFolder}/environment" },
-        "isBackground": true,
-        "problemMatcher": [],
-        "presentation": { "reveal": "always", "panel": "dedicated", "focus": true }
-      },
-      {
-        "label": "vagrant",
-        "type": "shell",
-        "osx":    { "command": "exec \"$SHELL\" -l" },
-        "linux":  { "command": "exec \"$SHELL\" -l" },
-        "windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
-        "options": { "cwd": "${workspaceFolder}/environment/vagrant" },
-        "isBackground": true,
-        "problemMatcher": [],
-        "presentation": { "reveal": "always", "panel": "dedicated",  }
-      },
-      {
-        "label": "homelab",
-        "type": "shell",
-        "osx":    { "command": "exec \"$SHELL\" -l" },
-        "linux":  { "command": "exec \"$SHELL\" -l" },
-        "windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
-        "options": { "cwd": "${workspaceFolder}" },
-        "isBackground": true,
-        "problemMatcher": [],
-        "presentation": { "reveal": "always", "panel": "dedicated" }
-      },
-      {
-        "label": "ssh-1",
-        "type": "shell",
-        "osx":    { "command": "exec \"$SHELL\" -l" },
-        "linux":  { "command": "exec \"$SHELL\" -l" },
-        "windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
-        "options": { "cwd": "${workspaceFolder}" },
-        "isBackground": true,
-        "problemMatcher": [],
-        "presentation": { "reveal": "always", "panel": "dedicated", "group": "ssh" }
-      },
-      {
-        "label": "ssh-2",
-        "type": "shell",
-        "osx":    { "command": "exec \"$SHELL\" -l" },
-        "linux":  { "command": "exec \"$SHELL\" -l" },
-        "windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
-        "options": { "cwd": "${workspaceFolder}" },
-        "isBackground": true,
-        "problemMatcher": [],
-        "presentation": { "reveal": "always", "panel": "dedicated", "group": "ssh" }
-      },
-      {
-        "label": "wsl",
-        "type": "shell",
-        "osx":    { "command": "exec \"$SHELL\" -l" },
-        "linux":  { "command": "exec \"$SHELL\" -l" },
-        "windows":{ "command": "${workspaceFolder}\\.vscode\\wsl.cmd" },
-        "options": { "cwd": "${workspaceFolder}" },
-        "isBackground": true,
-        "problemMatcher": [],
-        "presentation": { "reveal": "always", "panel": "dedicated" }
-      },
-      {
-        "label": "Create dev terminals",
-        "dependsOn": ["env", "vagrant", "homelab", "ssh-1", "ssh-2", "wsl"],
-        "group": { "kind": "build", "isDefault": true },
-        "runOptions": { "runOn": "folderOpen" }
-      }
-    ]
-  }
+	"folders": [
+		{ "path": "." }
+	],
+	"settings": {
+		"editor.insertSpaces": false,
+		"editor.autoIndent": "full",
+		"editor.detectIndentation": false,
+		
+		"[yaml]": {
+			"editor.insertSpaces": true,
+			"editor.tabSize": 2,
+			"editor.detectIndentation": false
+		},
+
+		"editor.wordWrap": "off",
+		
+		"files.eol": "\n",
+		"files.insertFinalNewline": true,
+		
+		"files.associations": {
+			".env.*": "env",
+			"networking.env.*": "env"
+		},
+		
+		"task.allowAutomaticTasks": "on"
+	},
+	"extensions": {
+		"recommendations": [
+		"yzhang.markdown-all-in-one",
+		"davidanson.vscode-markdownlint",
+		"IronGeek.vscode-env",
+		"ms-azuretools.vscode-docker",
+		"redhat.ansible",
+		"hashicorp.hcl",
+		"4ops.packer",
+		"hashicorp.terraform"
+		]
+	},
+	
+	// Run manually: CTRL-SHIFT-B 
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "env",
+				"type": "process",
+				"osx":    { "command": "exec \"$SHELL\" -l" },
+				"linux":  { "command": "exec \"$SHELL\" -l" },
+				"windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd"},
+				"options": { "cwd": "${workspaceFolder}/environment" },
+				"isBackground": true,
+				"problemMatcher": [],
+				"presentation": { "reveal": "always", "panel": "dedicated", "focus": true }
+			},
+			{
+				"label": "vagrant",
+				"type": "shell",
+				"osx":    { "command": "exec \"$SHELL\" -l" },
+				"linux":  { "command": "exec \"$SHELL\" -l" },
+				"windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
+				"options": { "cwd": "${workspaceFolder}/environment/vagrant" },
+				"isBackground": true,
+				"problemMatcher": [],
+				"presentation": { "reveal": "always", "panel": "dedicated",  }
+			},
+			{
+				"label": "homelab",
+				"type": "shell",
+				"osx":    { "command": "exec \"$SHELL\" -l" },
+				"linux":  { "command": "exec \"$SHELL\" -l" },
+				"windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
+				"options": { "cwd": "${workspaceFolder}" },
+				"isBackground": true,
+				"problemMatcher": [],
+				"presentation": { "reveal": "always", "panel": "dedicated" }
+			},
+			{
+				"label": "ssh-1",
+				"type": "shell",
+				"osx":    { "command": "exec \"$SHELL\" -l" },
+				"linux":  { "command": "exec \"$SHELL\" -l" },
+				"windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
+				"options": { "cwd": "${workspaceFolder}" },
+				"isBackground": true,
+				"problemMatcher": [],
+				"presentation": { "reveal": "always", "panel": "dedicated", "group": "ssh" }
+			},
+			{
+				"label": "ssh-2",
+				"type": "shell",
+				"osx":    { "command": "exec \"$SHELL\" -l" },
+				"linux":  { "command": "exec \"$SHELL\" -l" },
+				"windows":{ "command": "${workspaceFolder}\\.vscode\\cmder.cmd" },
+				"options": { "cwd": "${workspaceFolder}" },
+				"isBackground": true,
+				"problemMatcher": [],
+				"presentation": { "reveal": "always", "panel": "dedicated", "group": "ssh" }
+			},
+			{
+				"label": "wsl",
+				"type": "shell",
+				"osx":    { "command": "exec \"$SHELL\" -l" },
+				"linux":  { "command": "exec \"$SHELL\" -l" },
+				"windows":{ "command": "${workspaceFolder}\\.vscode\\wsl.cmd" },
+				"options": { "cwd": "${workspaceFolder}" },
+				"isBackground": true,
+				"problemMatcher": [],
+				"presentation": { "reveal": "always", "panel": "dedicated" }
+			},
+			{
+				"label": "Create dev terminals",
+				"dependsOn": ["env", "vagrant", "homelab", "ssh-1", "ssh-2", "wsl"],
+				"group": { "kind": "build", "isDefault": true },
+				"runOptions": { "runOn": "folderOpen" }
+			}
+		]
+	}
 } 

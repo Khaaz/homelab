@@ -1,108 +1,108 @@
 [global]
-    # Domain used for local/lan name resolution. See apps/reverse-proxy.
-    INTERNAL_DOMAIN="l.ab"
-    # Domain used for external name resolution (internet). See apps/reverse-proxy.
-    EXTERNAL_DOMAIN="example.com"
+	# Domain used for local/lan name resolution. See apps/reverse-proxy.
+	INTERNAL_DOMAIN="l.ab"
+	# Domain used for external name resolution (internet). See apps/reverse-proxy.
+	EXTERNAL_DOMAIN="example.com"
 
 [infra]
-    IP_GATEWAY="192.168.1.254"
-    IP_NAMESERVER="192.168.1.254"
-    IP_SERVER="192.168.1.100"
+	IP_GATEWAY="192.168.1.254"
+	IP_NAMESERVER="192.168.1.254"
+	IP_SERVER="192.168.1.100"
 
 [preseed] # preseed
-    enabled=true
+	enabled=true
 
-    DISK="/dev/sda"
-    # passwords will automatically be hashed with sha512
-    # root user
-    ROOT_PASSWORD="long_root_password1!"
-    # admin user (homelab)
-    USER_PASSWORD='long_password1!'
+	DISK="/dev/sda"
+	# passwords will automatically be hashed with sha512
+	# root user
+	ROOT_PASSWORD="long_root_password1!"
+	# admin user (homelab)
+	USER_PASSWORD='long_password1!'
 
 [cloud] # apps/cloud
-    enabled=false
+	enabled=false
 
-    NEXTCLOUD_ADMIN_USER=""
-    NEXTCLOUD_ADMIN_PASSWORD=""
-    MYSQL_USER=""
-    MYSQL_PASSWORD=""
+	NEXTCLOUD_ADMIN_USER=""
+	NEXTCLOUD_ADMIN_PASSWORD=""
+	MYSQL_USER=""
+	MYSQL_PASSWORD=""
 
 [home-automation]
-    enabled=false
+	enabled=false
 
 [immich] # apps/immich
-    enabled=false
+	enabled=false
 
-    DB_PASSWORD=""
+	DB_PASSWORD=""
 
 [media-management] # apps/media-management
-    enabled=true
+	enabled=true
 
-    # VPN provider credentials. Example: nordvpn, protonvpn
-    # https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers
-    VPN_SERVICE_PROVIDER="protonvpn"
-    VPN_USERNAME=""
-    VPN_PASSWORD=""
+	# VPN provider credentials. Example: nordvpn, protonvpn
+	# https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers
+	VPN_SERVICE_PROVIDER="protonvpn"
+	VPN_USERNAME=""
+	VPN_PASSWORD=""
 
-    # Provide any value you want that will be used as API key
-    # Generator:  https://it-tools.tech/token-generator
-    API_KEY_PROWLARR=""
-    API_KEY_BAZARR=""
-    API_KEY_RADARR=""
-    API_KEY_RADARR4K=""
-    API_KEY_SONARR=""
-    API_KEY_SONARR4K=""
-    API_KEY_MAINTAINERR=""
+	# Provide any value you want that will be used as API key
+	# Generator:  https://it-tools.tech/token-generator
+	API_KEY_PROWLARR=""
+	API_KEY_BAZARR=""
+	API_KEY_RADARR=""
+	API_KEY_RADARR4K=""
+	API_KEY_SONARR=""
+	API_KEY_SONARR4K=""
+	API_KEY_MAINTAINERR=""
 
-    # For automatic subtitles with Bazarr
-    # Create an account here: https://www.opensubtitles.com/
-    OPENSUBTITLE_USERNAME=""
-    OPENSUBTITLE_PASSWORD=""
+	# For automatic subtitles with Bazarr
+	# Create an account here: https://www.opensubtitles.com/
+	OPENSUBTITLE_USERNAME=""
+	OPENSUBTITLE_PASSWORD=""
 
 [media-server] # apps/media-server
-    enabled=true
+	enabled=true
 
-    # Token for the Plex server. It is generated the first time, when the server is claimed.
-    PLEX_CLAIM=""
-    # Id of the machine for your Plex server. It is generated the first time, when the server is claimed.
-    PLEX_MACHINE_IDENTIFIER=""
-    # Username and Email for the account linked with the Plex server.
-    PLEX_USERNAME=""
-    PLEX_EMAIL=""
+	# Token for the Plex server. It is generated the first time, when the server is claimed.
+	PLEX_CLAIM=""
+	# Id of the machine for your Plex server. It is generated the first time, when the server is claimed.
+	PLEX_MACHINE_IDENTIFIER=""
+	# Username and Email for the account linked with the Plex server.
+	PLEX_USERNAME=""
+	PLEX_EMAIL=""
 
-    # Provide any value you want that will be used as API key
-    # Generator: https://it-tools.tech/token-generator
-    API_KEY_OVERSEERR=""
+	# Provide any value you want that will be used as API key
+	# Generator: https://it-tools.tech/token-generator
+	API_KEY_OVERSEERR=""
 
 [reverse-proxy] # apps/reverse-proxy
-    enabled=true
+	enabled=true
 
-    # Which DNS provider you are using
-    # Depending on the DNS provider, you need to add support for the correct .ini file in apps/reverse-proxy/apps/swag/dns-conf
-    # Already handled automatically: cloudflare, duckdns
-    # See the doc in apps/reverse-proxy/apps/swag/dns-conf
-    DNS_PROVIDER="cloudflare"
-    # The token for your DNS provider (see apps/reverse-proxy/apps/swag/dns-conf)
-    DNS_PROVIDER_TOKEN=""
+	# Which DNS provider you are using
+	# Depending on the DNS provider, you need to add support for the correct .ini file in apps/reverse-proxy/apps/swag/dns-conf
+	# Already handled automatically: cloudflare, duckdns
+	# See the doc in apps/reverse-proxy/apps/swag/dns-conf
+	DNS_PROVIDER="cloudflare"
+	# The token for your DNS provider (see apps/reverse-proxy/apps/swag/dns-conf)
+	DNS_PROVIDER_TOKEN=""
 
-    # The secret key used to sign and verify the JWT.
-    # Any token you want.
-    AUTHELIA_JWT_SECRET="a_very_important_secret"
-    # The encryption key that is used to encrypt sensitive information in the database. 
-    # Any token you want. Min length: 20
-    AUTHELIA_ENCRYPTION_KEY="you_must_generate_a_random_string_of_more_than_twenty_chars"
-    # The user used to authenticate to Authelia
-    AUTHELIA_USER_NAME="admin"
-    AUTHELIA_USER_EMAIL="admin@gmail.com"
-    # password will automatically be hashed with argon2
-    AUTHELIA_USER_PASSWORD="long_password1!"
+	# The secret key used to sign and verify the JWT.
+	# Any token you want.
+	AUTHELIA_JWT_SECRET="a_very_important_secret"
+	# The encryption key that is used to encrypt sensitive information in the database. 
+	# Any token you want. Min length: 20
+	AUTHELIA_ENCRYPTION_KEY="you_must_generate_a_random_string_of_more_than_twenty_chars"
+	# The user used to authenticate to Authelia
+	AUTHELIA_USER_NAME="admin"
+	AUTHELIA_USER_EMAIL="admin@gmail.com"
+	# password will automatically be hashed with argon2
+	AUTHELIA_USER_PASSWORD="long_password1!"
 
 [vault] # apps/vault
-    enabled=false
+	enabled=false
 
-    VAULTWARDEN_ADMIN_TOKEN=""
+	VAULTWARDEN_ADMIN_TOKEN=""
 
 [vscode-server] # apps/vscode-server
-    enabled=false
+	enabled=false
 
-    VSCODE_SERVER_PASSWORD=""
+	VSCODE_SERVER_PASSWORD=""
