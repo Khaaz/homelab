@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# Prerequesites
+get_script_dir() {
+  # Get the directory of the currently running script
+  local script_dir=$(dirname "$(realpath "$0")")
+  echo "$script_dir"
+}
+SCRIPT_DIR=$(get_script_dir)
+
 ACTION=""
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -22,9 +30,9 @@ fi
 
 case "$ACTION" in
   up)
-    docker compose run --rm --build environment
+    docker compose -f $SCRIPT_DIR/docker-compose.yml run --rm --build environment
     ;;
   down)
-    docker compose down environment
+    docker compose -f $SCRIPT_DIR/docker-compose.yml down environment 
     ;;
 esac
