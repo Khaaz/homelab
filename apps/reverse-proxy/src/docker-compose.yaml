@@ -5,18 +5,19 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.0/24"
-        gateway: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.1"
-
+        - subnet: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.0/24
+          gateway: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.1
 services:
-
   authelia-pre-start:
     image: alpine:latest
     container_name: authelia-pre-start
-    command: ["/bin/sh", "-c", "/scripts/parse_folder.sh /_setup/templates /config"]
+    command:
+      - /bin/sh
+      - -c
+      - /scripts/parse_folder.sh /_setup/templates /config
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.33"
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.33
     volumes:
       - ${APPS_FOLDER:?err}/authelia:/config # config
       - ${APPS_FOLDER:?err}/authelia/_setup:/_setup # setup
@@ -33,18 +34,18 @@ services:
       - USER_NAME=${AUTHELIA_USER_NAME:?err}
       - USER_PASSWORD=${AUTHELIA_USER_PASSWORD:?err}
       - USER_EMAIL=${AUTHELIA_USER_EMAIL:?err}
-
-# Authelia - Multi-factor authentication portal
+  
+  # Authelia - Multi-factor authentication portal
   authelia:
     image: ghcr.io/authelia/authelia:latest
     container_name: authelia
     restart: unless-stopped
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.12"
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.12
     depends_on:
       authelia-pre-start:
-        condition: service_completed_successfully 
+        condition: service_completed_successfully
     ports:
       - ${PORT_UI_AUTHELIA:?err}:9091
     volumes:
@@ -54,8 +55,8 @@ services:
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-
-# SWAG - Reverse proxy with Certbot, for Let's Encrypt / ZeroSSL
+  
+  # SWAG - Reverse proxy with Certbot, for Let's Encrypt / ZeroSSL
   swag:
     image: lscr.io/linuxserver/swag:latest
     container_name: swag
@@ -66,7 +67,7 @@ services:
       reverse-proxy:
         ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.11
     dns:
-      - "${REVERSE_PROXY_DOCKER_SUBNET:?err}.10"  # Custom DNS server (Unbound container IP)
+      - ${REVERSE_PROXY_DOCKER_SUBNET:?err}.10 # Custom DNS server (Unbound container IP)
     ports:
       - 80:80
       - 443:443
@@ -117,14 +118,17 @@ services:
     post_start:
       - command: /scripts/parse_folder.sh /_setup/templates /config
         user: root
-
+  
   unbound-pre-start:
     image: alpine:latest
     container_name: unbound-pre-start
-    command: ["/bin/sh", "-c", "/scripts/parse_file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf"]
+    command:
+      - /bin/sh
+      - -c
+      - /scripts/parse_file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.30"
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.30
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
       - ${APPS_FOLDER:?err}/unbound/_setup:/_setup # setup
@@ -141,25 +145,25 @@ services:
       - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
       - VLT_HOST_IP=${VAULT_HOST_IP:?err}
       - VSC_HOST_IP=${VSCODE_SERVER_HOST_IP:?err}
-
-# DNSMask - DNS server for local resolution
+  
+  # Unbound - DNS server for local resolution
   unbound:
     image: mvance/unbound:latest
     container_name: unbound
     restart: unless-stopped
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.10"
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.10
     depends_on:
       unbound-pre-start:
-        condition: service_completed_successfully 
+        condition: service_completed_successfully
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - 53:53/tcp
+      - 53:53/udp
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
-
-# minica - Generate self signed certificat
+  
+  # Minica - Generate self signed certificat
   minica:
     container_name: minica
     build:
@@ -168,7 +172,7 @@ services:
       no_cache: true
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.20"
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.20
     volumes:
       - ${APPS_FOLDER:?err}/ca/certs:/app/certs
       - ${APPS_FOLDER:?err}/swag/keys-private:/swag/keys-private
@@ -176,15 +180,15 @@ services:
     environment:
       - DOMAIN=${INTERNAL_DOMAIN}
       - ROOT_CN=${ROOT_CA_COMMON_NAME:?err}
-
-# DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
+  
+  # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:
     image: qmcgaw/ddns-updater:latest
     container_name: ddns-updater
     restart: unless-stopped
     networks:
       reverse-proxy:
-        ipv4_address: "${REVERSE_PROXY_DOCKER_SUBNET:?err}.21"
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.21
     user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_DDNS_UPDATER:?err}:${PORT_UI_DDNS_UPDATER:?err}/tcp

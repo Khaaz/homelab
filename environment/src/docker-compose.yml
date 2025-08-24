@@ -9,6 +9,6 @@ services:
     cap_add:
       - SYS_ADMIN
     devices:
-      - "/dev/loop0:/dev/loop0"
-      - "/dev/loop1:/dev/loop1"
-      - "/dev/loop2:/dev/loop2"
+      - /dev/loop0:/dev/loop0
+      - /dev/loop1:/dev/loop1
+      - /dev/loop2:/dev/loop2

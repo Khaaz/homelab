@@ -5,36 +5,36 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.0/24
-        gateway: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.1
-
+        - subnet: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.0/24
+          gateway: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.1
 services:
-
   vscode-server-pre-start:
     image: alpine:latest
     container_name: vscode-server-pre-start
     networks:
       vscode-server:
-        ipv4_address: "${VSCODE_SERVER_DOCKER_SUBNET:?err}.11"
-    command: ["/bin/sh", "-c", "/scripts/parse_file.sh /_setup/templates/config.yaml /home/coder/.config/code-server/config.yaml"]
+        ipv4_address: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.11
+    command:
+      - /bin/sh
+      - -c
+      - /scripts/parse_file.sh /_setup/templates/config.yaml /home/coder/.config/code-server/config.yaml
     volumes:
       - ${APPS_FOLDER?err}/vscode-server/.config:/home/coder/.config
       - ${APPS_FOLDER:?err}/vscode-server/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - VSCODE_SERVER_PASSWORD={VSCODE_SERVER_PASSWORD:?err}
-
   vscode-server:
     image: codercom/code-server:latest
     container_name: vscode-server
     restart: unless-stopped
     networks:
       vscode-server:
-        ipv4_address: "${VSCODE_SERVER_DOCKER_SUBNET:?err}.10"
+        ipv4_address: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.10
     depends_on:
       vscode-server-pre-start:
-        condition: service_completed_successfully 
-    user: "${PUID:?err}:${PGID:?err}" 
+        condition: service_completed_successfully
+    user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_VSCODE_SERVER:?err}:8080
     volumes:

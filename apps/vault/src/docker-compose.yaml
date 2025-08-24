@@ -5,11 +5,9 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: ${VAULT_DOCKER_SUBNET:?err}.0/24
-        gateway: ${VAULT_DOCKER_SUBNET:?err}.1
-
+        - subnet: ${VAULT_DOCKER_SUBNET:?err}.0/24
+          gateway: ${VAULT_DOCKER_SUBNET:?err}.1
 services:
-
   # Vaultwarden - Password Management
   vaultwarden:
     image: vaultwarden/server:1.33.2

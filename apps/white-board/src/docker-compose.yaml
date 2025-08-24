@@ -5,23 +5,22 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: ${WHITE_BOARD_DOCKER_SUBNET:?err}.0/24
-        gateway: ${WHITE_BOARD_DOCKER_SUBNET:?err}.1
-
+        - subnet: ${WHITE_BOARD_DOCKER_SUBNET:?err}.0/24
+          gateway: ${WHITE_BOARD_DOCKER_SUBNET:?err}.1
 services:
-    home-assistant:
-      image: lscr.io/linuxserver/homeassistant:latest
-      container_name: home-assistant
-      restart: unless-stopped
-      networks:
-        white-board:
-          ipv4_address: "${WHITE_BOARD_DOCKER_SUBNET:?err}.10"
-      ports:
-        - "${PORT_UI_HOME_ASSISTANT:?err}:8123"
-        - 8123:8123 #optional
-      volumes:
-        - /path/to/homeassistant/data:/config
-      environment:
-        - PUID=1000
-        - PGID=1000
-        - TZ=Etc/UTC
+  home-assistant:
+    image: lscr.io/linuxserver/homeassistant:latest
+    container_name: home-assistant
+    restart: unless-stopped
+    networks:
+      white-board:
+        ipv4_address: ${WHITE_BOARD_DOCKER_SUBNET:?err}.10
+    ports:
+      - ${PORT_UI_HOME_ASSISTANT:?err}:8123
+      - 8123:8123 #optional
+    volumes:
+      - /path/to/homeassistant/data:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC

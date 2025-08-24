@@ -1,4 +1,4 @@
-- name: Setup additional configuration for proxmox 
+- name: Setup additional configuration for proxmox
   hosts: homelab
   become: true
   tasks:
@@ -7,23 +7,20 @@
       file:
         path: /var/lib/vz/template/iso
         state: directory
-        mode: '0755'
-
+        mode: "0755"
     - name: Download Debian 12.9 netinst ISO
       get_url:
         url: https://cdimage.debian.org/cdimage/archive/12.9.0/amd64/iso-cd/debian-12.9.0-amd64-netinst.iso
         dest: /var/lib/vz/template/iso/debian-12.9.0-amd64-netinst.iso
-        mode: '0644'
+        mode: "0644"
         force: yes
-        checksum: "sha512:9ebe405c3404a005ce926e483bc6c6841b405c4d85e0c8a7b1707a7fe4957c617ae44bd807a57ec3e5c2d3e99f2101dfb26ef36b3720896906bdc3aaeec4cd80"
-    
+        checksum: sha512:9ebe405c3404a005ce926e483bc6c6841b405c4d85e0c8a7b1707a7fe4957c617ae44bd807a57ec3e5c2d3e99f2101dfb26ef36b3720896906bdc3aaeec4cd80
     - name: Download Alpine ISO
       get_url:
         url: https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-virt-3.22.1-x86_64.iso
         dest: /var/lib/vz/template/iso/alpine-virt-3.22.1-x86_64.iso
-        mode: '0644'
+        mode: "0644"
         force: yes
-        checksum: "sha256:42918974513750a6923393f3074c3bb226badfce4a0d0f35f90377fd789fda1f"
-
+        checksum: sha256:42918974513750a6923393f3074c3bb226badfce4a0d0f35f90377fd789fda1f
     - name: End playbook
       meta: end_play

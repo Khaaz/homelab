@@ -5,12 +5,11 @@
   tasks:
     - name: Print a log message for localhost
       debug:
-        msg: "Hello from Ansible on localhost!"
-
+        msg: Hello from Ansible on localhost!
 - name: Run on homelab
   hosts: homelab
   gather_facts: false
   tasks:
     - name: Print a log message for homelab
       debug:
-        msg: "Hello from Ansible on homelab!"
+        msg: Hello from Ansible on homelab!

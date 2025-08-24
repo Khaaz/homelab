@@ -5,11 +5,9 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: ${IMMICH_DOCKER_SUBNET:?err}.0/24
-        gateway: ${IMMICH_DOCKER_SUBNET:?err}.1
-
+        - subnet: ${IMMICH_DOCKER_SUBNET:?err}.0/24
+          gateway: ${IMMICH_DOCKER_SUBNET:?err}.1
 services:
-
   # Immich - Cloud for photos
   immich-server:
     image: ghcr.io/immich-app/immich-server:release
@@ -17,7 +15,7 @@ services:
     restart: always
     networks:
       immich:
-        ipv4_address: "${IMMICH_DOCKER_SUBNET:?err}.10"
+        ipv4_address: ${IMMICH_DOCKER_SUBNET:?err}.10
     depends_on:
       - redis
       - postgres
@@ -25,11 +23,10 @@ services:
     #   file: hwaccel.transcoding.yml
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
     ports:
-      - '${PORT_UI_IMMICH}:2283'
+      - ${PORT_UI_IMMICH}:2283
     volumes:
       - ${DATA_FOLDER}/immich:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
-
   # Immich Machine learning - Immich machine learning server
   immich-machine-learning:
     # For hardware acceleration, add one of -[armnn, cuda, openvino] to the image tag.
@@ -39,13 +36,12 @@ services:
     restart: always
     networks:
       immich:
-        ipv4_address: "${IMMICH_DOCKER_SUBNET:?err}.20"
+        ipv4_address: ${IMMICH_DOCKER_SUBNET:?err}.20
     # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/ml-hardware-acceleration
     #   file: hwaccel.ml.yml
     #   service: cpu # set to one of [armnn, cuda, openvino, openvino-wsl] for accelerated inference - use the `-wsl` version for WSL2 where applicable
     volumes:
       - model-cache:/cache
-
   # Redis - Immich redis server
   redis:
     image: docker.io/redis:6.2-alpine@sha256:148bb5411c184abd288d9aaed139c98123eeb8824c5d3fce03cf721db58066d8
@@ -53,10 +49,9 @@ services:
     restart: always
     networks:
       immich:
-        ipv4_address: "${IMMICH_DOCKER_SUBNET:?err}.31"
+        ipv4_address: ${IMMICH_DOCKER_SUBNET:?err}.31
     healthcheck:
       test: redis-cli ping || exit 1
-
   # Postgres - Immich postgres server
   postgres:
     image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:739cdd626151ff1f796dc95a6591b55a714f341c737e27f045019ceabf8e8c52
@@ -64,14 +59,9 @@ services:
     restart: always
     networks:
       immich:
-        ipv4_address: "${IMMICH_DOCKER_SUBNET:?err}.32"
+        ipv4_address: ${IMMICH_DOCKER_SUBNET:?err}.32
     healthcheck:
-      test: >-
-        pg_isready --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" || exit 1;
-        Chksum="$$(psql --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" --tuples-only --no-align
-        --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')";
-        echo "checksum failure count is $$Chksum";
-        [ "$$Chksum" = '0' ] || exit 1
+      test: pg_isready --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" || exit 1; Chksum="$$(psql --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
       interval: 5m
       start_interval: 30s
       start_period: 5m
@@ -89,4 +79,4 @@ services:
       POSTGRES_DB: immich
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_INITDB_ARGS: '--data-checksums'
+      POSTGRES_INITDB_ARGS: --data-checksums

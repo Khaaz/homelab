@@ -1,2 +1,2 @@
 auth: password
-hashed-password: "${VSCODE_SERVER_PASSWORD}"
+hashed-password: ${VSCODE_SERVER_PASSWORD}

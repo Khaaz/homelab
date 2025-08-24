@@ -2,7 +2,6 @@
 - import_playbook: common/wait-for-connection.playbook.yml
   vars:
     target_group: homelab
-
 # Install proxmox on raw debian
 - import_playbook: proxmox/install-proxmox.playbook.yml
 # Additional configuration and setup

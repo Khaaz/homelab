@@ -3,44 +3,38 @@
   become: true
   vars:
     ip_nameserver: 10.0.2.3
-
   tasks:
     # Phase 1 - Setup
     - name: Add Proxmox VE no-subscription repository
       ansible.builtin.copy:
-        content: "deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription\n"
+        content: |
+          deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription
         dest: /etc/apt/sources.list.d/pve-install-repo.list
-        mode: '0644'
-    
+        mode: "0644"
     - name: Download Proxmox GPG key
       ansible.builtin.get_url:
         url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
         dest: /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
-        mode: '0644'
-
+        mode: "0644"
     - name: Update APT cache and perform full upgrade
       ansible.builtin.apt:
         update_cache: yes
         upgrade: full
-    
     # Phase 2 - Install kernel and reboot 
     - name: Install Proxmox VE kernel
       ansible.builtin.apt:
         name: proxmox-default-kernel
         state: present
-
     - name: Restart system after kernel install
       import_role:
         name: restart
-
     # Phase 3 - Install
     - name: Preseed Postfix selections for Proxmox VE installation
       ansible.builtin.debconf:
         name: postfix
         question: postfix/main_mailer_type
-        value: 'Local only'
+        value: Local only
         vtype: select
-
     - name: Install required base packages (proxmox-ve...) for Proxmox
       ansible.builtin.apt:
         name:
@@ -49,67 +43,56 @@
           - open-iscsi
           - chrony
         state: present
-    
     - name: Remove os-prober package
       ansible.builtin.apt:
         name: os-prober
         state: absent
         purge: yes
-    
     # Phase 4 - Override kernel and cleanup
     - name: Check if a Proxmox kernel is installed
       ansible.builtin.shell: ls /boot/vmlinuz-*pve || true
       register: proxmox_kernel_check
       changed_when: false
       failed_when: false
-
     - name: Remove default Debian kernel packages
       ansible.builtin.apt:
         name:
           - linux-image-amd64
-          - 'linux-image-6.1*'
+          - linux-image-6.1*
         state: absent
         purge: yes
       when: proxmox_kernel_check.stdout != ""
-
     - name: Update GRUB bootloader
       ansible.builtin.command: update-grub
       changed_when: true
-
     - name: Restart system after grub update
       import_role:
         name: restart
-
     # Phase 5 - Cleanup
     - name: Remove enterprise repositories
       ansible.builtin.apt_repository:
-        repo: "{{ item }}"
+        repo: '{{ item }}'
         update_cache: false
         state: absent
       loop:
         - deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
         - deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
-
     - name: disable proxmox subscription popup
       ansible.builtin.replace:
         path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
-        regexp: '^(.*)Ext\.Msg\.show\(\{(.*)$\n^(.*)No valid subscription(.*)$'
-        replace: '\1void({\2\n\3No valid subscription\4'
-
+        regexp: ^(.*)Ext\.Msg\.show\(\{(.*)$\n^(.*)No valid subscription(.*)$
+        replace: \1void({\2\n\3No valid subscription\4
     # Phase 6 - Networking setup
     - name: Print default interface facts
       debug:
         var: ansible_default_ipv4
-
     - name: Write new /etc/network/interfaces
       ansible.builtin.template:
-        src: "interfaces.j2"
+        src: interfaces.j2
         dest: /etc/network/interfaces
-        mode: '0644'
-    
+        mode: "0644"
     - name: Restart system after network setup
       import_role:
         name: restart
-
     - name: End playbook
       meta: end_play
