@@ -29,3 +29,5 @@ fi
 # Execute ssh_keygen function
 echo "Generating SSH keys for user: $USER"
 $SCRIPT_DIR/../../utils/ssh_keygen.sh -C "$USER@homelab" -f "$SSH_DIR/${USER}_key"
+
+chmod 600 "$SSH_DIR/${USER}_key"
