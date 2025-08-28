@@ -6,6 +6,8 @@ services:
       - ../../:/workspace
     working_dir: /workspace
     tty: true
+    ports:
+      - 8098:8098 # Packer http server port: published via [--packer] 
     cap_add:
       - SYS_ADMIN
     devices:
