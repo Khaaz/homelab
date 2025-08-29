@@ -20,6 +20,7 @@
       ansible.builtin.apt:
         update_cache: yes
         upgrade: full
+
     # Phase 2 - Install kernel and reboot 
     - name: Install Proxmox VE kernel
       ansible.builtin.apt:
@@ -28,6 +29,7 @@
     - name: Restart system after kernel install
       import_role:
         name: restart
+
     # Phase 3 - Install
     - name: Preseed Postfix selections for Proxmox VE installation
       ansible.builtin.debconf:
@@ -48,9 +50,11 @@
         name: os-prober
         state: absent
         purge: yes
+
     # Phase 4 - Override kernel and cleanup
     - name: Check if a Proxmox kernel is installed
-      ansible.builtin.shell: ls /boot/vmlinuz-*pve || true
+      ansible.builtin.stat:
+        path: /boot/vmlinuz-*-pve
       register: proxmox_kernel_check
       changed_when: false
       failed_when: false
@@ -68,6 +72,7 @@
     - name: Restart system after grub update
       import_role:
         name: restart
+
     # Phase 5 - Cleanup
     - name: Remove enterprise repositories
       ansible.builtin.apt_repository:
@@ -77,11 +82,12 @@
       loop:
         - deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
         - deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
-    - name: disable proxmox subscription popup
+    - name: Disable proxmox subscription popup
       ansible.builtin.replace:
         path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
         regexp: ^(.*)Ext\.Msg\.show\(\{(.*)$\n^(.*)No valid subscription(.*)$
         replace: \1void({\2\n\3No valid subscription\4
+
     # Phase 6 - Networking setup
     - name: Print default interface facts
       debug:
@@ -94,5 +100,3 @@
     - name: Restart system after network setup
       import_role:
         name: restart
-    - name: End playbook
-      meta: end_play

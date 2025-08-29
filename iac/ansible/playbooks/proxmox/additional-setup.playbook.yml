@@ -22,5 +22,3 @@
         mode: "0644"
         force: yes
         checksum: sha256:42918974513750a6923393f3074c3bb226badfce4a0d0f35f90377fd789fda1f
-    - name: End playbook
-      meta: end_play

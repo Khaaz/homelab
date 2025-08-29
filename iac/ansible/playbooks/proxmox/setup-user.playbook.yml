@@ -20,6 +20,7 @@
     terraform_token: terraform-token # token-id (name)
     terraform_token_comment: API token for Terraform automation
   tasks:
+
     # Users
     - name: Create Packer user
       ansible.builtin.shell: |
@@ -33,6 +34,7 @@
       register: terraform_user_add
       changed_when: terraform_user_add.rc == 0
       failed_when: false
+
     # Roles
     # Create + modify (ensure idempotency) 
     - name: Create Or modify Packer role
@@ -86,6 +88,7 @@
         pveum role add {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}' 
         || pveum role modify {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}'
       changed_when: false
+
     # ACLs
     - name: Assign Packer role to user on /
       ansible.builtin.shell: |
@@ -97,6 +100,7 @@
         pveum acl modify / -user {{ terraform_user }} -role {{ terraform_role }} -propagate 1
       changed_when: false
       failed_when: false
+
     # Tokens (delete first, then create fresh; parse JSON)
     - name: Delete existing Packer token if present
       ansible.builtin.shell: |
@@ -128,6 +132,7 @@
     - name: Parse Terraform token JSON
       ansible.builtin.set_fact:
         _terraform_token_json: '{{ (terraform_token_create.stdout | trim) | from_json }}'
+
   post_tasks:
     - name: Extract Packer token id + secret
       ansible.builtin.set_fact:
