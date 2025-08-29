@@ -8,6 +8,11 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+usage() {
+	echo "Usage: $0 <up|down|reload> [--provider|-p <virtualbox|hyperv|vmware>]"
+	exit 1
+}
+
 PROVIDER="virtualbox"
 ACTION=""
 while [ $# -gt 0 ]; do
@@ -21,16 +26,14 @@ while [ $# -gt 0 ]; do
 			;;
 		*)
 			echo "Unknown argument: $1"
-			echo "Usage: $0 up|down|reload [--provider|-p <virtualbox|hyperv|vmware>]"
-			exit 1
+			usage
 			;;
 	esac
 	shift
 done
 
 if [ -z "$ACTION" ]; then
-	echo "Usage: $0 [up|down|reload] [--provider|-p <virtualbox|hyperv|vmware>]"
-	exit 1
+	usage
 fi
 
 cd "$SCRIPT_DIR/../vagrant"

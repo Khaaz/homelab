@@ -11,7 +11,7 @@ SCRIPT_DIR=$(get_script_dir)
 AUTO=false
 if [ "$1" = "--auto" ]; then
 	AUTO=true
-	echo "LOG: Executing in AUTO mode (infra ready)"
+	echo "INFO: Executing in AUTO mode (infra ready)"
 fi
 
 ROOT_DIR="$SCRIPT_DIR/.."

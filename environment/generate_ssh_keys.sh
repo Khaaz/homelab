@@ -11,7 +11,8 @@ SCRIPT_DIR=$(get_script_dir)
 AUTO=false
 if [ "$1" = "--auto" ]; then
 	AUTO=true
-	echo "LOG: Executing in AUTO mode (infra ready)"
+	shift
+	echo "INFO: Executing in AUTO mode (infra ready)"
 fi
 
 ROOT_DIR="$SCRIPT_DIR/.."
@@ -19,7 +20,16 @@ ROOT_DIR="$SCRIPT_DIR/.."
 # Execute the command
 if [ "$AUTO" = true ]; then
 	# Execute with predefined arguments for automated mode
-	$ROOT_DIR/src/environment/generate_ssh_keys.sh ansible 
+	$ROOT_DIR/src/environment/generate_ssh_keys.sh proxmox --root "$@"
+	$ROOT_DIR/src/environment/generate_ssh_keys.sh vm "$@"
+
+	# Generate keys for each app stack
+	for dir in "$ROOT_DIR"/apps/*/; do
+		if [ -d "$dir" ]; then
+			folder_name=$(basename "$dir")
+			$ROOT_DIR/src/environment/generate_ssh_keys.sh "$folder_name" "$@"
+		fi
+	done
 else
 	# Pass through all parameters
 	$ROOT_DIR/src/environment/generate_ssh_keys.sh "$@"

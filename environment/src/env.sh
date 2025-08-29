@@ -8,6 +8,11 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+usage() {
+	echo "Usage: $0 <up|down> [--packer]"
+	exit 1
+}
+
 ACTION=""
 PACKER_PORT=""
 while [ $# -gt 0 ]; do
@@ -20,16 +25,14 @@ while [ $# -gt 0 ]; do
 			;;
 		*)
 			echo "Unknown argument: $1"
-			echo "Usage: $0 up|down [--packer]"
-			exit 1
+			usage
 			;;
 	esac
 	shift
 done
 
 if [ -z "$ACTION" ]; then
-	echo "Usage: $0 up|down [--packer]"
-	exit 1
+	usage
 fi
 
 case "$ACTION" in

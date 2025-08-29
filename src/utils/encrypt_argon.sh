@@ -1,8 +1,12 @@
 #!/bin/sh
 
-if [ -z "$1" ]; then
+usage() {
 	echo "Usage: $0 <password>"
 	exit 1
+}
+
+if [ -z "$1" ]; then
+	usage
 fi
 
 PASSWORD="$1"
