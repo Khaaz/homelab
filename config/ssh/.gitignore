@@ -1,4 +1,4 @@
-*.pub
+*_key.pub
 *_key
 
 !*_key.dev

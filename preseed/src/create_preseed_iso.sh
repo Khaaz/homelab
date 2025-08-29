@@ -101,7 +101,7 @@ cp -R $ROOT_PATH/config/custom/scripts $EXTRACTED_PATH/custom/scripts
 mkdir $EXTRACTED_PATH/custom/ssh
 cp $ROOT_PATH/config/custom/ssh/ansible.sudoers $EXTRACTED_PATH/custom/ssh/ansible.sudoers
 # fetch ansible_key from root config
-cp $ROOT_PATH/../config/ssh/ansible/ansible_key${DEV_MODE:+.dev}.pub $EXTRACTED_PATH/custom/ssh/ansible_key.pub
+cp $ROOT_PATH/../config/ssh/proxmox/ansible_key${DEV_MODE:+.dev}.pub $EXTRACTED_PATH/custom/ssh/ansible_key.pub
 
 # change timeout
 chmod +w $EXTRACTED_PATH/isolinux/isolinux.cfg

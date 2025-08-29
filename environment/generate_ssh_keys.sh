@@ -21,7 +21,7 @@ ROOT_DIR="$SCRIPT_DIR/.."
 if [ "$AUTO" = true ]; then
 	# Execute with predefined arguments for automated mode
 	$ROOT_DIR/src/environment/generate_ssh_keys.sh proxmox --root "$@"
-	$ROOT_DIR/src/environment/generate_ssh_keys.sh vm "$@"
+	$ROOT_DIR/src/environment/generate_ssh_keys.sh vm --root "$@"
 
 	# Generate keys for each app stack
 	for dir in "$ROOT_DIR"/apps/*/; do
