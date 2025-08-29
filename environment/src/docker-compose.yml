@@ -4,7 +4,7 @@ services:
     build: ../docker
     volumes:
       - ../../:/workspace
-    working_dir: /workspace
+    working_dir: /workspace/environment
     tty: true
     ports:
       - 8098:8098 # Packer http server port: published via [--packer] 
