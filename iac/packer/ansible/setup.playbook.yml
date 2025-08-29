@@ -1,0 +1,53 @@
+- name: 'Pre-task: Install python for ansible'
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Install python3 (required for Ansible modules)
+      raw: apk add --no-cache python3 py3-pip
+
+- name: Final configuration (keymaps...)
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Set FR keymap
+      ansible.builtin.command: setup-keymap fr fr
+      register: setup_keymap
+      changed_when: "'Setting keymap' in setup_keymap.stdout"
+      failed_when: setup_keymap.rc != 0
+
+- name: Install base packages (git, curl, wget..) and setup docker
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Update package index
+      package:
+        update_cache: yes
+
+    - name: Install useful packages
+      package:
+        name:
+          - git
+          - curl
+          - wget
+          - ca-certificates
+          - gnupg
+        state: present
+
+    - name: Install Docker and Compose v2 plugin
+      package:
+        name:
+          - docker
+          - docker-cli-compose
+        state: present
+
+    - name: Enable and start Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add admin to docker group
+      user:
+        name: admin
+        groups: docker
+        append: yes
