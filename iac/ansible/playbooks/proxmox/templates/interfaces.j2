@@ -24,6 +24,7 @@ iface vmbr1 inet static
 	bridge_ports none
 	bridge_stp off
 	bridge_fd 0
+	comment Internal network 1
 	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
 	post-up iptables -t nat -A POSTROUTING -s 10.10.1.0/24 -o vmbr0 -j MASQUERADE
 	post-down iptables -t nat -D POSTROUTING -s 10.10.1.0/24 -o vmbr0 -j MASQUERADE
@@ -36,5 +37,6 @@ iface vmbr2 inet static
 	bridge_ports none
 	bridge_stp off
 	bridge_fd 0
+	comment Internal network 1
 	post-up iptables -t nat -A POSTROUTING -s 10.10.2.0/24 -o vmbr0 -j MASQUERADE
 	post-down iptables -t nat -D POSTROUTING -s 10.10.2.0/24 -o vmbr0 -j MASQUERADE
