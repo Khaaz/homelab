@@ -187,6 +187,7 @@ This will launch all containers and apply configuration templates from `_setup` 
 - [Unbound Documentation](https://nlnetlabs.nl/projects/unbound/)
 - [ddns-updater](https://github.com/qdm12/ddns-updater#readme)
 - [minica](https://github.com/jsha/minica)
+- https://en.wikipedia.org/wiki/Comparison_of_DNS_server_software
 
 ### Troubleshooting
 
