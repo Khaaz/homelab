@@ -9,7 +9,7 @@ source "proxmox-iso" "alpine" {
 	# Template
 	node = var.proxmox_node
 	vm_id = "9000"
-	vm_name = "vm-alpine-template"
+	vm_name = var.proxmox_vm_template
 	template_description = "Alpine virt with Cloud-Init + Docker"
 	
 	qemu_agent = true

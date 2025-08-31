@@ -26,5 +26,6 @@ export PACKER_LOG=1
 export PACKER_LOG_LEVEL=TRACE
 export PACKER_LOG_PATH="$PACKER_FOLDER/logs/packer.log"
 
+cd $PACKER_FOLDER
 packer init $PACKER_FOLDER
 packer build $PACKER_FOLDER
