@@ -21,5 +21,10 @@ fi
 
 PACKER_FOLDER="$SCRIPT_DIR/../packer"
 
+# Logs and debug mode
+export PACKER_LOG=1
+export PACKER_LOG_LEVEL=TRACE
+export PACKER_LOG_PATH="$PACKER_FOLDER/logs/packer.log"
+
 packer init $PACKER_FOLDER
 packer build $PACKER_FOLDER
