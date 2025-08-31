@@ -1,44 +1,148 @@
+terraform {
+  required_providers {
+    proxmox = {
+      source = "bpg/proxmox"
+      version = "0.83.0"
+    }
+  }
+}
+
 provider "proxmox" {
-  pm_api_url      = var.proxmox_api_url
-  pm_user         = var.proxmox_user
-  pm_password     = var.proxmox_password
-  pm_tls_insecure = true
+	endpoint = var.proxmox_api_url
+	api_token = var.proxmox_api_token
+	insecure = true
+
+	ssh {
+		agent = true
+		username = "root"
+	}
 }
 
-# Create 3 VMs from template
-resource "proxmox_vm_qemu" "debian_vm" {
-  count             = 3
-  name              = "vm-debian-${count.index + 1}"
-  target_node       = var.proxmox_node
-  clone             = var.template_name
-  full_clone        = true
-  vmid              = 100 + count.index
+# --- reverse-proxy: NIC on vmbr1 and vmbr2
+resource "proxmox_virtual_environment_vm" "reverse_proxy" {
+  name      = "reverse-proxy"
+  node_name = var.proxmox_node
 
-  os_type           = "cloud-init"
-  cores             = 2
-  memory            = 2048
-  agent             = 1
-
-  network {
-    model    = "virtio"
-    bridge   = "vmbr0"
+  # Clone from existing template (by VMID)
+  clone {
+    node_name = var.proxmox_node
+    vm_id     = var.proxmox_vm_template_id
   }
 
-  disk {
-    type    = "scsi"
-    storage = "local-lvm"
-    size    = "8G"
+  agent {
+    enabled = true
   }
 
-  ssh_user          = "debian"
+  cpu { cores = 2 }
+  memory { dedicated = 2048 }
 
-  lifecycle {
-    ignore_changes = [network]
+  # NICs (order matters for ip_config below)
+  network_device {
+    model  = "virtio"
+    bridge = "vmbr1" # 10.10.1.0/24
+  }
+  network_device {
+    model  = "virtio"
+    bridge = "vmbr2" # 10.10.2.0/24
+  }
+
+  # Cloud-Init
+  initialization {
+    # DNS servers (replaces 'nameserver')
+    dns {
+      servers = ["1.1.1.1", "8.8.8.8"]
+    }
+
+    user_account {
+      username = "admin"
+      # keys     = [var.ssh_pubkey]
+    }
+
+    # One ip_config block per NIC, in the same order as network_device
+    ip_config {
+      ipv4 {
+        address = "10.10.1.2/24"
+        gateway = "10.10.1.1"
+      }
+    }
+    ip_config {
+      ipv4 {
+        address = "10.10.2.2/24"
+      }
+    }
   }
 }
 
-output "vm_ips" {
-  value = [
-    for vm in proxmox_vm_qemu.debian_vm : vm.default_ipv4_address
-  ]
+# --- media-management: vmbr1, static 10.10.1.10
+resource "proxmox_virtual_environment_vm" "media_management" {
+  name      = "media-management"
+  node_name = var.proxmox_node
+
+  clone {
+    node_name = var.proxmox_node
+    vm_id     = var.proxmox_vm_template_id
+  }
+
+  agent { enabled = true }
+
+  cpu { cores = 2 }
+  memory { dedicated = 2048 }
+
+  network_device {
+    model  = "virtio"
+    bridge = "vmbr1"
+  }
+
+  initialization {
+    dns { servers = ["1.1.1.1", "8.8.8.8"] }
+
+    user_account {
+      username = "admin"
+      # keys     = [var.ssh_pubkey]
+    }
+
+    ip_config {
+      ipv4 {
+        address = "10.10.1.10/24"
+        gateway = "10.10.1.1"
+      }
+    }
+  }
+}
+
+# --- media-server: vmbr2, static 10.10.2.10
+resource "proxmox_virtual_environment_vm" "media_server" {
+  name      = "media-server"
+  node_name = var.proxmox_node
+
+  clone {
+    node_name = var.proxmox_node
+    vm_id     = var.proxmox_vm_template_id
+  }
+
+  agent { enabled = true }
+
+  cpu { cores = 4 }
+  memory { dedicated = 4096 }
+
+  network_device {
+    model  = "virtio"
+    bridge = "vmbr2"
+  }
+
+  initialization {
+    dns { servers = ["1.1.1.1", "8.8.8.8"] }
+
+    user_account {
+      username = "admin"
+      # keys     = [var.ssh_pubkey]
+    }
+
+    ip_config {
+      ipv4 {
+        address = "10.10.2.10/24"
+        gateway = "10.10.2.1"
+      }
+    }
+  }
 }

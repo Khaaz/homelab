@@ -19,7 +19,10 @@ else
   	echo "Warning: Env file not found: $ENV_FILE"
 fi
 
-PACKER_FOLDER="$SCRIPT_DIR/../packer"
+TERRAFORM_FOLDER="$SCRIPT_DIR/../terraform"
 
-packer init $PACKER_FOLDER
-packer build $PACKER_FOLDER
+cd $TERRAFORM_FOLDER
+terraform init
+terraform validate
+terraform plan -out=tfplan
+terraform apply -auto-approve tfplan
