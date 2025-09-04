@@ -20,14 +20,14 @@ add_env_file() {
 }
 
 # compose envs
-DEFAULT_ENV_FILE="$SCRIPT_DIR/src/config/.env.default"
-GENERATED_ENV_FILE="$SCRIPT_DIR/src/config/.env.generated"
-OVERRIDE_ENV_FILE="$SCRIPT_DIR/src/config/.env"
-NETWORKING_ENV_FILE="$SCRIPT_DIR/src/config/networking.env.default"
-NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/src/config/networking.env"
+DEFAULT_ENV_FILE="$SCRIPT_DIR/config/.env.default"
+GENERATED_ENV_FILE="$SCRIPT_DIR/config/.env.generated"
+OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/.env"
+NETWORKING_ENV_FILE="$SCRIPT_DIR/config/networking.env.default"
+NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/networking.env"
 
-MS_NETWORKING_ENV_FILE="$SCRIPT_DIR/../media-server/src/config/networking.default.env"
-MS_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-server/src/config/networking.env"
+MS_NETWORKING_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.default.env"
+MS_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.env"
 
 # source
 COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
