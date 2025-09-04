@@ -22,6 +22,7 @@ fi
 TERRAFORM_FOLDER="$SCRIPT_DIR/../terraform"
 
 cd $TERRAFORM_FOLDER
+# terraform destroy -auto-approve
 terraform init
 terraform validate
 terraform plan -out=tfplan
