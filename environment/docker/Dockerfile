@@ -1,6 +1,8 @@
 FROM debian:latest
 
-ARG ENV_PATH=/workspace/environment/docker
+ARG ENV_PATH=/tmp/environment
+RUN mkdir -p ${ENV_PATH}
+COPY . ${ENV_PATH}/
 
 ### Dependencies
 
@@ -19,7 +21,7 @@ RUN apt-get update && \
 
 # Install other useful apt tool from packages.txt
 RUN if [ -s ${ENV_PATH}/packages.txt ]; then \
-		xargs -r -a /${ENV_PATH}/packages.txt apt-get install -y --no-install-recommends && \
+		xargs -r -a ${ENV_PATH}/packages.txt apt-get install -y --no-install-recommends && \
 		rm -rf /var/lib/apt/lists/* ; \
 	fi
 
@@ -34,7 +36,7 @@ RUN python3 -m venv /venv \
 
 # Install python libs into the venv from requirement.txt
 RUN if [ -s ${ENV_PATH}/requirements.txt ]; then \
-		/venv/bin/pip install -r /workspace/requirements.txt ; \
+		/venv/bin/pip install -r ${ENV_PATH}/requirements.txt ; \
 	fi
 
 # Add venv to path by default

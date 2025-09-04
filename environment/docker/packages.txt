@@ -1,9 +1,9 @@
 net-tools
 dnsutils
 iproute2
-ping
+iputils-ping
 nmap
-netcat
+netcat-openbsd
 traceroute
 openssh-client
 vim
