@@ -1,14 +1,19 @@
 variable "proxmox_api_url" {
-  type    = string
+  type = string
 }
 
 variable "proxmox_api_token" {
-	type    = string
+  type = string
 }
 
 variable "proxmox_node" {
   type    = string
   default = "home"
+}
+
+variable "proxmox_datastore_id" {
+  type    = string
+  default = "local"
 }
 
 variable "proxmox_vm_template_name" {
@@ -17,6 +22,6 @@ variable "proxmox_vm_template_name" {
 }
 
 variable "proxmox_vm_template_id" {
-  type    = string
+  type    = number
   default = 9000
 }

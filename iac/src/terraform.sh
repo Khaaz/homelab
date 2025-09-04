@@ -21,9 +21,12 @@ fi
 
 TERRAFORM_FOLDER="$SCRIPT_DIR/../terraform"
 
+export TF_LOG="TRACE" 
+export TF_LOG_PATH="$TERRAFORM_FOLDER/logs/terraform.log"
+
 cd $TERRAFORM_FOLDER
 # terraform destroy -auto-approve
 terraform init
 terraform validate
-terraform plan -out=tfplan
-terraform apply -auto-approve tfplan
+terraform plan
+terraform apply -auto-approve
