@@ -12,6 +12,16 @@
 			"editor.tabSize": 2,
 			"editor.detectIndentation": false
 		},
+		"[terraform]": {
+			"editor.tabSize": 2,
+			"editor.insertSpaces": true,
+			"editor.detectIndentation": false
+		},
+		"[hcl]": {
+			"editor.tabSize": 2,
+			"editor.insertSpaces": true,
+			"editor.detectIndentation": false
+		},
 
 		"editor.wordWrap": "off",
 		
