@@ -10,12 +10,12 @@ locals {
 
 # ----- Discover per-VM YAML configs in ../../apps/<name>/src/config/proxmox-terraform.yml
 locals {
-  vm_config_files = fileset(local.root_path, "apps/*/src/config/proxmox-terraform.yml")
+  vm_config_files = fileset(local.root_path, "apps/*/src/infra/proxmox.yml")
 
   # All VM configs keyed by folder name
   vms_all = {
     for f in local.vm_config_files :
-    trimsuffix(trimprefix(f, "apps/"), "/src/config/proxmox-terraform.yml")
+    trimsuffix(trimprefix(f, "apps/"), "/src/infra/proxmox.yml")
     => yamldecode(file("${local.root_path}/${f}"))
   }
 
