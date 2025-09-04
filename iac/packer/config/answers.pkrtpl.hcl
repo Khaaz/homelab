@@ -35,7 +35,7 @@ SSHDOPTS="-c openssh"
 ROOTSSHKEY="http://${control_node_ip}:8098/root-key"
 
 # Disk: install to virtio disk, 'sys' mode (regular install)
-DISKOPTS="-m sys /dev/vda"
+DISKOPTS="-m sys /dev/sda"
 // DISKOPTS=none
 
 # config storage

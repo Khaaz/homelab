@@ -1,5 +1,5 @@
 build {
-	name    = var.proxmox_vm_template
+	name = var.proxmox_vm_template_name
 	sources = ["source.proxmox-iso.alpine"]
 
  	# Make sure the system is up before provisioning

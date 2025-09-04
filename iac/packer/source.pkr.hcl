@@ -8,16 +8,17 @@ source "proxmox-iso" "alpine" {
 
 	# Template
 	node = var.proxmox_node
-	vm_id = "9000"
-	vm_name = var.proxmox_vm_template
+	vm_id = var.proxmox_vm_template_id
+	vm_name = var.proxmox_vm_template_name
 	template_description = "Alpine virt with Cloud-Init + Docker"
 	
 	qemu_agent = true
 	disable_kvm = true # Disable only for VM
 
-	cloud_init = true
+	cloud_init = true # Let terraform provide it later on
 	cloud_init_storage_pool = "local"
-	
+	cloud_init_disk_type="ide"
+
 	# SSH
 	communicator = "ssh"
 	ssh_username = "root"
@@ -30,24 +31,30 @@ source "proxmox-iso" "alpine" {
 	sockets = "1"
 	memory = "1024"
 	disks {
-		type = "virtio"
+		type = "scsi"
 		format = "raw"
 		storage_pool = "local"
 		disk_size = "5G"
 	}
 
 	# bios specification settings
+	os = "l26"
 	machine = "q35" # use q35 over pc (more modern)
 	bios = "ovmf" #use omvf over seabios (more modern)
 	efi_config {
 		efi_storage_pool = "local"
+		efi_type = "4m"
 	}
 
-	# Network
+	# scsi controller
 	scsi_controller = "virtio-scsi-pci"
+	
+	# video
 	vga {
 		type = "virtio"
 	}
+	
+	# network
 	network_adapters {
 		model = "virtio"
 		bridge = "vmbr0"
@@ -63,10 +70,10 @@ source "proxmox-iso" "alpine" {
     }
 
 	# Boot
-	boot = "order=virtio0;scsi0;net0"
-	boot_wait = "5s"
+	boot = "order=scsi0;ide2;net0"
+	boot_wait = "10s"
 	boot_iso {
-		type = "scsi"
+		type = "ide"
 		iso_file = "local:iso/alpine-virt-3.22.1-x86_64.iso"
 		unmount = true
 		# iso_url = "https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-virt-3.22.1-x86_64.iso"
@@ -81,14 +88,14 @@ source "proxmox-iso" "alpine" {
 	# 4) run setup-alpine (Packer types your ssh_password twice)
 	# 5) reboot
 	boot_command = [
-		"<enter><wait50>",                                  # boot default menu entry
+		"<enter><wait60>", # boot default menu entry
 		"root<enter><wait>",
 		# setup network
 		"ifconfig eth0 up || ip link set eth0 up || ip link set ens18 up<enter><wait>",
 		"udhcpc -i eth0 || udhcpc -i ens18<enter><wait5>",
 		# DL answer file and setup alpine
 		"wget -O /root/answers http://${var.control_node_ip}:{{ .HTTPPort }}/answers<enter><wait>",
-		"setup-alpine -f /root/answers<enter><wait10>",
+		"USE_EFI=1 setup-alpine -f /root/answers<enter><wait10>",
 		"${var.root_password}<enter><wait>", # root password (prompt 1)
 		"${var.root_password}<enter><wait30>", # root password (prompt 2)
 		"<wait>y<enter><wait10>", # accept disk overwrite warning

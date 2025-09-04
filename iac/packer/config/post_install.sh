@@ -13,8 +13,9 @@ echo "Install QEMU Guest Agent and Cloud init"
 # Mount
 echo "- Mount base system"
 # Mount root and boot
-mount /dev/vda3 /mnt
-mount /dev/vda1 /mnt/boot
+mount /dev/sda3 /mnt
+# mkdir -p /mnt/boot/efi
+# mount -t vfat /dev/sda1 /mnt/boot/efi
 
 # Bind-mount runtime filesystems
 mount -t proc /proc /mnt/proc
@@ -46,12 +47,18 @@ run 'printf "%s\n" "datasource_list: [ NoCloud, ConfigDrive ]" > /etc/cloud/clou
 # we do not enabled cloud init yet (will be done as last provision script)
 # run 'setup-cloud-init'
 
+# Manually load iso9660 kernel module
+# https://forum.proxmox.com/threads/cloud-init-automount-issue-on-alpine-vm.166231/
+run 'touch /etc/modules-load.d/iso9660.conf'
+run 'echo "iso9660" > /etc/modules-load.d/iso9660.conf'
+run 'chmod 644 /etc/modules-load.d/iso9660.conf'
+
 # Unmount
 echo "- Unmount base system"
 umount -l /mnt/dev
 umount -l /mnt/sys
 umount -l /mnt/proc
-umount -l /mnt/boot
+# umount -l /mnt/boot/efi
 umount -l /mnt
 
 echo "Installed QEMU Guest Agent and Cloud init"
