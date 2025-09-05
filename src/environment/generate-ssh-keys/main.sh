@@ -72,8 +72,8 @@ echo "INFO: Generating SSH keys for app: $APP"
 
 echo "INFO: Generating user: admin"
 generate_key "admin"
-echo "INFO: Generating user: ansible"
-generate_key "ansible"
+echo "INFO: Generating user: automation"
+generate_key "automation"
 
 if [ "$GENERATE_ROOT" = true ]; then
 	echo "INFO: Generating user: root"

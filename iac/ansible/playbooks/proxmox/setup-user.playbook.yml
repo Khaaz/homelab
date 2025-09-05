@@ -7,17 +7,17 @@
     # Packer
     # ------------------------
     packer_user: packer@pve
-    packer_password: packer-password
+    packer_password: packer-password #TODO
     packer_role: PackerRole
-    packer_token: packer-token # token-id (name)
+    packer_token_name: packer-token
     packer_token_comment: API token for Packer automation
     # ------------------------
     # Terraform
     # ------------------------
     terraform_user: terraform@pve
-    terraform_password: terraform-password
+    terraform_password: terraform-password #TODO
     terraform_role: TerraformRole
-    terraform_token: terraform-token # token-id (name)
+    terraform_token_name: terraform-token
     terraform_token_comment: API token for Terraform automation
   tasks:
 
@@ -104,13 +104,13 @@
     # Tokens (delete first, then create fresh; parse JSON)
     - name: Delete existing Packer token if present
       ansible.builtin.shell: |
-        pveum user token delete {{ packer_user }} {{ packer_token }}
+        pveum user token delete {{ packer_user }} {{ packer_token_name }}
       register: delete_packer_token
       changed_when: delete_packer_token.rc == 0
       failed_when: false
     - name: Create fresh Packer API token (JSON)
       ansible.builtin.shell: |
-        pveum user token add {{ packer_user }} {{ packer_token }} --comment "{{ packer_token_comment }}" --expire 0 -privsep 0 --output-format json
+        pveum user token add {{ packer_user }} {{ packer_token_name }} --comment "{{ packer_token_comment }}" --expire 0 -privsep 0 --output-format json
       register: packer_token_create
       changed_when: packer_token_create.rc == 0
       failed_when: packer_token_create.rc != 0
@@ -119,13 +119,13 @@
         _packer_token_json: '{{ (packer_token_create.stdout | trim) | from_json }}'
     - name: Delete existing Terraform token if present
       ansible.builtin.shell: |
-        pveum user token delete {{ terraform_user }} {{ terraform_token }}
+        pveum user token delete {{ terraform_user }} {{ terraform_token_name }}
       register: delete_terraform_token
       changed_when: delete_terraform_token.rc == 0
       failed_when: false
     - name: Create fresh Terraform API token (JSON)
       ansible.builtin.shell: |
-        pveum user token add {{ terraform_user }} {{ terraform_token }} --comment "{{ terraform_token_comment }}" --expire 0 -privsep 0 --output-format json
+        pveum user token add {{ terraform_user }} {{ terraform_token_name }} --comment "{{ terraform_token_comment }}" --expire 0 -privsep 0 --output-format json
       register: terraform_token_create
       changed_when: terraform_token_create.rc == 0
       failed_when: terraform_token_create.rc != 0
@@ -136,7 +136,7 @@
   post_tasks:
     - name: Extract Packer token id + secret
       ansible.builtin.set_fact:
-        PACKER_TOKEN_ID: '{{ packer_user }}!{{ packer_token }}'
+        PACKER_TOKEN_ID: '{{ packer_user }}!{{ packer_token_name }}'
         PACKER_TOKEN_SECRET: |-
           {%- if _packer_token_json is mapping -%}
             {{ _packer_token_json.value | default(_packer_token_json.data.value | default('')) }}
@@ -145,7 +145,7 @@
           {%- else -%} {%- endif -%}
     - name: Extract Terraform token id + secret
       ansible.builtin.set_fact:
-        TERRAFORM_TOKEN_ID: '{{ terraform_user }}!{{ terraform_token }}'
+        TERRAFORM_TOKEN_ID: '{{ terraform_user }}!{{ terraform_token_name }}'
         TERRFORM_TOKEN_SECRET: |-
           {%- if _terraform_token_json is mapping -%}
             {{ _terraform_token_json.value | default(_terraform_token_json.data.value | default('')) }}

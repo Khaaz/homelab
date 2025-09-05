@@ -4,7 +4,7 @@ provider "proxmox" {
   insecure  = true
 
   ssh {
-    username    = "ansible"
-    private_key = file("${local.root_path}/config/ssh/proxmox/ansible_key.dev")
+    username    = "automation"
+    private_key = file("${local.root_path}/config/ssh/proxmox/automation_key.dev") #TODO
   }
 }
