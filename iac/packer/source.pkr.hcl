@@ -13,7 +13,7 @@ source "proxmox-iso" "alpine" {
   template_description = "Alpine virt with Cloud-Init + Docker"
 
   qemu_agent  = true
-  disable_kvm = true # Disable only for VM
+  disable_kvm = false # Disable only for VM
 
   cloud_init              = true # Let terraform provide it later on
   cloud_init_storage_pool = "local"
@@ -22,7 +22,7 @@ source "proxmox-iso" "alpine" {
   # SSH
   communicator         = "ssh"
   ssh_username         = "root"
-  ssh_private_key_file = "${path.root}/keys/root_key" # or id_rsa that matches root.pub
+  ssh_private_key_file = "${path.root}/keys/root_key"
   ssh_timeout          = "30m"
   ssh_pty              = true
 
@@ -37,24 +37,24 @@ source "proxmox-iso" "alpine" {
     disk_size    = "5G"
   }
 
-  # bios specification settings
+  # Bios specification settings
   os      = "l26"
-  machine = "q35"  # use q35 over pc (more modern)
-  bios    = "ovmf" #use omvf over seabios (more modern)
+  machine = "q35"  # Use q35 over pc (more modern)
+  bios    = "ovmf" # Use omvf over seabios (more modern)
   efi_config {
     efi_storage_pool = "local"
     efi_type         = "4m"
   }
 
-  # scsi controller
+  # SCSI controller
   scsi_controller = "virtio-scsi-pci"
 
-  # video
+  # Video
   vga {
     type = "virtio"
   }
 
-  # network
+  # Network
   network_adapters {
     model  = "virtio"
     bridge = "vmbr0"
