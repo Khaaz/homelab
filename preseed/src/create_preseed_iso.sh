@@ -16,7 +16,7 @@ usage() {
 
 ## Input verification
 ISO="debian-12.9.0-amd64-netinst"
-GENERATE_PRESEED_CFG=false
+GENERATE_PRESEED_CFG=
 DEV_MODE=
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -31,6 +31,9 @@ while [ $# -gt 0 ]; do
 		--dev)
 			DEV_MODE=true
 			shift 1
+			;;
+		--help)
+			usage
 			;;
 		*)
 			usage
@@ -56,8 +59,9 @@ TARGET_VOLUME_NAME="DEBIAN_PRESEED"
 echo "LOG: Context - Root path: $ROOT_PATH"
 echo "LOG: Context - Build folder: $EXTRACTED_PATH"
 echo "LOG: Context - ISO: $ROOT_PATH/iso/$IMAGE.iso"
-echo "LOG: Context - Preseeded iso will be: $ROOT_PATH/iso/${IMAGE}_preseed.iso"
+echo "LOG: Context - Preseeded iso will be: $ROOT_PATH/iso/${IMAGE}_preseed${DEV_MODE:+_dev}.iso"
 echo "LOG: Context - Preseeded iso will have volume named: $TARGET_VOLUME_NAME"
+echo "LOG: Context - Generating preseed cfg: $([ -n "$GENERATE_PRESEED_CFG" ] && echo ON || echo OFF) (using $([ -n "$GENERATE_PRESEED_CFG" ] && echo src/templates/preseed.cfg || echo preseed-config/preseed.cfg))"
 echo "LOG: Context - Dev mode: $([ -n "$DEV_MODE" ] && echo ON || echo OFF) (using config/ssh/proxmox/automation_key${DEV_MODE:+.dev}.pub)"
 
 ### prerequesites
@@ -137,7 +141,7 @@ xorriso -as mkisofs \
   -o /root/debian_preseed.iso \
   $EXTRACTED_PATH
 
-cp /root/debian_preseed.iso ${ROOT_PATH}/iso/${IMAGE}_preseed.iso
+cp /root/debian_preseed.iso ${ROOT_PATH}/iso/${IMAGE}_preseed${DEV_MODE:+_dev}.iso
 
 echo "LOG: End preseed process"
-echo "LOG: Preseeded image written to ${ROOT_PATH}/iso/${IMAGE}_preseed.iso"
+echo "LOG: Preseeded image written to ${ROOT_PATH}/iso/${IMAGE}_preseed${DEV_MODE:+_dev}.iso"
