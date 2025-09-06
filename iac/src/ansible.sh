@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequisites
+## Prerequisites
 get_script_dir() {
 	# Get the directory of the currently running script
 	local script_dir=$(dirname "$(realpath "$0")")
@@ -8,18 +8,55 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+IAC_FOLDER="$SCRIPT_DIR/.."
+ANSIBLE_FOLDER="$SCRIPT_DIR/../ansible"
+
+## Usage
+usage() {
+	echo "Usage: $0 <playbook_name> [--limit <vm|homelab>]"
+	exit 1
+}
+
+## Input verification
+if [ -z "$1" ]; then
+	usage
+fi
+PLAYBOOK_NAME="$1"
+shift
+
+# Check if the playbook file exists
+PLAYBOOK_PATH="$ANSIBLE_FOLDER/playbooks/$PLAYBOOK_NAME.playbook.yml"
+if [ ! -f "$PLAYBOOK_PATH" ]; then
+	echo "Error: Playbook file does not exist: $PLAYBOOK_PATH"
+	exit 1
+fi
+
+#
 ## Core
-# Source environment variables from ./config/.env (standard env file)
-ENV_FILE="$SCRIPT_DIR/config/.env"
+#
+# Source environment variables from 
+# config/.env (standard env file)
+# config/.env.generated (generated env file)
+ENV_FILE="$IAC_FOLDER/config/.env"
+GENERATED_ENV_FILE="$IAC_FOLDER/config/.env.generated"
+
+ENV_LOADED=false
+if [ -f "$GENERATED_ENV_FILE" ]; then
+	set -a
+	. "$GENERATED_ENV_FILE"
+	set +a
+	ENV_LOADED=true
+fi
 if [ -f "$ENV_FILE" ]; then
 	set -a
 	. "$ENV_FILE"
 	set +a
-else
-  	echo "Warning: Env file not found: $ENV_FILE"
+	ENV_LOADED=true
+fi
+if [ "$ENV_LOADED" = false ]; then
+	echo "Warning: No env file found: $GENERATED_ENV_FILE or $ENV_FILE"
+	exit 1
 fi
 
-PACKER_FOLDER="$SCRIPT_DIR/../packer"
-
-packer init $PACKER_FOLDER
-packer build $PACKER_FOLDER
+cd $ANSIBLE_FOLDER
+ansible-playbook "./playbooks/$PLAYBOOK_NAME.playbook.yml" "$@"
