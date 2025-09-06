@@ -14,9 +14,10 @@ source "proxmox-iso" "template-alpine" {
   qemu_agent  = true
   disable_kvm = false # Disable only for VM
 
-  cloud_init              = true # Let terraform provide it later on
-  cloud_init_storage_pool = var.proxmox_datastore_id
-  cloud_init_disk_type    = "ide"
+  # Let terraform provide it later on
+  cloud_init              = false 
+#   cloud_init_storage_pool = var.proxmox_datastore_id
+#   cloud_init_disk_type    = "ide"
 
   # SSH
   communicator         = "ssh"
