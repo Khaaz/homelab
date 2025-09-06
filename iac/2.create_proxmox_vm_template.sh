@@ -12,4 +12,4 @@ SCRIPT_DIR=$(get_script_dir)
 ## Core
 #
 # Execute the command
-$SCRIPT_DIR/src/packer.sh
+$SCRIPT_DIR/src/packer.sh "$@"
