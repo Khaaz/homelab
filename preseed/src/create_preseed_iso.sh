@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	# Get the directory of the currently running script
 	local script_dir=$(dirname "$(realpath "$0")")
@@ -8,6 +8,13 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+## Usage
+usage() {
+	echo "Usage: $0 [--iso <path>] [--preseed-cfg] [--dev]"
+	exit 1
+}
+
+## Input verification
 ISO="debian-12.9.0-amd64-netinst"
 GENERATE_PRESEED_CFG=false
 DEV_MODE=
@@ -26,18 +33,21 @@ while [ $# -gt 0 ]; do
 			shift 1
 			;;
 		*)
-			echo "Usage: $0 [--iso <path>] [--preseed-cfg] [--dev]"
-			exit 1
+			usage
 			;;
 	esac
 done
 
+#
+## Core
+#
 echo "LOG: Start preseed process"
 
 # target ISO
 IMAGE=$ISO
 # preseed folder
 ROOT_PATH="$SCRIPT_DIR/.."
+PRESEED_CONFIG_PATH="$ROOT_PATH/preseed-config"
 # temporary working folder (extracted iso)
 EXTRACTED_PATH="/root/extracted_iso"
 # Target volume name (for preseed)
@@ -48,6 +58,7 @@ echo "LOG: Context - Build folder: $EXTRACTED_PATH"
 echo "LOG: Context - ISO: $ROOT_PATH/iso/$IMAGE.iso"
 echo "LOG: Context - Preseeded iso will be: $ROOT_PATH/iso/${IMAGE}_preseed.iso"
 echo "LOG: Context - Preseeded iso will have volume named: $TARGET_VOLUME_NAME"
+echo "LOG: Context - Dev mode: $([ -n "$DEV_MODE" ] && echo ON || echo OFF) (using config/ssh/proxmox/automation_key${DEV_MODE:+.dev}.pub)"
 
 ### prerequesites
 
@@ -79,8 +90,8 @@ echo "LOG: Customise iso"
 dd if="${ROOT_PATH}/iso/${IMAGE}.iso" bs=512 count=1 of=$EXTRACTED_PATH/isolinux/isohdpfx.bin # (= legacy BIOS compatbility =)
 
 # add custom config
-cp $ROOT_PATH/config/isolinux/menu.cfg $EXTRACTED_PATH/isolinux/menu.cfg # (= legacy BIOS compatbility =)
-cp $ROOT_PATH/config/boot/grub.cfg $EXTRACTED_PATH/boot/grub/grub.cfg # (= EFI =)
+cp $PRESEED_CONFIG_PATH/isolinux/menu.cfg $EXTRACTED_PATH/isolinux/menu.cfg # (= legacy BIOS compatbility =)
+cp $PRESEED_CONFIG_PATH/boot/grub.cfg $EXTRACTED_PATH/boot/grub/grub.cfg # (= EFI =)
 # If --generate-preseed-cfg is set, generate and replace preseed.cfg in extracted data
 echo "LOG: Copying preseed.cfg"
 if [ "$GENERATE_PRESEED_CFG" = true ]; then
@@ -92,14 +103,14 @@ if [ "$GENERATE_PRESEED_CFG" = true ]; then
 	fi
 	cp $EXTRACTED_PATH/preseed.cfg $ROOT_PATH/log/preseed.cfg
 else
- 	cp $ROOT_PATH/config/preseed.cfg $EXTRACTED_PATH/preseed.cfg
+ 	cp $PRESEED_CONFIG_PATH/preseed.cfg $EXTRACTED_PATH/preseed.cfg
 fi
 
 # add custom
 mkdir $EXTRACTED_PATH/custom
-cp -R $ROOT_PATH/config/custom/scripts $EXTRACTED_PATH/custom/scripts
+cp -R $PRESEED_CONFIG_PATH/custom/scripts $EXTRACTED_PATH/custom/scripts
 mkdir $EXTRACTED_PATH/custom/ssh
-cp $ROOT_PATH/config/custom/ssh/automation.sudoers $EXTRACTED_PATH/custom/ssh/automation.sudoers
+cp $PRESEED_CONFIG_PATH/custom/ssh/automation.sudoers $EXTRACTED_PATH/custom/ssh/automation.sudoers
 # fetch automation_key from root config
 cp $ROOT_PATH/../config/ssh/proxmox/automation_key${DEV_MODE:+.dev}.pub $EXTRACTED_PATH/custom/ssh/automation_key.pub
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	local script_dir
 	script_dir=$(dirname "$(realpath "$0")")
@@ -8,12 +8,13 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+## Usage
 usage() {
 	echo "Usage: $0 <app|vm> [--root] [--reset]"
 	exit 1
 }
 
-# Usage
+# Input verification
 if [ -z "$1" ]; then
 	usage
 fi
@@ -42,12 +43,14 @@ ROOT_DIR="$SCRIPT_DIR/../../.."
 CONFIG_DIR="$ROOT_DIR/config"
 SSH_DIR="$CONFIG_DIR/ssh/$APP"
 
+#
+## Core
+#
 # Create SSH directory if it doesn't exist
 if [ ! -d "$SSH_DIR" ]; then
 	echo "LOG: Creating SSH directory: $SSH_DIR"
 	mkdir -p "$SSH_DIR"
 fi
-
 
 generate_key() {
     local user=$1

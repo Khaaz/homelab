@@ -1,7 +1,7 @@
 #!/bin/bash
 # Processes app config templates into .env.generated files using config_values
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	local script_dir
 	script_dir=$(dirname "$(realpath "$0")")
@@ -9,8 +9,9 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
-APP_CONFIG_FILE="src/config/app-config.template.toml"
-ENV_FILE="src/config/.env.generated"
+## Core
+APP_CONFIG_FILE="config/app-config.template.toml"
+ENV_FILE="config/.env.generated"
 
 # Replace all ${key} placeholders in a line using config values
 replace_placeholders() {

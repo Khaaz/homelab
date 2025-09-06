@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	# Get the directory of the currently running script
 	local script_dir=$(dirname "$(realpath "$0")")
@@ -8,19 +8,12 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+##Import
 # Import the dependencies function
 . $SCRIPT_DIR/lib/install_dependencies.sh
 
 # Import the parse file function
 . $SCRIPT_DIR/lib/parse_file.sh
-
-preprocess_sql_script() {
-	local input_file="$1"
-
-	local parsed_file=$(parse_file $input_file)
-
-	echo "$parsed_file" | sed -e "s/\\\\'/''/g"
-}
 
 ## Usage
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
@@ -28,7 +21,6 @@ if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
 	exit 1
 fi
 
-## Variables
 DB_PATH="$1"
 SQL_SCRIPT_PATH="${2:-/_setup/sql/init.sql}"
 
@@ -44,7 +36,17 @@ if [ ! -f "$SQL_SCRIPT_PATH" ]; then
 	exit 1
 fi
 
+#
 ## Core
+#
+preprocess_sql_script() {
+	local input_file="$1"
+
+	local parsed_file=$(parse_file $input_file)
+
+	echo "$parsed_file" | sed -e "s/\\\\'/''/g"
+}
+
 install_dependencies sqlite gettext
 
 PREPROCESSED_SQL=$(preprocess_sql_script "$SQL_SCRIPT_PATH")
@@ -55,7 +57,6 @@ echo "$PREPROCESSED_SQL" | sqlite3 "$DB_PATH"
 
 if [ $? -eq 0 ]; then
 	echo "SQL_EXECUTOR: Success => Successfully executed SQL script."
-	exit 0
 else
 	echo "SQL_EXECUTOR: Error => Failed to execute SQL script."
 	exit 1

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	# Get the directory of the currently running script
 	local script_dir=$(dirname "$(realpath "$0")")
@@ -8,12 +8,16 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+## Import
 # Import the OS detection function
 . $SCRIPT_DIR/is_command_installed.sh
 
 # Import the OS detection function
 . $SCRIPT_DIR/get_os.sh
 
+#
+## Core
+#
 # Install the appropriate packages: (sqlite, gettext)
 install_dependencies() {
 	# Accept a space-separated list of dependencies

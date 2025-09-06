@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	# Get the directory of the currently running script
 	local script_dir=$(dirname "$(realpath "$0")")
@@ -14,7 +14,6 @@ if [ "$#" -ne 2 ]; then
 	exit 1
 fi
 
-## Variables
 INPUT_DIR="$1"
 OUTPUT_DIR="$2"
 
@@ -25,7 +24,9 @@ if [ ! -d "$INPUT_DIR" ]; then
 	exit 1
 fi
 
+#
 ## Core
+#
 # Create the output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 

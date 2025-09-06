@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	# Get the directory of the currently running script
 	local script_dir=$(dirname "$(realpath "$0")")
@@ -8,6 +8,9 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+#
+## Core
+#
 URL="https://cdimage.debian.org/cdimage/archive/12.9.0/amd64/iso-cd/debian-12.9.0-amd64-netinst.iso"
 ISO_NAME="debian-12.9.0-amd64-netinst.iso"
 EXPECTED_SHA512="9ebe405c3404a005ce926e483bc6c6841b405c4d85e0c8a7b1707a7fe4957c617ae44bd807a57ec3e5c2d3e99f2101dfb26ef36b3720896906bdc3aaeec4cd80"
@@ -77,7 +80,6 @@ echo "LOG: Verifying SHA-512 checksum"
 if verify_checksum "$TMP_FILE"; then
 	mv "$TMP_FILE" "$TARGET_FILE"
 	echo "LOG: ISO downloaded and verified: $TARGET_FILE"
-	exit 0
 else
 	echo "Error: Checksum verification failed"
 	rm -f "$TMP_FILE"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	local script_dir
 	script_dir=$(dirname "$(realpath "$0")")
@@ -8,6 +8,7 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+## Import
 # Import strip_comment function
 . "$SCRIPT_DIR/../lib/strip_comment.sh"
 
@@ -15,12 +16,14 @@ SCRIPT_DIR=$(get_script_dir)
 . "$SCRIPT_DIR/config_parser.sh"
 . "$SCRIPT_DIR/template_parser.sh"
 
-# --- Variables ---
 GLOBAL_CONFIG_FILE="${SCRIPT_DIR}/../../../config/global-config.toml"
 APPS_PATH="${SCRIPT_DIR}/../../../apps"
 
 declare -A global_config
 
+#
+## Core
+#
 # --- 1: Parse global config ---
 echo "LOG: Load config-global.toml: $GLOBAL_CONFIG_FILE"
 parse_global_config "$GLOBAL_CONFIG_FILE" global_config
