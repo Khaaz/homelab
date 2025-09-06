@@ -15,7 +15,7 @@ source "proxmox-iso" "template-alpine" {
   disable_kvm = false # Disable only for VM
 
   cloud_init              = true # Let terraform provide it later on
-  cloud_init_storage_pool = "local"
+  cloud_init_storage_pool = var.proxmox_datastore_id
   cloud_init_disk_type    = "ide"
 
   # SSH
@@ -32,7 +32,7 @@ source "proxmox-iso" "template-alpine" {
   disks {
     type         = "scsi"
     format       = "raw"
-    storage_pool = "local"
+    storage_pool = var.proxmox_datastore_id
     disk_size    = "5G"
   }
 
@@ -41,7 +41,7 @@ source "proxmox-iso" "template-alpine" {
   machine = "q35"  # Use q35 over pc (more modern)
   bios    = "ovmf" # Use omvf over seabios (more modern)
   efi_config {
-    efi_storage_pool = "local"
+    efi_storage_pool = var.proxmox_datastore_id
     efi_type         = "4m"
   }
 

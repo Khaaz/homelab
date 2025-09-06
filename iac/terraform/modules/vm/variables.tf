@@ -3,12 +3,12 @@ variable "proxmox_node" {
   type = string
 }
 
-variable "proxmox_vm_template_id" {
-  type = number
-}
-
 variable "proxmox_datastore_id" {
   type = string
+}
+
+variable "proxmox_vm_template_id" {
+  type = number
 }
 
 ## VM
@@ -26,6 +26,6 @@ variable "admin_pubkey" {
   type = string
 }
 
-variable "ansible_pubkey" {
+variable "automation_pubkey" {
   type = string
 }

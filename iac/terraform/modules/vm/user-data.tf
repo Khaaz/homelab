@@ -6,9 +6,9 @@ resource "proxmox_virtual_environment_file" "userdata" {
   source_raw {
     file_name = "${var.vm_name}-userdata.yml"
     data = templatefile("${path.root}/cloud-init/user-data.tpl.yml", {
-      admin_pubkey   = var.admin_pubkey
-      ansible_pubkey = var.ansible_pubkey
-      hostname       = var.vm_name
+      admin_pubkey      = var.admin_pubkey
+      automation_pubkey = var.automation_pubkey
+      hostname          = var.vm_name
     })
   }
 }

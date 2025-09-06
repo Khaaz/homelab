@@ -1,8 +1,18 @@
-## Proxmox config - secret
+## Proxmox config
 variable "proxmox_api_url" {
   type    = string
   default = env("PROXMOX_API_URL")
 }
+variable "proxmox_node" {
+  type    = string
+  default = env("PROXMOX_NODE")
+}
+variable "proxmox_datastore_id" {
+  type    = string
+  default = env("PROXMOX_DATASTORE_ID")
+}
+
+## Secret
 variable "proxmox_packer_token_id" {
   type    = string
   default = env("PROXMOX_PACKER_TOKEN_ID")
@@ -14,10 +24,6 @@ variable "proxmox_packer_token_secret" {
 }
 
 ## Configuration
-variable "proxmox_node" {
-  type    = string
-  default = env("PROXMOX_NODE")
-}
 variable "proxmox_vm_template_name" {
   type    = string
   default = env("PROXMOX_VM_TEMPLATE_NAME")

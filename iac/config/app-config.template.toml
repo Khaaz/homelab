@@ -1,6 +1,7 @@
 # General
 PROXMOX_API_URL="https://${infra.IP_SERVER}:8006"
 PROXMOX_NODE="home"
+PROXMOX_DATASTORE_ID="local"
 PROXMOX_VM_TEMPLATE_NAME="vm-alpine-template"
 PROXMOX_VM_TEMPLATE_ID="9000"
 

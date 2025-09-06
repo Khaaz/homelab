@@ -76,6 +76,7 @@ export TF_LOG_PATH="$TERRAFORM_FOLDER/logs/terraform.log"
 export TF_VAR_proxmox_api_url=$PROXMOX_API_URL
 export TF_VAR_proxmox_terraform_api_token="${TERRAFORM_TOKEN_ID}=${TERRAFORM_TOKEN_SECRET}"
 export TF_VAR_proxmox_node=$PROXMOX_NODE
+export TF_VAR_proxmox_datastore_id=$PROXMOX_DATASTORE_ID
 export TF_VAR_proxmox_vm_template_name=$PROXMOX_VM_TEMPLATE_NAME
 export TF_VAR_proxmox_vm_template_id=$PROXMOX_VM_TEMPLATE_ID
 

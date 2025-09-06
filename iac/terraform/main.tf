@@ -10,12 +10,12 @@ locals {
 
 # ----- Discover per-VM YAML configs in ../../apps/<name>/src/config/proxmox-terraform.yml
 locals {
-  vm_config_files = fileset(local.root_path, "apps/*/src/infra/proxmox.yml")
+  vm_config_files = fileset(local.root_path, "apps/*/infra/proxmox.yml")
 
   # All VM configs keyed by folder name
   vms_all = {
     for f in local.vm_config_files :
-    trimsuffix(trimprefix(f, "apps/"), "/src/infra/proxmox.yml")
+    trimsuffix(trimprefix(f, "apps/"), "/infra/proxmox.yml")
     => yamldecode(file("${local.root_path}/${f}"))
   }
 
@@ -40,5 +40,5 @@ module "vm" {
   # Pass the actual key *contents* into the module (simplest & portable).
   # If you truly use per-VM keys in config/ssh/<vm>/*, this matches your earlier "reverse-proxy" example:
   admin_pubkey   = trimspace(file("${local.root_path}/config/ssh/${each.key}/admin_key.pub"))
-  ansible_pubkey = trimspace(file("${local.root_path}/config/ssh/${each.key}/ansible_key.pub"))
+  automation_pubkey = trimspace(file("${local.root_path}/config/ssh/${each.key}/automation_key.pub"))
 }
