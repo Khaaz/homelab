@@ -76,7 +76,7 @@ A setup directory look like this:
 
 | Variable                | Description                                 | Example         |
 |-------------------------|---------------------------------------------|-----------------|
-| NAS_HOST_IP | IP of the machine that hosts this stack     | 192.168.1.100   |
+| NAS_HOST_IP | IP of the machine that hosts this stack     | 192.168.1.200   |
 
 **.env**: Used to override values from `.env.default` if needed (see `.env.template`).
 
