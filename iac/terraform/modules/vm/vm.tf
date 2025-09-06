@@ -1,6 +1,7 @@
 resource "proxmox_virtual_environment_vm" "vm" {
   name      = var.vm_name
   node_name = var.proxmox_node
+  vm_id     = var.vm_id
 
   # Clone from template VM ID
   clone {
