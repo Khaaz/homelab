@@ -11,6 +11,6 @@ SCRIPT_DIR=$(get_script_dir)
 #
 ## Core
 #
-ssh -i $SCRIPT_DIR/../config/ssh/proxmox/automation_key.dev \
+ssh -i $SCRIPT_DIR/../config/ssh/proxmox/admin_key \
     -o StrictHostKeyChecking=no \
-    automation@192.168.1.200
+    homelab@192.168.1.200
