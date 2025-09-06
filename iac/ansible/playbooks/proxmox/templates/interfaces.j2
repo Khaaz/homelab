@@ -1,42 +1,46 @@
+# /etc/network/interfaces
 source /etc/network/interfaces.d/*
 
 auto lo
 iface lo inet loopback
 
-auto {{ ansible_default_ipv4.interface }}
-iface {{ ansible_default_ipv4.interface }} inet manual
+# Physical NIC 
+auto {{ physical_nic }}
+iface {{ physical_nic }} inet manual
 
-# Public bridge (Proxmox)
+# vmbr0 = physical interface.
 auto vmbr0
 iface vmbr0 inet static
-	address {{ ansible_default_ipv4.address }}
+    address {{ ansible_default_ipv4.address }}
 	netmask {{ ansible_default_ipv4.netmask }}
 	gateway {{ ansible_default_ipv4.gateway  }}
-	bridge_ports {{ ansible_default_ipv4.interface }}
-	bridge_stp off
-	bridge_fd 0
+	bridge_ports {{ physical_nic }}
+    bridge_stp off
+    bridge_fd 0
+    comment "Physical interface wired to BOX"
 
-# Private subnet #1 (10.10.1.0/24)
+# vmbr1 = LAN GW (10.10.1.0/24) - internal L2 bridge [gateway]
 auto vmbr1
-iface vmbr1 inet static
-	address 10.10.1.1
-	netmask 255.255.255.0
-	bridge_ports none
-	bridge_stp off
-	bridge_fd 0
-	comment Internal network 1
-	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
-	post-up iptables -t nat -A POSTROUTING -s 10.10.1.0/24 -o vmbr0 -j MASQUERADE
-	post-down iptables -t nat -D POSTROUTING -s 10.10.1.0/24 -o vmbr0 -j MASQUERADE
+iface vmbr1 inet manual
+    bridge_ports none
+    bridge_stp off
+    bridge_fd 0
+    comment "LAN GW" 
 
-# Private subnet #2 (10.10.2.0/24)
+# vmbr2 = LAN MGMT (10.10.2.0/24) - internal L2 bridge [management]
 auto vmbr2
-iface vmbr2 inet static
-	address 10.10.2.1
-	netmask 255.255.255.0
-	bridge_ports none
-	bridge_stp off
-	bridge_fd 0
-	comment Internal network 1
-	post-up iptables -t nat -A POSTROUTING -s 10.10.2.0/24 -o vmbr0 -j MASQUERADE
-	post-down iptables -t nat -D POSTROUTING -s 10.10.2.0/24 -o vmbr0 -j MASQUERADE
+iface vmbr2 inet manual
+    bridge_ports none
+    bridge_stp off
+    bridge_fd 0
+    comment "LAN MGMT"
+
+# vmbr3 = LAN SRV (10.10.3.0/24) - internal L2 bridge vlan-aware [services]
+auto vmbr3
+iface vmbr3 inet manual
+    bridge_ports none
+    bridge_stp off
+    bridge_fd 0
+    bridge-vlan-aware yes
+    bridge-vids 30-32   # list VLAN IDs you plan to use inside SRV
+    comment "LAN SRV - VLANs (DMZ, INTERN, EXTERN)"

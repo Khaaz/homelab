@@ -1,0 +1,107 @@
+---
+- name: Post install hardening and admin setup
+  hosts: homelab
+  become: true
+  vars:
+    homelab_user: homelab
+    homelab_pubkey_path: "{{ inventory_dir }}/../../config/ssh/proxmox/admin_key.pub"  # path on the Ansible controller
+    pve_admin_user: admin
+    pve_admin_password: "{{ lookup('env', 'PROXMOX_ADMIN_PASSWORD') }}"  # read from env
+  tasks:
+    # Ensure homelab user exists, assign sudo and ssh key
+    - name: Ensure '{{ homelab_user }}' user exists with sudo
+      ansible.builtin.user:
+        name: "{{ homelab_user }}"
+        shell: /bin/bash
+        groups: sudo
+        append: true
+        create_home: true
+        state: present
+
+    - name: Install SSH public key for '{{ homelab_user }}'
+      ansible.builtin.authorized_key:
+        user: "{{ homelab_user }}"
+        state: present
+        key: "{{ lookup('ansible.builtin.file', homelab_pubkey_path) }}"
+
+    # Create PAM user in Proxmox RBAC (maps to homelab linux user)
+    - name: Ensure PAM user exists in Proxmox RBAC (homelab@pam)
+      ansible.builtin.command: "pveum user add {{ homelab_user }}@pam"
+      register: add_pam_user
+      changed_when: "'added' in add_pam_user.stdout | lower"
+      failed_when: false
+
+    - name: Ensure '{{ homelab_user }}@pam' has Administrator role at /
+      ansible.builtin.command: "pveum aclmod / -user {{ homelab_user }}@pam -role Administrator"
+      register: pam_acl
+      changed_when: "'acl' in pam_acl.stdout | lower or pam_acl.rc == 0"
+      failed_when: false
+
+    # Create a PVE admin user (admin@pve)
+    - name: Ensure PVE admin user exists (admin@pve)
+      ansible.builtin.command: >
+        pveum user add {{ pve_admin_user }}@pve --password {{ pve_admin_password | quote }}
+      register: add_pve_user
+      changed_when: "'added' in add_pve_user.stdout | lower"
+      failed_when: false
+
+    - name: Ensure '{{ pve_admin_user }}@pve' has Administrator role at /
+      ansible.builtin.command: "pveum aclmod / -user {{ pve_admin_user }}@pve -role Administrator"
+      register: pve_acl
+      changed_when: "'acl' in pve_acl.stdout | lower or pve_acl.rc == 0"
+      failed_when: false
+
+    # Disable/lock root
+    - name: Lock root account (disables root password authentication everywhere)
+      ansible.builtin.command: passwd -l root
+      register: lock_root
+      changed_when: lock_root.rc == 0
+      failed_when: false
+
+    - name: Set root shell to /usr/sbin/nologin
+      ansible.builtin.user:
+        name: root
+        shell: /usr/sbin/nologin
+
+    # Enforce SSH key only, and disable ssh as root entirely
+    - name: SSH - Disable root login entirely
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*PermitRootLogin\s+.*$'
+        line: 'PermitRootLogin no'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+    - name: SSH - Disable password authentication globally (keys only)
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*PasswordAuthentication\s+.*$'
+        line: 'PasswordAuthentication no'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+    - name: SSH - Disable SSH challenge/keyboard-interactive auth
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*ChallengeResponseAuthentication\s+.*$'
+        line: 'ChallengeResponseAuthentication no'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+    - name: SSH - Ensure PubkeyAuthentication is explicitly enabled
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*PubkeyAuthentication\s+.*$'
+        line: 'PubkeyAuthentication yes'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+  handlers:
+    - name: Reload sshd
+      ansible.builtin.service:
+        name: ssh
+        state: reloaded
