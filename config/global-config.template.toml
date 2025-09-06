@@ -38,13 +38,13 @@
 	MYSQL_USER=""
 	MYSQL_PASSWORD=""
 
-[firewall-1]
+[firewall-gw]
 	enabled=true
 
-[firewall-2]
+[firewall-mgmt]
 	enabled=true
 
-[firewall-3]
+[firewall-srv]
 	enabled=true
 
 [home-automation]
