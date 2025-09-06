@@ -1,8 +1,8 @@
 source "proxmox-iso" "template-alpine" {
   # Proxmox
   proxmox_url              = "${var.proxmox_api_url}/api2/json"
-  username                 = var.proxmox_api_token_id
-  token                    = var.proxmox_api_token_secret
+  username                 = var.proxmox_packer_token_id
+  token                    = var.proxmox_packer_token_secret
   insecure_skip_tls_verify = true
 
   # Template

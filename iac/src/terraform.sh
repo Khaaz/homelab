@@ -19,6 +19,7 @@ TERRAFORM_FOLDER="$IAC_FOLDER/terraform"
 # config/.env.generated (generated env file)
 ENV_FILE="$IAC_FOLDER/config/.env"
 GENERATED_ENV_FILE="$IAC_FOLDER/config/.env.generated"
+TERRAFORM_ENV_FILE="$IAC_FOLDER/config/terraform.env"
 
 ENV_LOADED=false
 if [ -f "$GENERATED_ENV_FILE" ]; then
@@ -37,10 +38,26 @@ if [ "$ENV_LOADED" = false ]; then
 	echo "Warning: No env file found: $GENERATED_ENV_FILE or $ENV_FILE"
 	exit 1
 fi
+if [ -f "$TERRAFORM_ENV_FILE" ]; then
+	set -a
+	. "$TERRAFORM_ENV_FILE"
+	set +a
+else
+	echo "Warning: No terraform.env file found: $TERRAFORM_ENV_FILE"
+	exit 1
+fi
 
 # Logs and debug mode
 export TF_LOG="TRACE" 
 export TF_LOG_PATH="$TERRAFORM_FOLDER/logs/terraform.log"
+
+# remap env var:
+export TF_VAR_proxmox_api_url=$PROXMOX_API_URL
+export TF_VAR_proxmox_terraform_api_token="${TERRAFORM_TOKEN_ID}=${TERRAFORM_TOKEN_SECRET}"
+export TF_VAR_proxmox_node=$PROXMOX_NODE
+export TF_VAR_proxmox_vm_template_name=$PROXMOX_VM_TEMPLATE_NAME
+export TF_VAR_proxmox_vm_template_id=$PROXMOX_VM_TEMPLATE_ID
+
 
 cd $TERRAFORM_FOLDER
 # terraform destroy -auto-approve

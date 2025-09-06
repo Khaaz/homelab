@@ -19,6 +19,7 @@ PACKER_FOLDER="$IAC_FOLDER/packer"
 # config/.env.generated (generated env file)
 ENV_FILE="$IAC_FOLDER/config/.env"
 GENERATED_ENV_FILE="$IAC_FOLDER/config/.env.generated"
+PACKER_ENV_FILE="$IAC_FOLDER/config/packer.env"
 
 ENV_LOADED=false
 if [ -f "$GENERATED_ENV_FILE" ]; then
@@ -37,11 +38,23 @@ if [ "$ENV_LOADED" = false ]; then
 	echo "Warning: No env file found: $GENERATED_ENV_FILE or $ENV_FILE"
 	exit 1
 fi
+if [ -f "$PACKER_ENV_FILE" ]; then
+	set -a
+	. "$PACKER_ENV_FILE"
+	set +a
+else
+	echo "Warning: No packer.env file found: $PACKER_ENV_FILE"
+	exit 1
+fi
 
 # Logs and debug mode
 export PACKER_LOG=1
 export PACKER_LOG_LEVEL=TRACE
 export PACKER_LOG_PATH="$PACKER_FOLDER/logs/packer.log"
+
+# remap env var:
+PROXMOX_PACKER_TOKEN_ID=$TERRAFORM_TOKEN_ID
+PROXMOX_PACKER_TOKEN_SECRET=$TERRAFORM_TOKEN_SECRET
 
 cd $PACKER_FOLDER
 packer init $PACKER_FOLDER

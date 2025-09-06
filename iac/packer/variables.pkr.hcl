@@ -4,15 +4,15 @@ variable "proxmox_api_url" {
   default = env("PROXMOX_API_URL")
 }
 
-variable "proxmox_api_token_id" {
+variable "proxmox_packer_token_id" {
   type    = string
-  default = env("PROXMOX_API_TOKEN_ID")
+  default = env("PROXMOX_PACKER_TOKEN_ID")
 }
 
-variable "proxmox_api_token_secret" {
+variable "proxmox_packer_token_secret" {
   type      = string
   sensitive = true
-  default   = env("PROXMOX_API_TOKEN_SECRET")
+  default   = env("PROXMOX_PACKER_TOKEN_SECRET")
 }
 
 ## Configuration
