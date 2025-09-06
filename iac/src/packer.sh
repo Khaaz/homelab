@@ -11,6 +11,26 @@ SCRIPT_DIR=$(get_script_dir)
 IAC_FOLDER="$SCRIPT_DIR/.."
 PACKER_FOLDER="$IAC_FOLDER/packer"
 
+## Usage
+usage() {
+	echo "Usage: $0 [--dev]"
+	exit 1
+}
+
+## Input verification
+DEV=false
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--dev)
+			DEV=true
+			;;
+		--help)
+			usage
+			;;
+	esac
+	shift
+done
+
 #
 ## Core
 #
@@ -53,8 +73,11 @@ export PACKER_LOG_LEVEL=TRACE
 export PACKER_LOG_PATH="$PACKER_FOLDER/logs/packer.log"
 
 # remap env var:
-PROXMOX_PACKER_TOKEN_ID=$TERRAFORM_TOKEN_ID
-PROXMOX_PACKER_TOKEN_SECRET=$TERRAFORM_TOKEN_SECRET
+export PROXMOX_PACKER_TOKEN_ID=$PACKER_TOKEN_ID
+export PROXMOX_PACKER_TOKEN_SECRET=$PACKER_TOKEN_SECRET
+if [ "$DEV" = true ]; then
+	export DEV_MODE="true"
+fi
 
 cd $PACKER_FOLDER
 packer init $PACKER_FOLDER

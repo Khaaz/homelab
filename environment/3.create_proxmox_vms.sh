@@ -14,4 +14,4 @@ ROOT_DIR="$SCRIPT_DIR/.."
 ## Core
 #
 # Execute the command
-$ROOT_DIR/iac/2.create_proxmox_vms.sh "$@"
+$ROOT_DIR/iac/3.create_proxmox_vms.sh "$@"

@@ -5,6 +5,10 @@ provider "proxmox" {
 
   ssh {
     username    = "automation"
-    private_key = file("${local.root_path}/config/ssh/proxmox/automation_key.dev") #TODO
+    private_key = file(
+      var.dev_mode ? 
+        "${local.root_path}/config/ssh/proxmox/automation_key.dev" :
+        "${local.root_path}/config/ssh/proxmox/automation_key"
+    )
   }
 }

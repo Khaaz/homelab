@@ -11,6 +11,27 @@ SCRIPT_DIR=$(get_script_dir)
 IAC_FOLDER="$SCRIPT_DIR/.."
 TERRAFORM_FOLDER="$IAC_FOLDER/terraform"
 
+## Usage
+usage() {
+	echo "Usage: $0 [--dev]"
+	exit 1
+}
+
+## Input verification
+DEV=false
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--dev)
+			DEV=true
+			;;
+		--help)
+			usage
+			;;
+	esac
+	shift
+done
+
+
 #
 ## Core
 #
@@ -58,6 +79,9 @@ export TF_VAR_proxmox_node=$PROXMOX_NODE
 export TF_VAR_proxmox_vm_template_name=$PROXMOX_VM_TEMPLATE_NAME
 export TF_VAR_proxmox_vm_template_id=$PROXMOX_VM_TEMPLATE_ID
 
+if [ "$DEV" = true ]; then
+	export TF_VAR_dev_mode="true"
+fi
 
 cd $TERRAFORM_FOLDER
 # terraform destroy -auto-approve

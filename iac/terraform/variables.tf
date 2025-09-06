@@ -25,3 +25,8 @@ variable "proxmox_vm_template_id" {
   type    = number
   default = 9000
 }
+
+variable "dev_mode" {
+  type    = bool
+  default = false
+}

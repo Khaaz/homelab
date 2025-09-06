@@ -3,12 +3,10 @@ variable "proxmox_api_url" {
   type    = string
   default = env("PROXMOX_API_URL")
 }
-
 variable "proxmox_packer_token_id" {
   type    = string
   default = env("PROXMOX_PACKER_TOKEN_ID")
 }
-
 variable "proxmox_packer_token_secret" {
   type      = string
   sensitive = true
@@ -40,4 +38,9 @@ variable "root_password" {
   type      = string
   sensitive = true
   default   = env("SSH_ROOT_PASSWORD")
+}
+
+variable "dev_mode" {
+  type      = bool
+  default   = lower(env("DEV_MODE")) == "true"
 }

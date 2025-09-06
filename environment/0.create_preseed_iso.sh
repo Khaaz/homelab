@@ -34,7 +34,7 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-if [ $AUTO = true ]; then
+if [ "$AUTO" = true ]; then
 	echo "INFO: Executing in AUTO mode (infra ready)"
 fi
 
