@@ -58,13 +58,16 @@ resource "proxmox_virtual_environment_vm" "vm" {
     content {
       bridge = network_device.value.bridge
       model  = "virtio"
+
+      # Conditionally add VLAN tag if present
+      vlan_id = try(network_device.value.vlan, null)
     }
   }
 
   # Cloud-Init
   initialization {
     datastore_id = var.proxmox_datastore_id
-    interface    = "ide1"
+    interface    = "ide2"
 
     dns {
       servers = try(var.vm_cfg.dns_servers, ["1.1.1.1", "8.8.8.8"])
@@ -81,7 +84,6 @@ resource "proxmox_virtual_environment_vm" "vm" {
       }
     }
 
-    # user_data_file_id = proxmox_virtual_environment_file.userdata[each.key].id
     user_data_file_id = proxmox_virtual_environment_file.userdata.id
   }
 }
