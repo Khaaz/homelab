@@ -38,7 +38,7 @@ DEV_ARGS=""
 if [ "$DEV" = true ]; then
 	DEV_ARGS="--limit vm"
 else
-	DEV_ARGS="--limit homelab"
+	DEV_ARGS="--limit homelab-node1"
 fi
 
 # Execute the command
