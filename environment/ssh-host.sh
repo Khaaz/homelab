@@ -11,5 +11,6 @@ SCRIPT_DIR=$(get_script_dir)
 #
 ## Core
 #
-# Execute the command
-$SCRIPT_DIR/src/vm.sh "$@"
+ssh -i $SCRIPT_DIR/../config/ssh/proxmox/automation_key.dev \
+    -o StrictHostKeyChecking=no \
+    automation@192.168.1.200
