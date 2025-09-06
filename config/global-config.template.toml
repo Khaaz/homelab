@@ -11,6 +11,8 @@
 	IP_GATEWAY="192.168.1.254"
 	IP_NAMESERVER="192.168.1.254"
 	IP_SERVER="192.168.1.200"
+
+[iac]
 	# Proxmox setup
 	PROXMOX_ADMIN_PASSWORD="long_password1!" # Must be longer than 8 char
 	PROXMOX_PACKER_PASSWORD="long_packer_password1!"  # Must be longer than 8 char
@@ -20,6 +22,7 @@
 [preseed] # preseed
 	enabled=true
 
+	# /dev/sda for SSH ; /dev/nvme0n1 for NVME
 	DISK="/dev/sda"
 	# Passwords will automatically be hashed with sha512
 	# Root user
@@ -35,6 +38,15 @@
 	MYSQL_USER=""
 	MYSQL_PASSWORD=""
 
+[firewall-1]
+	enabled=true
+
+[firewall-2]
+	enabled=true
+
+[firewall-3]
+	enabled=true
+
 [home-automation]
 	enabled=false
 
@@ -42,6 +54,9 @@
 	enabled=false
 
 	DB_PASSWORD=""
+
+[jump]
+	enabled=true
 
 [media-management] # apps/media-management
 	enabled=true
@@ -82,6 +97,12 @@
 	# Generator: https://it-tools.tech/token-generator
 	API_KEY_OVERSEERR=""
 
+[nas]
+	enabled=false
+
+[notes]
+	enabled=false
+
 [reverse-proxy] # apps/reverse-proxy
 	enabled=true
 
@@ -105,12 +126,21 @@
 	# Password will automatically be hashed with argon2
 	AUTHELIA_USER_PASSWORD="long_password1!"
 
+[todo]
+	enabled=false
+
 [vault] # apps/vault
 	enabled=false
 
 	VAULTWARDEN_ADMIN_TOKEN=""
 
+[vpn]
+	enabled=true
+
 [vscode-server] # apps/vscode-server
 	enabled=false
 
 	VSCODE_SERVER_PASSWORD=""
+
+[white-board]
+	enabled=false

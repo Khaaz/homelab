@@ -1,6 +1,7 @@
 # env files
 .env
 .env.generated
+.env.old
 networking.env
 
 # other
