@@ -5,18 +5,26 @@
 	EXTERNAL_DOMAIN="example.com"
 
 [infra]
+	# IP of local PC that runs IAC
+	IP_CONTROL_NODE="192.168.1.165"
+	# Server IPs
 	IP_GATEWAY="192.168.1.254"
 	IP_NAMESERVER="192.168.1.254"
-	IP_SERVER="192.168.1.100"
+	IP_SERVER="192.168.1.200"
+	# Proxmox setup
+	PROXMOX_ADMIN_PASSWORD="long_password1!" # Must be longer than 8 char
+	PROXMOX_PACKER_PASSWORD="long_packer_password1!"  # Must be longer than 8 char
+	PROXMOX_TERRAFORM_PASSWORD="long_terraform_password1!"  # Must be longer than 8 char
+	PROXMOX_TEMPLATE_ROOT_PASSWORD="long_template_password1!"
 
 [preseed] # preseed
 	enabled=true
 
 	DISK="/dev/sda"
-	# passwords will automatically be hashed with sha512
-	# root user
+	# Passwords will automatically be hashed with sha512
+	# Root user
 	ROOT_PASSWORD="long_root_password1!"
-	# admin user (homelab)
+	# Admin user (homelab)
 	USER_PASSWORD='long_password1!'
 
 [cloud] # apps/cloud
@@ -94,7 +102,7 @@
 	# The user used to authenticate to Authelia
 	AUTHELIA_USER_NAME="admin"
 	AUTHELIA_USER_EMAIL="admin@gmail.com"
-	# password will automatically be hashed with argon2
+	# Password will automatically be hashed with argon2
 	AUTHELIA_USER_PASSWORD="long_password1!"
 
 [vault] # apps/vault
