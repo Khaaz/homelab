@@ -12,19 +12,20 @@ SCRIPT_DIR=$(get_script_dir)
 # Import the parse file function
 . $SCRIPT_DIR/lib/parse_file.sh
 
-# Import the dependencies function
-. $SCRIPT_DIR/lib/install_dependencies.sh
-
 ## Usage
-if [ "$#" -ne 2 ]; then
+usage() {
 	echo "Usage: $0 <path_to_input_file> <path_to_output_file>"
 	exit 1
+}
+
+## Input verification
+if [ "$#" -ne 2 ]; then
+	usage
 fi
 
 INPUT_FILE="$1"
 OUTPUT_FILE="$2"
 
-## Input verification
 if [ ! -f "$INPUT_FILE" ]; then
 	echo "Error: Input file does not exist: $INPUT_FILE"
 	exit 1
@@ -33,7 +34,7 @@ fi
 #
 ## Core
 #
-install_dependencies gettext
+sh "$SCRIPT_DIR/lib/install_dependencies.sh" gettext
 
 echo "FILE_PARSER: Processing file '$INPUT_FILE' as '$OUTPUT_FILE'..."
 parse_file $INPUT_FILE > $OUTPUT_FILE

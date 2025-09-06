@@ -8,23 +8,24 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
-##Import
-# Import the dependencies function
-. $SCRIPT_DIR/lib/install_dependencies.sh
-
+## Import
 # Import the parse file function
 . $SCRIPT_DIR/lib/parse_file.sh
 
 ## Usage
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+usage() {
 	echo "Usage: $0 <path_to_db> [path_to_sql_script]"
 	exit 1
+}
+
+## Input verification
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+	usage
 fi
 
 DB_PATH="$1"
 SQL_SCRIPT_PATH="${2:-/_setup/sql/init.sql}"
 
-## Input verification
 # Check if the database file exists
 if [ ! -f "$DB_PATH" ]; then
 	echo "Error: Database file does not exist: $DB_PATH"
@@ -47,7 +48,7 @@ preprocess_sql_script() {
 	echo "$parsed_file" | sed -e "s/\\\\'/''/g"
 }
 
-install_dependencies sqlite gettext
+sh "$SCRIPT_DIR/lib/install_dependencies.sh" sqlite gettext
 
 PREPROCESSED_SQL=$(preprocess_sql_script "$SQL_SCRIPT_PATH")
 

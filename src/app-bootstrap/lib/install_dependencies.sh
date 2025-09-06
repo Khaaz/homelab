@@ -62,3 +62,5 @@ install_dependencies() {
 			;;
 	esac
 }
+
+install_dependencies "$@"

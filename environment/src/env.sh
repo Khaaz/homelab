@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Prerequesites
+## Prerequesites
 get_script_dir() {
 	# Get the directory of the currently running script
 	local script_dir=$(dirname "$(realpath "$0")")
@@ -8,11 +8,13 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+## Usage
 usage() {
 	echo "Usage: $0 <up|down> [--packer]"
 	exit 1
 }
 
+## Input verification
 ACTION=""
 PACKER_PORT=""
 while [ $# -gt 0 ]; do
@@ -22,6 +24,9 @@ while [ $# -gt 0 ]; do
 			;;
 		--packer)
 			PACKER_PORT="-p 8098:8098"
+			;;
+		--help)
+			usage
 			;;
 		*)
 			echo "Unknown argument: $1"
@@ -35,6 +40,9 @@ if [ -z "$ACTION" ]; then
 	usage
 fi
 
+#
+## Core
+#
 case "$ACTION" in
     up)
 		# --rm remove the container

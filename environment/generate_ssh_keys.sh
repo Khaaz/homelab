@@ -8,11 +8,28 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+## Usage
+usage() {
+	echo "Usage: $0 [--auto]"
+	echo "--auto mode will automatically create all ssh config for each app-stack/proxmox-vm"
+	exit 1
+}
+
 ## Input verification
 AUTO=false
-if [ "$1" = "--auto" ]; then
-	AUTO=true
-	shift
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--auto)
+			AUTO=true
+			shift
+			;;
+		--help)
+			usage
+			;;
+	esac
+done
+
+if [ $AUTO = true ]; then
 	echo "INFO: Executing in AUTO mode (infra ready)"
 fi
 

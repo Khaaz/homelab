@@ -31,6 +31,9 @@ while [ $# -gt 0 ]; do
 		--reset)
             RESET_KEYS=true
             ;;
+		--help)
+			usage
+			;;
 		*)
 			echo "Unknown argument: $1"
 			usage

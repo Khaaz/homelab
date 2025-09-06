@@ -9,15 +9,18 @@ get_script_dir() {
 SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
-if [ "$#" -ne 2 ]; then
+usage() {
 	echo "Usage: $0 <path_to_input_directory> <path_to_output_directory>"
 	exit 1
-fi
+}
 
+## Input verification
+if [ "$#" -ne 2 ]; then
+	usage
+fi
 INPUT_DIR="$1"
 OUTPUT_DIR="$2"
 
-## Input verification
 # Check if the input directory exists
 if [ ! -d "$INPUT_DIR" ]; then
 	echo "Error: Input directory does not exist: $INPUT_DIR"
@@ -46,7 +49,7 @@ process_files() {
 			# If it's a file, parse it and save to the corresponding output folder
 			local output_file="$(echo "$file" | sed "s|^$INPUT_DIR|$OUTPUT_DIR|")"
 			mkdir -p "$(dirname "$output_file")"
-			$SCRIPT_DIR/parse_file.sh "$file" "$output_file"
+			sh "$SCRIPT_DIR/parse_file.sh" "$file" "$output_file"
 		fi
 	done
 }
