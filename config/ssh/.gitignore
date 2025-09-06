@@ -1,5 +1,6 @@
 *_key.pub
 *_key
 
+# Ignore development / VM keys
 !*_key.dev
 !*_key.dev.pub

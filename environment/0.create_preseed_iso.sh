@@ -30,9 +30,6 @@ while [ $# -gt 0 ]; do
 		--help)
 			usage
 			;;
-		*)
-			echo "Unknown argument: $1"
-			;;
 	esac
 	shift
 done
