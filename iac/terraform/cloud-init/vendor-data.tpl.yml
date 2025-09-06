@@ -1,0 +1,13 @@
+package_update: true
+# packages:
+#   - nftables
+
+write_files:
+  - path: /etc/nftables.conf
+    permissions: "0644"
+    encoding: b64
+    content: ${nft_rules_config_b64}
+
+runcmd:
+  - [ rc-update, add, nftables, boot ]   # enable at boot (use 'default' if you prefer)
+  - [ rc-service, nftables, start ]      # start immediately

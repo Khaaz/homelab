@@ -85,6 +85,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
       }
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.userdata.id
+    user_data_file_id   = proxmox_virtual_environment_file.userdata.id
+    vendor_data_file_id = try(proxmox_virtual_environment_file.vendordata[0].id, null)
   }
 }

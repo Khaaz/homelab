@@ -1,3 +1,4 @@
+#cloud-config
 hostname: ${hostname}
 manage_etc_hosts: true
 ssh_pwauth: false
