@@ -71,18 +71,27 @@
         terraform_privs:
           - VM.Allocate
           - VM.Audit
-          - VM.Config.Disk
+          - VM.Clone
           - VM.Config.CDROM
+          - VM.Config.Cloudinit
           - VM.Config.CPU
+          - VM.Config.Disk
+          - VM.Config.HWType
           - VM.Config.Memory
           - VM.Config.Network
           - VM.Config.Options
           - VM.Console
+          - VM.Migrate
           - VM.Monitor
-          - Datastore.AllocateSpace
+          - VM.PowerMgmt
           - Datastore.Allocate
-          - Sys.Modify
+          - Datastore.AllocateSpace
+          - Datastore.Audit
+          - Pool.Allocate
           - Sys.Audit
+          - Sys.Console
+          - Sys.Modify
+          - SDN.Use
       ansible.builtin.shell: >
         pveum role add {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}' 
         || pveum role modify {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}'
