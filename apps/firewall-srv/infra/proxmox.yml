@@ -3,6 +3,9 @@ memory_size: 2048 # MB
 disk_size: 10 # GB
 dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
-  - bridge: vmbr3
-    ipv4: 10.10.31.10/24
-    gateway: 10.10.1.1
+  - bridge: vmbr3 # srv
+    trunks: 
+      - id: 31 # extern
+        ipv4: 10.10.31.3/24
+      - id: 32 # intern
+        ipv4: 10.10.32.3/24
