@@ -13,13 +13,14 @@ TERRAFORM_FOLDER="$IAC_FOLDER/terraform"
 
 ## Usage
 usage() {
-	echo "Usage: $0 [--dev] [--destroy]"
+	echo "Usage: $0 [--dev] [--destroy] [--console]"
 	exit 1
 }
 
 ## Input verification
 DEV=false
 DESTROY=false
+CONSOLE=false
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--dev)
@@ -27,6 +28,9 @@ while [ $# -gt 0 ]; do
 			;;
 		--destroy)
 			DESTROY=true
+			;;
+		--console)
+			CONSOLE=true
 			;;
 		--help)
 			usage
@@ -89,11 +93,13 @@ fi
 
 cd $TERRAFORM_FOLDER
 
-if [ "$DESTROY" = true ]; then
+terraform init
+terraform validate
+if [ "$CONSOLE" = true ]; then
+	terraform console
+elif [ "$DESTROY" = true ]; then
 	terraform destroy -auto-approve
 else
-	terraform init
-	terraform validate
 	terraform plan
 	terraform apply -auto-approve
 fi
