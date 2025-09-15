@@ -1,0 +1,42 @@
+#cloud-config
+network:
+  version: 2
+  ethernets:
+    %{~ for n in nics ~}
+    ${n.interface}:
+      match:
+        macaddress: "${n.mac}"
+      set-name: ${n.interface}
+      dhcp4: false
+      %{~ if n.ipv4 != null ~}
+      addresses:
+        - ${n.ipv4}
+      %{~ endif ~}
+      %{~ if n.gateway != null ~}
+      gateway4: ${n.gateway}
+      %{~ endif ~}
+      nameservers:
+        addresses:
+        %{~ for s in dns ~}
+          - ${s}
+        %{~ endfor ~}
+    %{~ endfor ~}
+  %{~ if length(vlans) > 0 ~}
+  vlans:
+    %{~ for v in vlans ~}
+    ${v.interface}.${v.id}:
+      id: ${v.id}
+      link: ${v.interface}
+      dhcp4: false
+      addresses:
+        - ${v.ipv4}
+      %{~ if v.gateway != null ~}
+      gateway4: ${v.gateway}
+      %{~ endif ~}
+      nameservers:
+        addresses:
+        %{~ for s in dns ~}
+          - ${s}
+        %{~ endfor ~}
+    %{~ endfor ~}
+  %{~ endif ~}

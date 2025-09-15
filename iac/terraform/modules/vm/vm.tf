@@ -55,13 +55,20 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   # NICs: dynamic number & order from config.yaml
   dynamic "network_device" {
-    for_each = tolist(try(var.vm_cfg.nics, []))
+    for_each = tolist(try(local.nics, []))
     content {
-      bridge = network_device.value.bridge
-      model  = "virtio"
+      bridge        = network_device.value.bridge
+      model         = "virtio"
+      mac_address = network_device.value.mac
 
       # Conditionally add VLAN tag if present
-      vlan_id = try(network_device.value.vlan, null)
+      vlan_id = try(network_device.value.vlan_id, null)
+      # Conditionnaly add trunks if present
+      # If any network device as trunks enabled, we will use network file instead of ip_config
+      trunks  = (length(coalesce(network_device.value.trunks, [])) > 0 
+        ? join(";", [for v in network_device.value.trunks : tostring(v)])
+        : null
+      )
     }
   }
 
@@ -75,8 +82,9 @@ resource "proxmox_virtual_environment_vm" "vm" {
     }
 
     # One ip_config per NIC, same order
+    # Use network file if one NIC use trunk
     dynamic "ip_config" {
-      for_each = tolist(try(var.vm_cfg.nics, []))
+      for_each = local.use_ci_network_file ? [for n in local.nics : n if n.ipv4 != null] : []
       content {
         ipv4 {
           address = ip_config.value.ipv4
@@ -85,7 +93,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
       }
     }
 
-    user_data_file_id   = proxmox_virtual_environment_file.userdata.id
-    vendor_data_file_id = try(proxmox_virtual_environment_file.vendordata[0].id, null)
+    user_data_file_id    = proxmox_virtual_environment_file.userdata.id
+    network_data_file_id = try(proxmox_virtual_environment_file.networkdata[0].id, null)
+    vendor_data_file_id  = try(proxmox_virtual_environment_file.vendordata[0].id, null)
   }
 }

@@ -20,9 +20,28 @@ variable "vm_name" {
   description = "Name of the VM to be created"
 }
 
-# Per-VM config parsed from YAML. Keep flexible.
+# Per-VM config parsed from YAML
 variable "vm_cfg" {
-  type        = any
+  type = object({
+    cores       = number
+    memory_size = number
+    disk_size   = number
+    dns_servers = optional(list(string), ["1.1.1.1", "8.8.8.8"])
+    nics = list(object({
+      bridge  = string                  # vmbr3
+      ipv4    = optional(string)        # "10.10.x.x/24"
+      gateway = optional(string)        # default GW for this NIC (if any)
+
+      # For vlan, we can either tag the vlan, or use trunk
+      # ipv4 is optional if we use trunk (as ipv4 will be specified inside the trunk)
+      vlan   = optional(number)              # VLAN tag:  eg 30 31 32
+      trunks = optional(list(object({
+        id      = number                        # VLAN tag: eg 30 31 32
+        ipv4    = string                        # IP on that VLAN
+        gateway = optional(string)              # default GW for this vlan (if any)
+      })))
+    }))
+  })
   description = "Per-VM configuration parsed from YAML, containing VM-specific settings like CPU, memory, disk, and network configuration"
 }
 
