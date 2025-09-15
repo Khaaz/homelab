@@ -22,6 +22,7 @@ usage() {
 ## Input verification
 DEV=false
 AUTO=false
+PLAYBOOK_ARGS=""
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--dev)
@@ -35,10 +36,14 @@ while [ $# -gt 0 ]; do
 		--help)
 			usage
 			;;
+		*)
+			PLAYBOOK_ARGS=$1
+			shift
+			;;
 	esac
 done
 
-if [ "$AUTO" = false ] && [ -z "$1" ]; then
+if [ "$AUTO" = false ] && [ -z "$PLAYBOOK_ARGS" ]; then
 	usage
 fi
 
@@ -52,12 +57,9 @@ else
 	DEV_ARGS="--limit homelab-node1"
 fi
 
-PLAYBOOK_ARGS=""
 if [ "$AUTO" = true ]; then
 	PLAYBOOK_ARGS="proxmox-setup"
-else
-	PLAYBOOK_ARGS=$1
 fi
 
 # Execute the command
-$ROOT_DIR/iac/1.setup_proxmox.sh "$DEV_ARGS" "$PLAYBOOK_ARGS" "$@"
+$ROOT_DIR/iac/1.setup_proxmox.sh "$PLAYBOOK_ARGS" "$DEV_ARGS" "$@"

@@ -59,4 +59,5 @@ if [ "$ENV_LOADED" = false ]; then
 fi
 
 cd $ANSIBLE_FOLDER
-ansible-playbook "./playbooks/$PLAYBOOK_NAME.playbook.yml" "$@"
+
+ansible-playbook $@ "$PLAYBOOK_PATH"
