@@ -13,7 +13,9 @@ network:
         - ${n.ipv4}
       %{~ endif ~}
       %{~ if n.gateway != null ~}
-      gateway4: ${n.gateway}
+      routes:
+        - to: 0.0.0.0/0
+          via: ${n.gateway}
       %{~ endif ~}
       nameservers:
         addresses:
@@ -31,7 +33,9 @@ network:
       addresses:
         - ${v.ipv4}
       %{~ if v.gateway != null ~}
-      gateway4: ${v.gateway}
+      routes:
+        - to: 0.0.0.0/0
+          via: ${v.gateway}
       %{~ endif ~}
       nameservers:
         addresses:
