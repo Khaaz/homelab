@@ -84,7 +84,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
     # One ip_config per NIC, same order
     # Use network file if one NIC use trunk
     dynamic "ip_config" {
-      for_each = local.use_ci_network_file ? [for n in local.nics : n if n.ipv4 != null] : []
+      for_each = local.use_ci_network_file ? [] : [for n in local.nics : n if n.ipv4 != null]
       content {
         ipv4 {
           address = ip_config.value.ipv4
