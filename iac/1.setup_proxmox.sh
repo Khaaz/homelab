@@ -13,7 +13,7 @@ SCRIPT_DIR=$(get_script_dir)
 #
 # Execute the command
 PLAYBOOK=proxmox-setup
-if [ -n $1 ]; then
+if [ -n "$1" ]; then
 	PLAYBOOK=$1
 	shift
 fi
