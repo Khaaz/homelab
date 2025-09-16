@@ -20,8 +20,6 @@
 	PROXMOX_TEMPLATE_ROOT_PASSWORD="long_template_password1!"
 
 [preseed] # preseed
-	enabled=true
-
 	# /dev/sda for SSH ; /dev/nvme0n1 for NVME
 	DISK="/dev/sda"
 	# Passwords will automatically be hashed with sha512
@@ -37,6 +35,9 @@
 	NEXTCLOUD_ADMIN_PASSWORD=""
 	MYSQL_USER=""
 	MYSQL_PASSWORD=""
+
+[dns]
+	enabled=true
 
 [firewall-gw]
 	enabled=true
@@ -125,6 +126,9 @@
 	AUTHELIA_USER_EMAIL="admin@gmail.com"
 	# Password will automatically be hashed with argon2
 	AUTHELIA_USER_PASSWORD="long_password1!"
+
+[sandbox]
+	enabled=false
 
 [todo]
 	enabled=false
