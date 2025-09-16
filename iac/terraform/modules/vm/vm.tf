@@ -13,6 +13,11 @@ resource "proxmox_virtual_environment_vm" "vm" {
     enabled = true
   }
   stop_on_destroy = true
+  startup {
+    order      = "${var.vm_cfg.order}"
+    up_delay   = "60"
+    down_delay = "60"
+  }
 
   cpu {
     cores = try(var.vm_cfg.cores, 1)

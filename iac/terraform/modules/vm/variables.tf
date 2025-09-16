@@ -26,6 +26,7 @@ variable "vm_cfg" {
     cores       = number
     memory_size = number
     disk_size   = number
+    order       = number
     dns_servers = optional(list(string), ["1.1.1.1", "8.8.8.8"])
     nics = list(object({
       bridge  = string                  # vmbr3

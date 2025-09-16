@@ -1,6 +1,7 @@
 cores: 2
 memory_size: 2048 # MB
 disk_size: 10 # GB
+order: 100
 dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
