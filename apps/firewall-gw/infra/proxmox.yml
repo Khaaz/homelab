@@ -6,7 +6,7 @@ nics:
   - bridge: vmbr1 # gw
     ipv4: 10.10.1.2/24
     gateway: 10.10.1.1
-  - bridge: vmbr2 #mngmt
+  - bridge: vmbr2 # mgmt
     ipv4: 10.10.2.1/24
   - bridge: vmbr3 # srv
     trunks: 
