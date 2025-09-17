@@ -4,7 +4,7 @@ packages:
   - nftables
 
 write_files:
-  - path: /etc/nftables.conf
+  - path: /etc/nftables.d/firewall.nft
     permissions: "0644"
     encoding: b64
     content: ${nft_rules_config_b64}

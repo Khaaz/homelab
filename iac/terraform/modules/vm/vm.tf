@@ -14,9 +14,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
   stop_on_destroy = true
   startup {
-    order      = "${var.vm_cfg.order}"
-    up_delay   = "60"
-    down_delay = "60"
+    order = "${var.vm_cfg.order}"
   }
 
   cpu {
