@@ -26,7 +26,7 @@
 	# Root user
 	ROOT_PASSWORD="long_root_password1!"
 	# Admin user (homelab)
-	USER_PASSWORD='long_password1!'
+	USER_PASSWORD="long_password1!"
 
 [cloud] # apps/cloud
 	enabled=false
@@ -93,6 +93,7 @@
 	# Username and Email for the account linked with the Plex server.
 	PLEX_USERNAME=""
 	PLEX_EMAIL=""
+	PLEX_FRIENDLY_NAME="media-server"
 
 	# Provide any value you want that will be used as API key
 	# Generator: https://it-tools.tech/token-generator

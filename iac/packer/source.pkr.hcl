@@ -22,7 +22,7 @@ source "proxmox-iso" "template-alpine" {
   # SSH
   communicator         = "ssh"
   ssh_username         = "root"
-  ssh_private_key_file = "${path.root}/keys/root_key"
+  ssh_private_key_file = "${path.root}/../../config/ssh/vm/root_key"
   ssh_timeout          = "30m"
   ssh_pty              = true
 
@@ -66,7 +66,7 @@ source "proxmox-iso" "template-alpine" {
   http_content = {
     "/answers"      = templatefile("${path.root}/config/answers.pkrtpl.hcl", { control_node_ip = "${var.control_node_ip}" })
     "/post-install" = file("${path.root}/config/post_install.sh")
-    "/root-key"     = file("${path.root}/keys/root_key.pub")
+    "/root-key"     = file("${path.root}/../../config/ssh/vm/root_key.pub")
   }
 
   # Boot
