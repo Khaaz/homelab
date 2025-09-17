@@ -8,7 +8,7 @@ locals {
   ]
 }
 
-# ----- Discover per-VM YAML configs in ../../apps/<name>/src/config/proxmox-terraform.yml
+# ----- Discover per-VM YAML configs in ../../apps/<name>/infra/proxmox.yml
 locals {
   all_vms_infra_file = fileset(local.root_path, "apps/*/infra/proxmox.yml")
 

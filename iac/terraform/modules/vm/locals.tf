@@ -66,10 +66,4 @@ locals {
       }
     ]
   ])
-
-  template = templatefile("${path.root}/cloud-init/network-data.tpl.yml", {
-      nics  = local.nics
-      vlans = local.vlans
-      dns   = var.vm_cfg.dns_servers
-    })
 }
