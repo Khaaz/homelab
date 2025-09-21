@@ -1,0 +1,110 @@
+---
+- name: Deploy app via git + compose
+  hosts: vm
+  become: true
+  vars:
+    git_repo_url: "https://github.com/Khaaz/homelab"
+
+    # App name from controller env var APP_NAME
+    app_name: "{{ lookup('env', 'APP_NAME') | default('', true) }}"
+
+    clone_dir: "/tmp/app-deploy-{{ app_name }}"
+    work_dir: "/opt/{{ app_name }}"
+
+    # Controller (Ansible runner) repo root
+    controller_repo_root: "{{ inventory_dir }}/.."
+
+  tasks:
+    # Init workdir
+    - name: Ensure destination root exists
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        state: directory
+        mode: "0755"
+    - name: Ensure subdirectories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ work_dir }}/src"
+        - "{{ work_dir }}/apps"
+
+    # Clone the repo
+    - name: Clone/Update repo into tmp on target
+      ansible.builtin.git:
+        repo: "{{ git_repo_url }}"
+        dest: "{{ clone_dir }}"
+        version: "HEAD"
+        force: false
+        update: true
+
+    # Copy the work files
+    - name: Copy src/app-bootstrap → destination root (remote_src)
+      ansible.builtin.copy:
+        src: "{{ clone_dir }}/src/app-bootstrap/"
+        dest: "{{ work_dir }}/src/app-bootstrap/"
+        remote_src: true
+        mode: "0644"
+
+    - name: Copy apps/<app_name> → destination (remote_src)
+      ansible.builtin.copy:
+        src: "{{ clone_dir }}/apps/{{ app_name }}/"
+        dest: "{{ work_dir }}/apps/{{ app_name }}/"
+        remote_src: true
+        mode: "0644"
+
+    # Copy env files from the controller repo
+    # From:   {{ inventory_dir }}/../apps/<app_name>/config/
+    # Files:  networking.env, .env.generated, .env
+    - name: Stat controller apps/<app_name>/config files
+      ansible.builtin.stat:
+        path: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item }}"
+      loop:
+        - networking.env
+        - .env.generated
+        - .env
+      register: st_repo_cfg
+      delegate_to: localhost
+      run_once: true
+    - name: Copy controller apps/<app_name>/config files → target if present
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item.item }}"
+        dest: "{{ work_dir }}/apps/{{ app_name }}/config/{{ item.item }}"
+        mode: "{{ '0600' if item.item in ['.env', '.env.generated'] else '0644' }}"
+      loop: "{{ st_repo_cfg.results }}"
+      when: item.stat.exists
+      delegate_to: localhost
+      run_once: true
+
+    # ---- Compose via apps/<app_name>/compose.sh ----
+    - name: Ensure compose.sh is executable
+      ansible.builtin.file:
+        path: "{{ work_dir }}/apps/{{ app_name }}/compose.sh"
+        mode: "0755"
+        state: file
+
+    - name: Compose down via compose.sh (idempotent reset)
+      ansible.builtin.command:
+        cmd: "./compose.sh down --remove-orphans"
+        chdir: "{{ work_dir }}/apps/{{ app_name }}"
+      register: compose_down
+      changed_when: "'Stopping' in compose_down.stdout or 'Removing' in compose_down.stdout or compose_down.rc == 0"
+
+    - name: Compose up via compose.sh (recreate/pull/build)
+      ansible.builtin.command:
+        cmd: "./compose.sh up -d --pull always --build --renew-anon-volumes"
+        chdir: "{{ work_dir }}/apps/{{ app_name }}"
+      register: compose_up
+      changed_when: >
+        'Creating' in compose_up.stdout or
+        'Recreating' in compose_up.stdout or
+        'Pulling' in compose_up.stdout or
+        'Building' in compose_up.stdout or
+        compose_up.rc == 0
+
+  post_tasks:
+    - name: Cleanup temporary clone directory
+      ansible.builtin.file:
+        path: "{{ clone_dir }}"
+        state: absent
