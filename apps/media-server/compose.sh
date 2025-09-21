@@ -19,6 +19,11 @@ add_env_file() {
 	[ -f "$1" ] && echo "--env-file $1"
 }
 
+source_ips() {
+	SOURCED_SCRIPT_DIR="$ROOT_DIR/src"
+	. "$SCRIPT_DIR/src/source_apps_ip.sh"
+}
+
 # compose envs
 DEFAULT_ENV_FILE="$SCRIPT_DIR/config/.env.default"
 GENERATED_ENV_FILE="$SCRIPT_DIR/config/.env.generated"
@@ -35,6 +40,9 @@ COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
 # Set the default environment file path
 export ROOT_PATH=$SCRIPT_DIR
 echo "Root: $SCRIPT_DIR"
+
+echo "Sourcing IPs"
+source_ips
 
 docker compose -f $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \

@@ -48,6 +48,8 @@ TODO_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../todo/config/networking.env"
 
 VAULT_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vault/config/networking.env.default"
 VAULT_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vault/config/networking.env"
+VPN_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vpn/config/networking.env.default"
+VPN_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vpn/config/networking.env"
 VSC_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vscode-server/config/networking.env.default"
 VSC_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vscode-server/config/networking.env"
 
@@ -73,6 +75,7 @@ docker compose -f $COMPOSE_FILE \
 	--env-file $NOTES_NETWORKING_ENV_FILE $(add_env_file "$NOTES_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $TODO_NETWORKING_ENV_FILE $(add_env_file "$TODO_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $VAULT_NETWORKING_ENV_FILE $(add_env_file "$VAULT_NETWORKING_OVERRIDE_ENV_FILE") \
+	--env-file $VPN_NETWORKING_ENV_FILE $(add_env_file "$VPN_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $VSC_NETWORKING_ENV_FILE $(add_env_file "$VSC_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $WB_NETWORKING_ENV_FILE $(add_env_file "$WB_NETWORKING_OVERRIDE_ENV_FILE") \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \ 
