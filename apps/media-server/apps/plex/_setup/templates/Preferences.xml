@@ -34,7 +34,7 @@ Various settings
     PlexOnlineToken="${PLEX_CLAIM}"
     MachineIdentifier="${PLEX_MACHINE_IDENTIFIER}"
     
-    customConnections="https://plex.${EXTERNAL_DOMAIN}/,https://plex.${INTERNAL_DOMAIN}/,http://${MS_HOST_IP}:${PORT_UI_PLEX}/"
+    customConnections="https://plex.${EXTERNAL_DOMAIN}/,https://plex.${INTERNAL_DOMAIN}/,http://${LAN_IP}:${PORT_UI_PLEX}/"
     allowedNetworks="192.168.0.0/16,10.0.0.0/8,172.16.0.0/12"
     
     CertificateUUID=""
