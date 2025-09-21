@@ -35,8 +35,13 @@ for k in "${!global_config[@]}"; do
 done
 echo "DEBUG: global_config <"
 
-# --- 2: Process each app template ---
-echo "LOG: Generating .env for each app stack in $APPS_PATH/*"
+# --- 2: Generate config/.env.generated ---
+CONFIG_INPUT_FILE="config/app-config.template.toml"
+CONFIG_OUTPUT_FILE="config/.env.generated"
+INFRA_INPUT_FILE="infra/app-infra.template.toml"
+INFRA_OUTPUT_FILE="infra/local.env.generated"
+
+echo "LOG: Generating config/.env.generated for each app stack in $APPS_PATH/*"
 for app_path in $APPS_PATH/*; do
 	[ -d "$app_path" ] || continue
 	app=$(basename "$app_path")
@@ -50,19 +55,39 @@ for app_path in $APPS_PATH/*; do
 	fi
 
 	echo "INFO: ==> Processing app: $app <=="
-	process_app_template "$app" "$app_path" global_config
-	echo "INFO: Generated .env for $app"
+	process_app_template "$app" "$app_path/$CONFIG_INPUT_FILE" "$app_path/$CONFIG_OUTPUT_FILE" global_config
+	echo "INFO: Generated config/.env for $app"
 done
 
+# --- 3: Generate infra/local.env.generated ---
+echo "LOG: Generating infra/local.env.generated for each app stack in $APPS_PATH/*"
+for app_path in $APPS_PATH/*; do
+	[ -d "$app_path" ] || continue
+	app=$(basename "$app_path")
+
+	# Enabled check
+	enabled_key="$app.enabled"
+	enabled_value="${global_config[$enabled_key]}"
+	if [[ "${enabled_value,,}" == "false" ]]; then
+		echo "LOG: Skipping disabled app: $app"
+		continue
+	fi
+
+	echo "INFO: ==> Processing app: $app <=="
+	process_app_template "$app" "$app_path/$INFRA_INPUT_FILE" "$app_path/$INFRA_OUTPUT_FILE" global_config
+	echo "INFO: Generated infra/local.env for $app"
+done
+
+# --- 4: Generate config/.env.generated for IAC and preseed  ---
 PRESEED_PATH="${SCRIPT_DIR}/../../../preseed"
 IAC_PATH="${SCRIPT_DIR}/../../../iac"
 
-echo "LOG: Generating .env for infrastructure (preseed and IaC)"
+echo "LOG: Generating config/.env.generated for infrastructure (preseed and IaC)"
 
 echo "INFO: ==> Processing preseed conf: $PRESEED_PATH <=="
-process_app_template "preseed" "$PRESEED_PATH" global_config
-echo "INFO: Generated .env for preseed"
+process_app_template "preseed" "$PRESEED_PATH/$CONFIG_INPUT_FILE" "$PRESEED_PATH/$CONFIG_OUTPUT_FILE" global_config
+echo "INFO: Generated config/.env for preseed"
 
 echo "INFO: ==> Processing iac conf: $IAC_PATH <=="
-process_app_template "iac" "$IAC_PATH" global_config
-echo "INFO: Generated .env for iac"
+process_app_template "iac" "$IAC_PATH/$CONFIG_INPUT_FILE" "$IAC_PATH/$CONFIG_OUTPUT_FILE" global_config
+echo "INFO: Generated config/.env for iac"

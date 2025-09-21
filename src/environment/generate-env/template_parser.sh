@@ -9,10 +9,9 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+#
 ## Core
-APP_CONFIG_FILE="config/app-config.template.toml"
-ENV_FILE="config/.env.generated"
-
+#
 # Replace all ${key} placeholders in a line using config values
 replace_placeholders() {
 	local app="$1"
@@ -69,18 +68,19 @@ replace_password_functions() {
 # Main function: process a single app template file
 process_app_template() {
 	local app="$1"
-	local app_path="$2"
-	local -n global_config_values=$3
 
-	local template_file="$app_path/$APP_CONFIG_FILE"
-	local output_file="$app_path/$ENV_FILE"
+	local input_template_file="$2"
+	local output_file="$3"
+	
+	local -n global_config_values=$4
 
-	if [[ ! -f "$template_file" ]]; then
+
+	if [[ ! -f "$input_template_file" ]]; then
 		echo "WARN: No template found for app '$app'. Skipping."
 		return
 	fi
 
-	echo "DEBUG: $template_file > $output_file"
+	echo "DEBUG: $input_template_file > $output_file"
 
 	echo "# Auto-generated .env for $app" > "$output_file"
 
@@ -98,5 +98,5 @@ process_app_template() {
 		replace_password_functions line
 
 		echo "$line" >> "$output_file"
-	done < "$template_file"
+	done < "$input_template_file"
 }
