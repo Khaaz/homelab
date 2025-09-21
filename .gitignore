@@ -2,7 +2,6 @@
 .env
 .env.generated
 .env.old
-networking.env
 
 # other
 .vscode/** 

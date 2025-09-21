@@ -30,7 +30,10 @@
 		
 		"files.associations": {
 			".env.*": "env",
-			"networking.env.*": "env"
+			"networking.env.*": "env",
+			"packer.env.*": "env",
+			"terraform.env.*": "env",
+			"local.env.*": "env"
 		},
 		
 		"task.allowAutomaticTasks": "on"

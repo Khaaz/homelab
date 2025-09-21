@@ -1,3 +1,6 @@
-*.log
+# env files
 packer.env
 terraform.env
+
+# logs
+*.log
