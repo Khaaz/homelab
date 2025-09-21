@@ -57,7 +57,7 @@ A setup directory look like this:
 
 ### DNS server
 
-`unbound` provides both recursive lookups and local zones. The domain `${INTERNAL_DOMAIN}` resolves to the reverse proxy itself while `*.intra.${INTERNAL_DOMAIN}` maps each service VM to its designated IP as defined in `networking.env`. To use these records set your computer's DNS server to the reverse proxy address:
+`unbound` provides both recursive lookups and local zones. The domain `${INTERNAL_DOMAIN}` resolves to the reverse proxy itself while `*.srv.${INTERNAL_DOMAIN}` maps each service VM to its designated IP as defined in `networking.env`. To use these records set your computer's DNS server to the reverse proxy address:
 
 - **Windows** – Control Panel → Network → Adapter Settings → set the DNS server
   to the VM IP

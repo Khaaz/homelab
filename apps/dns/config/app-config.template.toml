@@ -1,0 +1,2 @@
+### [!] GLOBAL
+PROXMOX_IP="${infra.IP_SERVER}"

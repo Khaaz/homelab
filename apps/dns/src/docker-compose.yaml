@@ -1,12 +1,12 @@
 networks:
-  reverse-proxy:
-    name: reverse-proxy
+  dns:
+    name: dns
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.0/24
-          gateway: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.1
+        - subnet: ${DNS_DOCKER_SUBNET:?err}.0/24
+          gateway: ${DNS_DOCKER_SUBNET:?err}.1
 
 services:
   unbound-pre-start:
@@ -18,23 +18,34 @@ services:
       - /scripts/parse_file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
     networks:
       reverse-proxy:
-        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.30
+        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.30
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
       - ${APPS_FOLDER:?err}/unbound/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       # setup
-      - DOCKER_SUBNET=${REVERSE_PROXY_DOCKER_SUBNET:?err}
+      - DOCKER_SUBNET=${DNS_DOCKER_SUBNET:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
-      - RP_HOST_IP=${REVERSE_PROXY_HOST_IP:?err}
-      - CLD_HOST_IP=${CLOUD_HOST_IP:?err}
-      - HA_HOST_IP=${HOME_AUTOMATION_HOST_IP:?err}
-      - IM_HOST_IP=${IMMICH_HOST_IP:?err}
-      - MM_HOST_IP=${MEDIA_MANAGEMENT_HOST_IP:?err}
-      - MS_HOST_IP=${MEDIA_SERVER_HOST_IP:?err}
-      - VLT_HOST_IP=${VAULT_HOST_IP:?err}
-      - VSC_HOST_IP=${VSCODE_SERVER_HOST_IP:?err}
+      - PROXMOX_IP=${PROXMOX_IP:?err}
+      - CLD_IP=${CLOUD_IP:?err}
+      - GW_IP=${FIREWALL_GW_IP:?err}
+      - MGMT_IP=${FIREWALL_MGMT_IP:?err}
+      - SRV_IP=${FIRWALL_SRV_IP:?err}
+      - HA_IP=${HOME_AUTOMATION_IP:?err}
+      - IM_IP=${IMMICH_IP:?err}
+      - JMP_IP=${JUMP_IP:?err}
+      - MM_IP=${MEDIA_MANAGEMENT_IP:?err}
+      - MS_IP=${MEDIA_SERVER_IP:?err}
+      - NAS_IP=${NAS_IP:?err}
+      - NTS_IP=${NOTES_IP:?err}
+      - RP_IP=${REVERSE_PROXY_IP:?err}
+      - SBX_IP=${SANDBOX_IP:?err}
+      - TDO_IP=${TODO_IP:?err}
+      - VLT_IP=${VAULT_IP:?err}
+      - VPN_IP=${VPN_IP:?err}
+      - VSC_IP=${VSCODE_SERVER_IP:?err}
+      - WB_IP=${WHITE_BOARD_IP:?err}
   
   # Unbound - DNS server for local resolution
   unbound:
@@ -42,8 +53,8 @@ services:
     container_name: unbound
     restart: unless-stopped
     networks:
-      reverse-proxy:
-        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.10
+      dns:
+        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.10
     depends_on:
       unbound-pre-start:
         condition: service_completed_successfully
