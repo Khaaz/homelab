@@ -11,3 +11,4 @@ git
 xorriso
 unzip
 jq
+argon2

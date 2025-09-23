@@ -2,6 +2,7 @@ services:
   environment:
     container_name: environment
     build: ../docker
+    network_mode: bridge
     volumes:
       - ../../:/workspace
     working_dir: /workspace/environment
