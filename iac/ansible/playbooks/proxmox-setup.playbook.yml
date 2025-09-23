@@ -5,6 +5,8 @@
     target_group: homelab
 # Install proxmox on raw debian
 - import_playbook: proxmox/install-proxmox.playbook.yml
+# Setup networking and filtering
+- import_playbook: proxmox/setup-networking.playbook.yml
 # Hardening debian/proxmox users
 - import_playbook: proxmox/hardening.playbook.yml
 # Additional configuration and setup

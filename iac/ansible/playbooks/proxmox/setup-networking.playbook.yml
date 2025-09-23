@@ -1,0 +1,31 @@
+---
+- name: Configure Proxmox networking and host filtering
+  hosts: homelab
+  become: true
+  tasks:
+    - name: Detect physical NIC automatically
+      ansible.builtin.set_fact:
+        physical_nic: >-
+          {{ ansible_facts
+            | dict2items
+            | selectattr('value.type','defined')
+            | selectattr('value.type','eq','ether')
+            | rejectattr('key','match','^(vmbr|vnet|tap|lo|docker|br|virbr)')
+            | map(attribute='key')
+            | list
+            | first }}
+    - name: Print default interface facts
+      debug:
+       msg:
+          - "Detected physical NIC: {{ physical_nic }}"
+          - "ansible_default_ipv4 object: {{ ansible_default_ipv4 }}"
+    - name: Write new /etc/network/interfaces
+      ansible.builtin.template:
+        src: interfaces.j2
+        dest: /etc/network/interfaces
+        mode: "0644"
+      notify: Reload networking
+  handlers:
+    - name: Reload networking
+      become: true
+      ansible.builtin.command: ifreload -a
