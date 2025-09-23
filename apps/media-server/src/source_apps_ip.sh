@@ -54,11 +54,10 @@ source_app_ip() {
 	local env_var_name=$(echo "$1" | tr '[:lower:]' '[:upper:]' | tr '-' '_')_IP
 
 	local ip=$("$ROOT_DIR/src/app-bootstrap/get_app_ip.sh" --for "$1" --on "$2" $LOCAL_ARG)
-	export "$env_var_name"="$ip" 
+	export "$env_var_name"="$ip"
+	echo "$env_var_name=$ip"
 }
 
 
 echo "Sourcing environment variables:"
 source_app_ip media-management vmbr3
-
-echo "MEDIA_MANAGEMENT_IP=$MEDIA_MANAGEMENT_IP"

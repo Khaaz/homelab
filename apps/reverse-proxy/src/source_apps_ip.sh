@@ -54,28 +54,10 @@ source_app_ip() {
 	local env_var_name=$(echo "$1" | tr '[:lower:]' '[:upper:]' | tr '-' '_')_IP
 
 	local ip=$("$ROOT_DIR/src/app-bootstrap/get_app_ip.sh" --for "$1" --on "$2" $LOCAL_ARG)
-	export "$env_var_name"="$ip"
+	export "$env_var_name"="$ip" 
 	echo "$env_var_name=$ip"
 }
 
 
 echo "Sourcing environment variables:"
-source_app_ip cloud vmbr3
 source_app_ip dns vmbr1
-source_app_ip firewall-gw vmbr1
-source_app_ip firewall-mgmt vmbr2
-source_app_ip firewall-srv vmbr3
-source_app_ip home-automation vmbr3
-source_app_ip immich vmbr3
-source_app_ip jump vmbr2
-source_app_ip media-management vmbr3
-source_app_ip media-server vmbr3
-source_app_ip nas vmbr3
-source_app_ip notes vmbr3
-source_app_ip reverse-proxy vmbr3
-source_app_ip sandbox vmbr3
-source_app_ip todo vmbr3
-source_app_ip vault vmbr3
-source_app_ip vpn vmbr2
-source_app_ip vscode-server vmbr3
-source_app_ip white-board vmbr3

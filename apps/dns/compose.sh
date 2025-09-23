@@ -10,24 +10,25 @@ SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
 usage() {
-	echo "Usage: $0 <up|down> [--local] [docker-compose-args...]"
+	echo "Usage: $0 <up|down> [--proxmox] [docker-compose-args...]"
 	echo "  up|down: Docker compose command"
-	echo "  --local: Use local IP from apps/<appname>/infra/local.env files"
-	echo "           If not specified, uses get_proxmox_ip.sh to retrieve IP from infra/proxmox.yml"
+	echo "  --proxmox: Use proxmox IP from infra/proxmox.yml files (get_proxmox_ip.sh)"
+	echo "           If not specified, uses ip from infra/local.env* files"
 	echo "  docker-compose-args: Additional arguments passed to docker compose"
 	exit 1
 }
 
 ## Input verification
-LOCAL_FLAG=""
+LOCAL_FLAG="true"
+COMPOSE_ARGS=""
 while [ $# -gt 0 ]; do
 	case "$1" in
 		up|down)
 			COMMAND="$1"
 			shift
 			;;
-		--local)
-			LOCAL_FLAG="true"
+		--proxmox)
+			LOCAL_FLAG="false"
 			shift
 			;;
 		--help)
@@ -37,6 +38,11 @@ while [ $# -gt 0 ]; do
 			if [ -z "$COMMAND" ]; then
 				usage
 			fi
+			if [ -n "$COMPOSE_ARGS" ]; then
+				COMPOSE_ARGS="$COMPOSE_ARGS "
+			fi
+			COMPOSE_ARGS="$COMPOSE_ARGS$1"
+			shift
 			;;
 	esac
 done
@@ -53,7 +59,7 @@ add_env_file() {
 }
 
 source_ips() {
-	SOURCED_SCRIPT_DIR="$ROOT_DIR/src"
+	SOURCED_SCRIPT_DIR="$SCRIPT_DIR/src"
 	. "$SCRIPT_DIR/src/source_apps_ip.sh"
 }
 
@@ -71,16 +77,14 @@ COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
 export ROOT_PATH=$SCRIPT_DIR
 echo "Root: $SCRIPT_DIR"
 
-LOCAL_ARG=""
 if [ "$LOCAL_FLAG" = "true" ]; then
 	LOCAL_ARG="--local"
 fi
-
 echo "Sourcing IPs"
 source_ips $LOCAL_ARG
 
 docker compose -f $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
-	--env-file $NETWORKING_ENV_FILE --env-file $NETWORKING_OVERRIDE_ENV_FILE \
+	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
-	$COMMAND "$@"
+	$COMMAND "$COMPOSE_ARGS"

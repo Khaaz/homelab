@@ -67,7 +67,7 @@ services:
       reverse-proxy:
         ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.11
     dns:
-      - ${REVERSE_PROXY_DOCKER_SUBNET:?err}.10 # Custom DNS server (Unbound container IP)
+      -  ${DNS_IP:?err} # Custom DNS server (DNS VM (Unbound))
     ports:
       - 80:80
       - 443:443

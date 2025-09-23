@@ -84,7 +84,7 @@ services:
       - TZ=${TIMEZONE:?err}
       - VERSION=docker
       # setup
-      - LAN_IP=${PROXMOX_IP:?err}
+      - LAN_IP=${HOST_LAN_IP:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}

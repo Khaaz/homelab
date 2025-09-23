@@ -70,17 +70,17 @@ get_app_ip() {
 		
 		# Check if local.env.default exists and read IP
 		if [ -f "$local_env_default" ]; then
-			ip=$(grep "^IP=" "$local_env_default" | cut -d'=' -f2)
+			ip=$(grep "^IP=" "$local_env_default" | cut -d'=' -f2 | tr -d '"')
 		fi
 		
 		# Override with local.env if it exists
 		if [ -f "$local_env_generated" ]; then
-			ip=$(grep "^IP=" "$local_env_generated" | cut -d'=' -f2)
+			ip=$(grep "^IP=" "$local_env_generated" | cut -d'=' -f2 | tr -d '"')
 		fi
 		
 		# Override with local.env if it exists
 		if [ -f "$local_env" ]; then
-			ip=$(grep "^IP=" "$local_env" | cut -d'=' -f2)
+			ip=$(grep "^IP=" "$local_env" | cut -d'=' -f2 | tr -d '"')
 		fi
 		
 		if [ -z "$ip" ]; then

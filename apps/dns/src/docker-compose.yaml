@@ -17,7 +17,7 @@ services:
       - -c
       - /scripts/parse_file.sh /_setup/templates/unbound.conf /opt/unbound/etc/unbound/unbound.conf
     networks:
-      reverse-proxy:
+      dns:
         ipv4_address: ${DNS_DOCKER_SUBNET:?err}.30
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
@@ -27,11 +27,12 @@ services:
       # setup
       - DOCKER_SUBNET=${DNS_DOCKER_SUBNET:?err}
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
-      - PROXMOX_IP=${PROXMOX_IP:?err}
+      - HOST_LAN_IP=${HOST_LAN_IP:?err}
       - CLD_IP=${CLOUD_IP:?err}
+      - DNS_IP=${DNS_IP:?err}
       - GW_IP=${FIREWALL_GW_IP:?err}
       - MGMT_IP=${FIREWALL_MGMT_IP:?err}
-      - SRV_IP=${FIRWALL_SRV_IP:?err}
+      - SRV_IP=${FIREWALL_SRV_IP:?err}
       - HA_IP=${HOME_AUTOMATION_IP:?err}
       - IM_IP=${IMMICH_IP:?err}
       - JMP_IP=${JUMP_IP:?err}
