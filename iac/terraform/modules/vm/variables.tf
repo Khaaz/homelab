@@ -75,5 +75,12 @@ variable "automation_pubkey" {
 ## cloud-init vendor-data
 variable "nft_rules_config" {
   type        = string
-  description = "NFT config as text, from vm file"
+  default     = null
+  description = "Nftable config as text, from /infra/nftable.conf (optional)"
+}
+## cloud-init vendor-data
+variable "init_script" {
+  type        = string
+  default     = null
+  description = "Additional init script.sh, from /infra/init.sh file (optional)"
 }

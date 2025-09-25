@@ -9,5 +9,9 @@ terraform {
       source  = "Tobotimus/toml"
       version = "~> 0.3"
     }
+    random = { 
+      source = "hashicorp/random" 
+      version = ">= 3.7.2"
+    }
   }
 }
