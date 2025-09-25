@@ -1,11 +1,17 @@
-cores: 1
-memory_size: 2048 # MB
-disk_size: 10 # GB
+specs:
+  cores: 1
+  memory_size: 2048 # MB
+  disk_size: 10 # GB
+config:
+  docker: true
+  router: false
+  routes:
+    - network: 10.10.31.0/24 # extern
+      via: 10.10.32.2 # firewall-srv
 order: 100
 dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
-  - bridge: vmbr1 # gw
-    ipv4: 10.10.1.2/24
-    gateway: 10.10.1.1
-  - bridge: vmbr2 # mngmt
-    ipv4: 10.10.2.2/24
+  - bridge: vmbr3 # srv
+    vlan: 32 # intern
+    ipv4: 10.10.32.10/24
+    gateway: 10.10.32.1

@@ -1,0 +1,21 @@
+specs:
+  cores: 2
+  memory_size: 2048 # MB
+  disk_size: 10 # GB
+config:
+  docker: true
+  router: false
+  routes: []
+order: 100
+dns_servers: [1.1.1.1, 8.8.8.8]
+nics:
+  - bridge: vmbr3
+    vlan: 30 # dmz
+    ipv4: 10.10.30.2/24
+    gateway: 10.10.30.1
+  - bridge: vmbr3
+    vlan: 31 # extern
+    ipv4: 10.10.31.2/24
+  - bridge: vmbr3
+    vlan: 32 # intern
+    ipv4: 10.10.32.2/24

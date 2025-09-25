@@ -64,7 +64,7 @@ source_app_ip cloud vmbr3
 source_app_ip dns vmbr1
 source_app_ip firewall-gw vmbr1
 source_app_ip firewall-mgmt vmbr2
-source_app_ip firewall-srv vmbr3
+source_app_ip firewall-srv vmbr3.31
 source_app_ip home-automation vmbr3
 source_app_ip immich vmbr3
 source_app_ip jump vmbr2
@@ -72,7 +72,7 @@ source_app_ip media-management vmbr3
 source_app_ip media-server vmbr3
 source_app_ip nas vmbr3
 source_app_ip notes vmbr3
-source_app_ip reverse-proxy vmbr3
+source_app_ip reverse-proxy vmbr3.30
 source_app_ip sandbox vmbr3
 source_app_ip todo vmbr3
 source_app_ip vault vmbr3

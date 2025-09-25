@@ -1,6 +1,13 @@
-cores: 1
-memory_size: 2048 # MB
-disk_size: 10 # GB
+specs:
+  cores: 1
+  memory_size: 2048 # MB
+  disk_size: 10 # GB
+config:
+  docker: true
+  router: false
+  routes:
+    - network: 10.10.32.0/24 # intern
+      via: 10.10.31.2 # firewall-srv
 order: 100
 dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
