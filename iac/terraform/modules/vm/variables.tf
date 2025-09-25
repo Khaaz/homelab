@@ -23,9 +23,19 @@ variable "vm_name" {
 # Per-VM config parsed from YAML
 variable "vm_cfg" {
   type = object({
-    cores       = number
-    memory_size = number
-    disk_size   = number
+    specs = object({
+      cores       = number
+      memory_size = number
+      disk_size   = number 
+    })
+    config = object({
+      docker = bool
+      router = bool
+      routes = optional(list(object({
+        network = string                # Target network (ip/mask)
+        via     = string                # Gateway to access this network (ip)
+      })))
+    })
     order       = number
     dns_servers = optional(list(string), ["1.1.1.1", "8.8.8.8"])
     nics = list(object({

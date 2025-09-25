@@ -18,12 +18,12 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   cpu {
-    cores = try(var.vm_cfg.cores, 1)
+    cores = try(var.vm_cfg.specs.cores, 1)
     type  = "x86-64-v2-AES"
   }
   memory {
-    dedicated = try(var.vm_cfg.ram_size, 2048)
-    floating  = try(var.vm_cfg.ram_size, 2048) # enable ballooning (if floating = dedicated) 
+    dedicated = try(var.vm_cfg.specs.ram_size, 2048)
+    floating  = try(var.vm_cfg.specs.ram_size, 2048) # enable ballooning (if floating = dedicated) 
   }
 
   boot_order = ["scsi0"]
@@ -32,7 +32,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
     interface    = "scsi0"
     iothread     = true
     datastore_id = var.proxmox_datastore_id
-    size         = try(var.vm_cfg.disk_size, 10)
+    size         = try(var.vm_cfg.specs.disk_size, 10)
     discard      = "ignore"
   }
 
@@ -60,8 +60,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
   dynamic "network_device" {
     for_each = tolist(try(local.nics, []))
     content {
-      bridge        = network_device.value.bridge
-      model         = "virtio"
+      bridge      = network_device.value.bridge
+      model       = "virtio"
       mac_address = network_device.value.mac
 
       # Conditionally add VLAN tag if present
