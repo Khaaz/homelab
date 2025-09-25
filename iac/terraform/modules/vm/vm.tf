@@ -98,6 +98,6 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
     user_data_file_id    = proxmox_virtual_environment_file.userdata.id
     network_data_file_id = try(proxmox_virtual_environment_file.networkdata[0].id, null)
-    vendor_data_file_id  = try(proxmox_virtual_environment_file.vendordata[0].id, null)
+    vendor_data_file_id  = proxmox_virtual_environment_file.vendordata.id
   }
 }

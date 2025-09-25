@@ -1,14 +1,27 @@
 #cloud-config
 package_update: true
+
+%{~ if length(packages) > 0 ~}
 packages:
-  - nftables
+  %{~ for package in packages ~}
+  - ${package}
+  %{~ endfor ~}
+%{~ endif ~}
 
+%{~ if length(write_files) > 0 ~}
 write_files:
-  - path: /etc/nftables.d/firewall.nft
-    permissions: "0644"
-    encoding: b64
-    content: ${nft_rules_config_b64}
+  %{~ for file in write_files ~}
+  - path: ${file.path}
+    permissions: "${file.permissions}"
+    encoding: ${file.encoding}
+    content: ${file.content}
+  %{~ endfor ~}
+%{~ endif ~}
 
+%{~ if length(run_commands) > 0 ~}
 runcmd:
-  - [ rc-update, add, nftables, boot ]   # enable at boot (use 'default' if you prefer)
-  - [ rc-service, nftables, start ]      # start immediately
+  %{~ for cmd in run_commands ~}
+  - ${cmd}
+  %{~ endfor ~}
+%{~ endif ~}
+

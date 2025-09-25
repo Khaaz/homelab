@@ -50,5 +50,8 @@ module "vm" {
   admin_pubkey      = trimspace(file("${local.root_path}/config/ssh/${each.key}/admin_key.pub"))
   automation_pubkey = trimspace(file("${local.root_path}/config/ssh/${each.key}/automation_key.pub"))
   # vendor-data
+  # nftable conf (/infra/nftable.conf)
   nft_rules_config  = fileexists("${local.root_path}/apps/${each.key}/infra/nftable.conf") ? file("${local.root_path}/apps/${each.key}/infra/nftable.conf") : null
+  # additional init script (/infra/init.sh)
+  init_script       = fileexists("${local.root_path}/apps/${each.key}/infra/init.sh") ? file("${local.root_path}/apps/${each.key}/infra/init.sh") : null
 }
