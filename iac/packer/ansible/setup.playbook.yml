@@ -4,6 +4,7 @@
   tasks:
     - name: Install python3 (required for Ansible modules)
       ansible.builtin.raw: apk add --no-cache python3 py3-pip
+
 - name: Final configuration (keymaps...)
   hosts: all
   gather_facts: yes
@@ -13,6 +14,7 @@
       register: setup_keymap
       changed_when: "'Setting keymap' in setup_keymap.stdout"
       failed_when: setup_keymap.rc != 0
+
 - name: Install base packages (git, curl, wget..) and setup docker
   hosts: all
   gather_facts: yes
@@ -20,34 +22,94 @@
     - name: Update package index
       ansible.builtin.package:
         update_cache: yes
-
     - name: Install useful packages
       ansible.builtin.package:
         name:
           - ca-certificates
           - gnupg
           - net-tools
-          - nftables
           - curl
           - wget
-          - git
         state: present
-
-    - name: Install Docker and Compose v2 plugin
+    
+    - name: Install networking / security packages
       ansible.builtin.package:
         name:
-          - docker
-          - docker-cli-compose
+          - nftables
         state: present
-
-    - name: Enable and start Docker
-      ansible.builtin.service:
+    
+    - name: Install "run" packages
+      ansible.builtin.package:
+        name:
+          - git
+        state: present
+    
+    # - name: Install Docker and Compose v2 plugin
+    #   ansible.builtin.package:
+    #     name:
+    #       - docker
+    #       - docker-cli-compose
+    #     state: present
+    # - name: Enable and start Docker
+    #   ansible.builtin.service:
+    #     name: docker
+    #     state: started
+    #     enabled: true
+    # Ensure the docker group exists (before adding users)
+    - name: Ensure docker group exists
+      ansible.builtin.group:
         name: docker
-        state: started
-        enabled: true
+        state: present
 
     - name: Add admin to docker group
       ansible.builtin.user:
         name: admin
         groups: docker
         append: yes
+
+- name: Hardening SSH config
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # Enforce SSH key only, and disable ssh as root entirely
+    - name: SSH - Disable root login entirely
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*PermitRootLogin\s+.*$'
+        line: 'PermitRootLogin no'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+    - name: SSH - Disable password authentication globally (keys only)
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*PasswordAuthentication\s+.*$'
+        line: 'PasswordAuthentication no'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+    - name: SSH - Disable SSH challenge/keyboard-interactive auth
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*ChallengeResponseAuthentication\s+.*$'
+        line: 'ChallengeResponseAuthentication no'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+    - name: SSH - Ensure PubkeyAuthentication is explicitly enabled
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?\s*PubkeyAuthentication\s+.*$'
+        line: 'PubkeyAuthentication yes'
+        create: false
+        backrefs: false
+      notify: Reload sshd
+
+  handlers:
+    - name: Reload sshd
+      ansible.builtin.service:
+        name: sshd
+        state: reloaded
