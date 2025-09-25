@@ -25,12 +25,16 @@ iface vmbr0 inet static
 
 	# DNAT inbound traffic to FW1 (10.10.1.2) (443, 2222) ===
 	post-up   iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22 -j accept
+    post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
+    post-up   iptables -t nat -A PREROUTING -p udp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 443  -j DNAT --to-destination 10.10.1.2:443
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
     post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
     post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 2222 -j ACCEPT
 
 	post-down iptables -D INPUT -p tcp -d {{ ansible_default_ipv4.address }} --dport 22 -j deny
+    post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
+    post-down iptables -t nat -D PREROUTING -p udp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 443  -j DNAT --to-destination 10.10.1.2:443
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
     post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
