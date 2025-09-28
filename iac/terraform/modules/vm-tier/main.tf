@@ -6,6 +6,8 @@ module "vm_tier" {
   vm_cfg  = each.value
   vm_id   = var.vms_to_vmid[each.key]
 
+  is_last_of_tier = var.vms_to_vmid[each.key] == max([for n in keys(var.tier_vms) : var.vms_to_vmid[n]]...)
+
   ## proxmox conf
   proxmox_node           = var.proxmox_node
   proxmox_vm_template_id = var.proxmox_vm_template_id

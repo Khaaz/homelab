@@ -14,7 +14,9 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
   stop_on_destroy = true
   startup {
-    order = "${var.vm_cfg.order_tier + 1}"
+    order = var.vm_cfg.order_tier
+    up_delay   = var.is_last_of_tier ? 30 : null
+    down_delay = var.is_last_of_tier ? 30 : null
   }
 
   cpu {

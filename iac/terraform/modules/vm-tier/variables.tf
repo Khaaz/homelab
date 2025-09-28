@@ -50,10 +50,10 @@ variable "tier_vms" {
       })))
     }))
   }))
-  description = "List of vms (name => config) for this tier"
+  description = "Map of VMs config (vm name => vm config) for this tier"
 }
 
 variable "vms_to_vmid" {
   type        = map(number)
-  description = "Map of vm name to vmid"
+  description = "Map of VMs id (vm name => vm id)"
 }

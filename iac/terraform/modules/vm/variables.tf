@@ -65,6 +65,11 @@ variable "vm_id" {
   description = "Deterministic Proxmox VMID to assign"
 }
 
+variable "is_last_of_tier" {
+  type        = bool
+  description = "Whether this is the last VM in this tier. Will be used to add a delay on boot order"
+}
+
 ## cloud-init user-data
 variable "admin_pubkey" {
   type        = string
