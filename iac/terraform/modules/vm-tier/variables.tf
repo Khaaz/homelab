@@ -14,15 +14,8 @@ variable "proxmox_vm_template_id" {
   description = "Proxmox VM template ID to use for VM creation"
 }
 
-## VM
-variable "vm_name" {
-  type        = string
-  description = "Name of the VM to be created"
-}
-
-# Per-VM config parsed from YAML
-variable "vm_cfg" {
-  type = object({
+variable "tier_vms" {
+  type = map(object({
     specs = object({
       cores       = number
       memory_size = number
@@ -56,35 +49,11 @@ variable "vm_cfg" {
         gateway = optional(string)              # default GW for this vlan (if any)
       })))
     }))
-  })
-  description = "Per-VM configuration parsed from YAML, containing VM-specific settings like CPU, memory, disk, and network configuration"
+  }))
+  description = "List of vms (name => config) for this tier"
 }
 
-variable "vm_id" {
-  type        = number
-  description = "Deterministic Proxmox VMID to assign"
-}
-
-## cloud-init user-data
-variable "admin_pubkey" {
-  type        = string
-  description = "SSH public key for admin user access to the VM"
-}
-
-variable "automation_pubkey" {
-  type        = string
-  description = "SSH public key for automation user access to the VM"
-}
-
-## cloud-init vendor-data
-variable "nft_rules_config" {
-  type        = string
-  default     = null
-  description = "Nftable config as text, from /infra/nftable.conf (optional)"
-}
-## cloud-init vendor-data
-variable "init_script" {
-  type        = string
-  default     = null
-  description = "Additional init script.sh, from /infra/init.sh file (optional)"
+variable "vms_to_vmid" {
+  type        = map(number)
+  description = "Map of vm name to vmid"
 }

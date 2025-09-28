@@ -33,25 +33,67 @@ locals {
   }
 }
 
-module "vm" {
-  source   = "./modules/vm"
-  for_each = local.enabled_vms_to_infra_config
-  vm_name = each.key
-  vm_cfg  = each.value
-  vm_id   = local.vms_to_vmid[each.key]
+locals {
+  # Group VMs by order_tier
+  vms_by_tier = {
+    for tier in distinct([for cfg in local.enabled_vms_to_infra_config : cfg.order_tier]) :
+    tier => {
+      for name, cfg in local.enabled_vms_to_infra_config :
+      name => cfg if cfg.order_tier == tier
+    }
+  }
+}
+
+module "vm_tier0" {
+  source   = "./modules/vm-tier"
+  
+  tier_vms    = local.vms_by_tier[0]
+  vms_to_vmid = local.vms_to_vmid
+  
+  ## proxmox conf
+  proxmox_node           = var.proxmox_node
+  proxmox_vm_template_id = var.proxmox_vm_template_id
+  proxmox_datastore_id   = var.proxmox_datastore_id
+}
+
+module "vm_tier1" {
+  source   = "./modules/vm-tier"
+  
+  tier_vms    = local.vms_by_tier[1]
+  vms_to_vmid = local.vms_to_vmid
 
   ## proxmox conf
   proxmox_node           = var.proxmox_node
   proxmox_vm_template_id = var.proxmox_vm_template_id
   proxmox_datastore_id   = var.proxmox_datastore_id
+  
+  depends_on = [ module.vm_tier0 ]
+}
 
-  ## Cloud init
-  # user-data
-  admin_pubkey      = trimspace(file("${local.root_path}/config/ssh/${each.key}/admin_key.pub"))
-  automation_pubkey = trimspace(file("${local.root_path}/config/ssh/${each.key}/automation_key.pub"))
-  # vendor-data
-  # nftable conf (/infra/nftable.conf)
-  nft_rules_config  = fileexists("${local.root_path}/apps/${each.key}/infra/nftable.conf") ? file("${local.root_path}/apps/${each.key}/infra/nftable.conf") : null
-  # additional init script (/infra/init.sh)
-  init_script       = fileexists("${local.root_path}/apps/${each.key}/infra/init.sh") ? file("${local.root_path}/apps/${each.key}/infra/init.sh") : null
+module "vm_tier2" {
+  source   = "./modules/vm-tier"
+  
+  tier_vms    = local.vms_by_tier[2]
+  vms_to_vmid = local.vms_to_vmid
+  
+  ## proxmox conf
+  proxmox_node           = var.proxmox_node
+  proxmox_vm_template_id = var.proxmox_vm_template_id
+  proxmox_datastore_id   = var.proxmox_datastore_id
+  
+  depends_on = [ module.vm_tier1 ]
+}
+
+module "vm_tier3" {
+  source   = "./modules/vm-tier"
+  
+  tier_vms    = local.vms_by_tier[3]
+  vms_to_vmid = local.vms_to_vmid
+  
+  ## proxmox conf
+  proxmox_node           = var.proxmox_node
+  proxmox_vm_template_id = var.proxmox_vm_template_id
+  proxmox_datastore_id   = var.proxmox_datastore_id
+  
+  depends_on = [ module.vm_tier2 ]
 }

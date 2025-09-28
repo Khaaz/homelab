@@ -6,7 +6,7 @@ config:
   docker: false
   router: true
   routes: []
-order: 2
+order_tier: 1
 dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr2 # mgmt

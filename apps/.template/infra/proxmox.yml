@@ -8,7 +8,11 @@ config:
   routes:
     - network: 10.10.31.0/24 # extern
       via: 10.10.32.2 # firewall-srv
-order: 100
+# tier 0 is GW
+# tier 1 is DNS and routing
+# tier 2 is management and other mandatory VMs
+# tier 3 is all the "app" VM
+order_tier: 3
 dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
