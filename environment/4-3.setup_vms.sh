@@ -1,0 +1,36 @@
+#!/bin/sh
+
+## Prerequesites
+get_script_dir() {
+	# Get the directory of the currently running script
+	local script_dir=$(dirname "$(realpath "$0")")
+	echo "$script_dir"
+}
+SCRIPT_DIR=$(get_script_dir)
+
+## Usage
+usage() {
+	echo "Usage: $0 <vm>"
+	exit 1
+}
+
+## Input verification
+if [ -z  "$1"]; then
+	usage
+fi
+
+# setup all enabled vms (from global config)
+# setup via order (dns, RP, then all others)
+# use order in proxmox.yaml order tier?
+# call setup_vm <vm>
+
+
+#
+## Core
+#
+# Execute command directely via jump / resolve vm name via dns
+# imagine something like:
+# ssh -t -i $SCRIPT_DIR/../config/ssh/proxmox/admin_key \
+#     -o StrictHostKeyChecking=no \
+#     homelab@192.168.1.200 \
+# 	  "execute_ansible $1"
