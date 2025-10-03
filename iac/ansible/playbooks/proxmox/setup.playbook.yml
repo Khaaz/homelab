@@ -4,12 +4,12 @@
   vars:
     target_group: homelab
 # Install proxmox on raw debian
-- import_playbook: proxmox/install-proxmox.playbook.yml
+- import_playbook: ./1.install-proxmox.playbook.yml
 # Setup networking and filtering
-- import_playbook: proxmox/setup-networking.playbook.yml
+- import_playbook: ./2.setup-networking.playbook.yml
 # Hardening debian/proxmox users
-- import_playbook: proxmox/hardening.playbook.yml
+- import_playbook: ./3.hardening.playbook.yml
 # Additional configuration and setup
-- import_playbook: proxmox/additional-setup.playbook.yml
+- import_playbook: ./4.additional-setup.playbook.yml
 # User management
-- import_playbook: proxmox/setup-user.playbook.yml
+- import_playbook: ./5.setup-user.playbook.yml

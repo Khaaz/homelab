@@ -12,9 +12,9 @@ SCRIPT_DIR=$(get_script_dir)
 ## Core
 #
 # Execute the command
-PLAYBOOK=proxmox-setup
+PLAYBOOK=setup
 if [ -n "$1" ]; then
 	PLAYBOOK="$1"
 	shift
 fi
-$SCRIPT_DIR/src/ansible.sh "$PLAYBOOK" "$@"
+$SCRIPT_DIR/src/ansible.sh "proxmox/$PLAYBOOK" "$@"
