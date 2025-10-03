@@ -27,9 +27,9 @@
         name:
           - ca-certificates
           - gnupg
-          - net-tools
           - curl
           - wget
+          - vim
         state: present
     
     - name: Install networking / security packages
@@ -44,17 +44,8 @@
           - git
         state: present
     
-    # - name: Install Docker and Compose v2 plugin
-    #   ansible.builtin.package:
-    #     name:
-    #       - docker
-    #       - docker-cli-compose
-    #     state: present
-    # - name: Enable and start Docker
-    #   ansible.builtin.service:
-    #     name: docker
-    #     state: started
-    #     enabled: true
+    # Docker will be installed via cloud init only in VMs where it's needed
+    # We already create the group and add the user to it for simplicity later
     # Ensure the docker group exists (before adding users)
     - name: Ensure docker group exists
       ansible.builtin.group:
