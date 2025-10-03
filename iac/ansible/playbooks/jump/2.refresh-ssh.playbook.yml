@@ -1,0 +1,73 @@
+---
+- name: Setup the Jump VM - Refresh SSH keys based on the refresh ssh level
+  hosts: jump
+  become: true
+  vars:
+    # Jump VM target repo
+    work_dir: "/home/app/homelab"
+    # Controller (Ansible runner) repo root
+    controller_repo_root: "{{ inventory_dir }}/../.."
+
+    # opt - refresh ssh: 
+    # - level 1 "none": do nothing 
+    # - level 2 "new": only copy if they are not present in the target env (default) 
+    # - level 3 "full": copy all ssh keys 
+    # - level 4 "generate": run the environment/generate_ssh_keys --auto 
+    # - level 5 "reset": run the environment/generate_ssh_keys --auto --reset
+    refresh_ssh: "{{ lookup('env','REFRESH_SSH') | default('new', true) }}" # none|new|full|generate|reset
+
+  tasks:
+    ## Copy SSH
+    - name: Check if controller config/ssh exists
+      ansible.builtin.stat:
+        path: "{{ controller_repo_root }}/config/ssh"
+      delegate_to: localhost
+      run_once: true
+      register: st_controller_ssh
+
+    - name: "Copy controller config/ssh -> cloned repo (new: no overwrite; full: overwrite)"
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/config/ssh/"
+        dest: "{{ work_dir }}/config/ssh/"
+        owner: root
+        group: root
+        mode: "0600"
+        recurse: yes
+        force: "{{ (refresh_ssh == 'full') | ternary(true, false) }}"
+      when:
+        - st_controller_ssh.stat.exists
+        - refresh_ssh in ['new','full']
+
+    - name: Ensure ssh dir mode is 0700 (on target) when copy happened
+      ansible.builtin.file:
+        path: "{{ work_dir }}/config/ssh"
+        state: directory
+        mode: "0700"
+      when:
+        - st_controller_ssh.stat.exists
+        - refresh_ssh in ['new','full']
+
+    - name: Check for generate_ssh_keys script in cloned repo
+      ansible.builtin.stat:
+        path: "{{ work_dir }}/environment/generate_ssh_keys"
+      register: st_generate_ssh_script
+
+    - name: Run environment/generate_ssh_keys --auto (generate)
+      ansible.builtin.command:
+        cmd: "./generate_ssh_keys --auto"
+        chdir: "{{ work_dir }}/environment"
+      when:
+        - refresh_ssh == 'generate'
+        - st_generate_ssh_script.stat.exists
+      register: gen_ssh_run
+      changed_when: gen_ssh_run.rc == 0
+
+    - name: Run environment/generate_ssh_keys --auto --reset (reset)
+      ansible.builtin.command:
+        cmd: "./generate_ssh_keys --auto --reset"
+        chdir: "{{ work_dir }}/environment"
+      when:
+        - refresh_ssh == 'reset'
+        - st_generate_ssh_script.stat.exists
+      register: gen_ssh_reset_run
+      changed_when: gen_ssh_reset_run.rc == 0

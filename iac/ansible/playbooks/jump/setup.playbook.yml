@@ -1,0 +1,43 @@
+---
+- name: Setup the Jump VM
+  hosts: jump
+  become: true
+  vars:
+    git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
+
+    # Jump VM target repo
+    work_dir: "/home/app/homelab"
+    # Controller (Ansible runner) repo root
+    controller_repo_root: "{{ inventory_dir }}/../.."
+
+  pre_tasks:
+    - name: Ensure parent of work_dir exists
+      ansible.builtin.file:
+        path: "{{ work_dir | dirname }}"
+        state: directory
+        mode: "0755"
+
+  tasks:
+    ## Clone
+    - name: Clone or update full repo into {{ work_dir }}
+      ansible.builtin.git:
+        repo: "{{ git_repo_url }}"
+        dest: "{{ work_dir }}"
+        version: "HEAD"
+        update: yes
+        force: no
+        accept_hostkey: yes
+
+    - name: Ensure common directories exist in cloned repo
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ work_dir }}/config"
+        - "{{ work_dir }}/config/ssh"
+        - "{{ work_dir }}/apps"
+        - "{{ work_dir }}/environment"
+
+- import_playbook: "./1.refresh-config.playbook.yml"
+- import_playbook: "./2.refresh-ssh.playbook.yml"

@@ -1,0 +1,94 @@
+---
+- name: Setup the Jump VM - Refresh config based on the refresh config level
+  hosts: jump
+  become: true
+  vars:
+    # Jump VM target repo
+    work_dir: "/home/app/homelab"
+    # Controller (Ansible runner) repo root
+    controller_repo_root: "{{ inventory_dir }}/../.."
+
+    # Options (can be overridden by environment variables)
+    # opt - refresh config: 
+    # - level 1 "none": do nothing 
+    # - level 2 "config": copy paste the global-config.toml (default) + run the environment/generate_env.sh --auto script 
+    # - level 3 "full": also copy .env and networking.env that exist in the controller root (always copy and override if one already exist)
+    refresh_config: "{{ lookup('env','REFRESH_CONFIG') | default('config', true) }}" # none|config|full
+
+  tasks:
+    ## Clone
+    
+    ## Global config
+    - name: Check if controller config/global-config.toml exists
+      ansible.builtin.stat:
+        path: "{{ controller_repo_root }}/config/global-config.toml"
+      delegate_to: localhost
+      run_once: true
+      register: st_controller_global_toml
+    
+    # => refresh_config: config/full <=
+    # Copy the global-config.toml
+    - name: Copy controller config/global-config.toml -> cloned repo
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/config/global-config.toml"
+        dest: "{{ work_dir }}/config/global-config.toml"
+        owner: root
+        group: root
+        mode: "0644"
+        force: yes
+      when:
+        - refresh_config in ['config','full']
+        - st_controller_global_toml.stat.exists
+
+    # Generate .env.generated (generate_env script)
+    - name: Check for generate_env.sh script in cloned repo
+      ansible.builtin.stat:
+        path: "{{ work_dir }}/environment/generate_env.sh"
+      register: st_generate_env_sh
+    - name: Run environment/generate_env.sh --auto
+      ansible.builtin.command:
+        cmd: "./generate_env.sh --auto"
+        chdir: "{{ work_dir }}/environment"
+      when:
+        - refresh_config in ['config','full']
+        - st_generate_env_sh.stat.exists
+      register: generate_env_run
+      changed_when: generate_env_run.rc == 0
+
+    # => refresh_config: full <=
+    # Copy apps/**/config/.env and apps/**/config/networking.env
+    - name: Find .env and networking.env files under controller apps/**/config
+      ansible.builtin.find:
+        paths: "{{ controller_repo_root }}/apps"
+        patterns:
+          - ".env"
+          - "networking.env"
+        recurse: yes
+        file_type: file
+      delegate_to: localhost
+      run_once: true
+      register: found_app_env_files
+      when: refresh_config == 'full'
+
+    - name: Ensure destination config directories exist for discovered files
+      ansible.builtin.file:
+        path: "{{ (item.path | dirname) | replace(controller_repo_root, work_dir) }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ found_app_env_files.files | default([]) }}"
+      when:
+        - refresh_config == 'full'
+        - found_app_env_files.matched is defined and found_app_env_files.matched > 0
+
+    - name: Copy discovered app config files from controller -> cloned repo (preserve path)
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "{{ item.path | replace(controller_repo_root, work_dir) }}"
+        owner: root
+        group: root
+        mode: "{{ '0600' if (item.path | basename) == '.env' else '0644' }}"
+        force: true
+      loop: "{{ found_app_env_files.files | default([]) }}"
+      when:
+        - refresh_config == 'full'
+        - found_app_env_files.matched is defined and found_app_env_files.matched > 0

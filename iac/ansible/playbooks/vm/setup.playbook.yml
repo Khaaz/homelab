@@ -3,16 +3,16 @@
   hosts: vm
   become: true
   vars:
-    git_repo_url: "https://github.com/Khaaz/homelab"
+    git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
 
     # App name from controller env var APP_NAME
     app_name: "{{ lookup('env', 'APP_NAME') | default('', true) }}"
 
     clone_dir: "/tmp/app-deploy-{{ app_name }}"
-    work_dir: "/opt/{{ app_name }}"
+    work_dir: "/home/app/homelab"
 
     # Controller (Ansible runner) repo root
-    controller_repo_root: "{{ inventory_dir }}/.."
+    controller_repo_root: "{{ inventory_dir }}/../.."
 
   tasks:
     # Init workdir
