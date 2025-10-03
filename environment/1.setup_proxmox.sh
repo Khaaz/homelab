@@ -52,13 +52,13 @@ fi
 #
 DEV_ARGS=""
 if [ "$DEV" = true ]; then
-	DEV_ARGS="--limit vm"
+	DEV_ARGS="--limit vm-local"
 else
-	DEV_ARGS="--limit homelab-node1"
+	DEV_ARGS="--limit proxmox-node1"
 fi
 
 if [ "$AUTO" = true ]; then
-	PLAYBOOK_ARGS="proxmox-setup"
+	PLAYBOOK_ARGS="setup"
 fi
 
 # Execute the command

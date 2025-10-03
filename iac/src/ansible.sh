@@ -13,7 +13,7 @@ ANSIBLE_FOLDER="$SCRIPT_DIR/../ansible"
 
 ## Usage
 usage() {
-	echo "Usage: $0 <playbook_name> [--limit <vm|homelab>]"
+	echo "Usage: $0 <playbook_name> [--limit <host>] [-e <extra_vars>]"
 	exit 1
 }
 
@@ -60,4 +60,4 @@ fi
 
 cd $ANSIBLE_FOLDER
 
-ansible-playbook $@ "$PLAYBOOK_PATH"
+ansible-playbook "$@" "$PLAYBOOK_PATH"
