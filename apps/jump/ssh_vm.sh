@@ -24,7 +24,7 @@ fi
 ## Core
 #
 
-TARGET_IP=$("$SCRIPT_DIR/src/get_vm_ip.sh")
+TARGET_IP=$("$SCRIPT_DIR/src/get_vm_ip.sh" "$1")
 
 ssh -i $ROOT_DIR/config/ssh/$1/admin_key \
     -o StrictHostKeyChecking=no \

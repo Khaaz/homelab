@@ -47,9 +47,7 @@ if [ "$LOCAL_FLAG" = "true" ]; then
 	LOCAL_ARG="--local"
 fi
 
-# Source the source_app_ip.sh script for each app with dynamic local argument
-# This runs the script in the current shell context so exports are preserved
-# Export "SOURCED_SCRIPT_DIR" in to preserve path
+# Get the ip via proxmox.yml file and export it as the appropriate env var
 source_app_ip() {
 	local env_var_name=$(echo "$1" | tr '[:lower:]' '[:upper:]' | tr '-' '_')_IP
 

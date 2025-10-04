@@ -6,7 +6,7 @@
     git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
 
     # Jump VM target repo
-    work_dir: "/home/app/homelab"
+    work_dir: "/home/admin/homelab"
     # Controller (Ansible runner) repo root
     controller_repo_root: "{{ inventory_dir }}/../.."
 

@@ -33,7 +33,7 @@ usage() {
 }
 
 ## Input verification
-REFRESH_CONFIG="config"
+REFRESH_CONFIG="full"
 REFRESH_SSH="new"
 PLAYBOOK="setup"
 while [ $# -gt 0 ]; do
@@ -64,4 +64,4 @@ fi
 ## Core
 #
 # Execute the command
-$SCRIPT_DIR/src/ansible.sh "jump/$PLAYBOOK" '-e "refresh_level=$REFRESH_CONFIG refresh_ssh=$REFRESH_SSH"' "$@"
+$SCRIPT_DIR/src/ansible.sh "jump/$PLAYBOOK" -e "refresh_config=$REFRESH_CONFIG refresh_ssh=$REFRESH_SSH" "$@"

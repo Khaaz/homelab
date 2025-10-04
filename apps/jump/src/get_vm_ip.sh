@@ -22,9 +22,13 @@ fi
 #
 ## Core
 #
+
+# Source the source_vms_ip.sh script
+# This runs the script in the current shell context so exports are preserved
+# Export "SOURCED_SCRIPT_DIR" in to preserve path
 source_ips() {
 	SOURCED_SCRIPT_DIR="$SCRIPT_DIR"
-	. "$SCRIPT_DIR/src/source_vms_ip.sh"
+	. "$SCRIPT_DIR/source_vms_ip.sh"
 }
 
 source_ips

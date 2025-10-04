@@ -4,7 +4,7 @@
   become: true
   vars:
     # Jump VM target repo
-    work_dir: "/home/app/homelab"
+    work_dir: "/home/admin/homelab"
     # Controller (Ansible runner) repo root
     controller_repo_root: "{{ inventory_dir }}/../.."
 
@@ -16,7 +16,10 @@
     refresh_config: "{{ lookup('env','REFRESH_CONFIG') | default('config', true) }}" # none|config|full
 
   tasks:
-    ## Clone
+    - name: Running refresh_config with value
+      ansible.builtin.debug:
+        var: refresh_config
+      run_once: true
     
     ## Global config
     - name: Check if controller config/global-config.toml exists
@@ -59,36 +62,50 @@
     # Copy apps/**/config/.env and apps/**/config/networking.env
     - name: Find .env and networking.env files under controller apps/**/config
       ansible.builtin.find:
-        paths: "{{ controller_repo_root }}/apps"
-        patterns:
-          - ".env"
-          - "networking.env"
+        paths: "{{ controller_repo_root }}/apps/"
         recurse: yes
         file_type: file
+        hidden: yes
+        patterns:
+          - '.env'
+          - 'networking.env'
       delegate_to: localhost
       run_once: true
       register: found_app_env_files
       when: refresh_config == 'full'
 
+    - name: "Debug: show found env files"
+      ansible.builtin.debug:
+        msg: "{{ found_app_env_files.files | map(attribute='path') | list }}"
+      run_once: true
+      when: refresh_config == 'full'
+
     - name: Ensure destination config directories exist for discovered files
       ansible.builtin.file:
-        path: "{{ (item.path | dirname) | replace(controller_repo_root, work_dir) }}"
+        path:  >-
+          {{
+            (item | dirname)
+            | regex_replace('^.*/apps/', work_dir + '/apps/')
+          }}
         state: directory
         mode: "0755"
-      loop: "{{ found_app_env_files.files | default([]) }}"
+      loop: "{{ found_app_env_files.files | map(attribute='path') | list }}"
       when:
         - refresh_config == 'full'
         - found_app_env_files.matched is defined and found_app_env_files.matched > 0
 
     - name: Copy discovered app config files from controller -> cloned repo (preserve path)
       ansible.builtin.copy:
-        src: "{{ item.path }}"
-        dest: "{{ item.path | replace(controller_repo_root, work_dir) }}"
+        src: "{{ item }}"
+        dest:  >-
+          {{
+            item | regex_replace('^.*/apps/', work_dir + '/apps/')
+          }}
         owner: root
         group: root
-        mode: "{{ '0600' if (item.path | basename) == '.env' else '0644' }}"
+        mode: "{{ '0600' if (item | basename) == '.env' else '0644' }}"
         force: true
-      loop: "{{ found_app_env_files.files | default([]) }}"
+      loop: "{{ found_app_env_files.files | map(attribute='path') | list }}"
       when:
         - refresh_config == 'full'
         - found_app_env_files.matched is defined and found_app_env_files.matched > 0
