@@ -40,6 +40,8 @@
         update: yes
         force: no
         accept_hostkey: yes
+      environment:
+        GIT_LFS_SKIP_SMUDGE: "1"
 
     - name: Ensure common directories exist in cloned repo
       ansible.builtin.file:

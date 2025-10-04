@@ -49,6 +49,9 @@
         version: "HEAD"
         force: false
         update: true
+        depth: 1
+      environment:
+        GIT_LFS_SKIP_SMUDGE: "1"
 
     # Copy the work files
     - name: Copy src/app-bootstrap → destination root
@@ -72,14 +75,8 @@
     # Files:  networking.env, .env.generated, .env
     - name: Set list of env files to copy
       set_fact:
-        env_files: >-
-          {% if refresh_config == 'full' %}
-            ['networking.env', '.env.generated', '.env']
-          {% elif refresh_config == 'generated' %}
-            ['.env.generated']
-          {% else %}
-            []
-          {% endif %}
+        env_files: "{{ ['networking.env', '.env.generated', '.env'] if refresh_config == 'full'
+                       else (['.env.generated'] if refresh_config == 'generated' else []) }}"
 
     - name: Stat controller apps/<app_name>/config files
       ansible.builtin.stat:

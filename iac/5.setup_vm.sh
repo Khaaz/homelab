@@ -67,4 +67,4 @@ fi
 ## Core
 #
 # Execute the command
-$SCRIPT_DIR/src/ansible.sh "vm/$PLAYBOOK" --private-key "$KEY" --i "$IP" -e "app_name=$APP refresh_config=$REFRESH_CONFIG" "$@"
+$SCRIPT_DIR/src/ansible.sh "vm/$PLAYBOOK" --private-key "$KEY" -i "$IP," -e "app_name=$APP refresh_config=$REFRESH_CONFIG" "$@"
