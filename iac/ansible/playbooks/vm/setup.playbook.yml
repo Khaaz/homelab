@@ -5,16 +5,15 @@
   vars:
     git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
 
-    # App name from controller env var APP_NAME
-    app_name: "{{ lookup('env', 'APP_NAME') | default('', true) }}"
-
     clone_dir: "/tmp/app-deploy-{{ app_name }}"
     work_dir: "/home/app/homelab"
-
-    # Controller (Ansible runner) repo root
     controller_repo_root: "{{ inventory_dir }}/../.."
-    admin_user: "admin"        # Owner for copied files
 
+    admin_user: "admin" # Owner for copied files
+
+    # App name from controller env var APP_NAME
+    app_name: "{{ lookup('env', 'APP_NAME') | default('', true) }}"
+    
     # Options (can be overridden by environment variables)
     # opt - refresh config: 
     # - level 1 "none": do nothing 
@@ -41,7 +40,7 @@
         - "{{ work_dir }}/src"
         - "{{ work_dir }}/apps"
 
-    # Clone the repo
+    ## Clone the repo
     - name: Clone/Update repo into tmp on target
       ansible.builtin.git:
         repo: "{{ git_repo_url }}"
@@ -53,7 +52,8 @@
       environment:
         GIT_LFS_SKIP_SMUDGE: "1"
 
-    # Copy the work files
+    ## Copy the work files
+    # Copy app dir
     - name: Copy src/app-bootstrap → destination root
       ansible.builtin.copy:
         src: "{{ clone_dir }}/src/app-bootstrap/"
@@ -69,6 +69,34 @@
         remote_src: true
         mode: "0644"
         owner: "{{ admin_user }}"
+
+    # Copy infra folders
+    - name: Find app directories in cloned repo
+      ansible.builtin.find:
+        paths: "{{ clone_dir }}/apps"
+        file_type: directory
+        depth: 1
+      register: apps_dirs
+
+    - name: Build list of app paths
+      set_fact:
+        apps_list: "{{ apps_dirs.files | map(attribute='path') | list }}"
+
+    - name: Stat app-specific infra/proxmox.yml for each app
+      ansible.builtin.stat:
+        path: "{{ item }}/infra/proxmox.yml"
+      loop: "{{ apps_list }}"
+      register: stat_per_app
+
+    - name: Copy app-specific infra/proxmox.yml to app workdir (when present)
+      ansible.builtin.copy:
+        src: "{{ item.item }}/infra/proxmox.yml"
+        dest: "{{ work_dir }}/apps/{{ item.item | basename }}/infra/proxmox.yml"
+        remote_src: true
+        owner: "{{ admin_user }}"
+        mode: "0644"
+      loop: "{{ stat_per_app.results }}"
+      when: item.stat.exists
 
     # Copy env files from the controller repo
     # From:   {{ inventory_dir }}/../apps/<app_name>/config/
@@ -95,6 +123,31 @@
         owner: "{{ admin_user }}"
       loop: "{{ st_repo_cfg.results }}"
       when: item.stat.exists
+      delegate_to: localhost
+      run_once: true
+
+    # Find all networking.env.default and networking.env files in controller apps/**/config
+    - name: Find networking env files in controller repo
+      ansible.builtin.find:
+        paths: "{{ controller_repo_root }}/apps"
+        patterns:
+          - 'networking.env'
+          - 'networking.env.default'
+        file_type: file
+        recurse: yes
+      register: found_networking_envs
+      delegate_to: localhost
+      run_once: true
+
+    - name: Copy networking env files from controller -> corresponding target path
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        # Replace controller_repo_root prefix with the work_dir prefix so file lands in the same apps/.../config/... location
+        dest: "{{ item | regex_replace('^' + (controller_repo_root | regex_escape) + '/', work_dir + '/') }}"
+        mode: "{{ '0644' }}"
+        owner: "{{ admin_user }}"
+      loop: "{{ found_networking_envs.files | map(attribute='path') | list }}"
+      when: found_networking_envs.matched > 0
       delegate_to: localhost
       run_once: true
 
