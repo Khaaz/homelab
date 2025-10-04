@@ -34,8 +34,8 @@
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/ssh/"
         dest: "{{ work_dir }}/config/ssh/"
-        owner: root
-        group: root
+        owner: admin
+        group: admin
         mode: "0600"
         force: "{{ (refresh_ssh == 'full') | ternary(true, false) }}"
       when:
@@ -86,6 +86,16 @@
       ansible.builtin.file:
         path: "{{ item }}"
         mode: "0700"
+        owner: admin
+        group: admin
       loop: "{{ ssh_key_files.files | map(attribute='path') | list }}"
       when:
         - ssh_key_files.matched > 0
+
+  post_tasks:
+    - name: Assign entire homelab directory to admin user
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        owner: admin
+        group: admin
+        recurse: yes

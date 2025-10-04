@@ -16,6 +16,19 @@
         path: "{{ work_dir | dirname }}"
         state: directory
         mode: "0755"
+        owner: admin
+        group: admin
+
+    - name: Assign entire homelab directory to admin user
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        owner: admin
+        group: admin
+        recurse: yes
+    
+    - name: Mark homelab repo as safe
+      ansible.builtin.command:
+        cmd: git config --global --add safe.directory {{ work_dir }}
 
   tasks:
     ## Clone
@@ -33,11 +46,21 @@
         path: "{{ item }}"
         state: directory
         mode: "0755"
+        owner: admin
+        group: admin
       loop:
         - "{{ work_dir }}/config"
         - "{{ work_dir }}/config/ssh"
         - "{{ work_dir }}/apps"
         - "{{ work_dir }}/environment"
+
+    - name: Assign entire homelab directory to admin user
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        owner: admin
+        group: admin
+        recurse: yes
+
 
 - import_playbook: "./1.refresh-config.playbook.yml"
 - import_playbook: "./2.refresh-ssh.playbook.yml"

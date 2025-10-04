@@ -35,8 +35,8 @@
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/global-config.toml"
         dest: "{{ work_dir }}/config/global-config.toml"
-        owner: root
-        group: root
+        owner: admin
+        group: admin
         mode: "0644"
         force: yes
       when:
@@ -89,6 +89,8 @@
           }}
         state: directory
         mode: "0755"
+        owner: admin
+        group: admin
       loop: "{{ found_app_env_files.files | map(attribute='path') | list }}"
       when:
         - refresh_config == 'full'
@@ -101,11 +103,19 @@
           {{
             item | regex_replace('^.*/apps/', work_dir + '/apps/')
           }}
-        owner: root
-        group: root
+        owner: admin
+        group: admin
         mode: "{{ '0600' if (item | basename) == '.env' else '0644' }}"
         force: true
       loop: "{{ found_app_env_files.files | map(attribute='path') | list }}"
       when:
         - refresh_config == 'full'
         - found_app_env_files.matched is defined and found_app_env_files.matched > 0
+  
+  post_tasks:
+    - name: Assign entire homelab directory to admin user
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        owner: admin
+        group: admin
+        recurse: yes
