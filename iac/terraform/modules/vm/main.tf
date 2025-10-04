@@ -58,7 +58,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
     type         = "4m"
   }
 
-  # NICs: dynamic number & order from config.yaml
+  # NICs: dynamic number & order from proxmox.yml
   dynamic "network_device" {
     for_each = tolist(try(local.nics, []))
     content {

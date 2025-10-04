@@ -1,0 +1,15 @@
+---
+- name: List all subdirectories in input folder
+  ansible.builtin.find:
+    paths: "{{ input_folder }}"
+    file_type: directory
+    depth: 1
+  register: found_dirs
+
+- name: Store subfolder paths in local fact
+  ansible.builtin.set_fact:
+    result: "{{ found_dirs.files | map(attribute='path') | list }}"
+
+- name: Debug - Show subfolder list
+  ansible.builtin.debug:
+    var: result
