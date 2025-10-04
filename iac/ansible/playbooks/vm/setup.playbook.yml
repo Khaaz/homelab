@@ -1,6 +1,6 @@
 ---
 - name: Deploy app via git + compose
-  hosts: vm
+  hosts: all
   become: true
   vars:
     git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
@@ -13,6 +13,14 @@
 
     # Controller (Ansible runner) repo root
     controller_repo_root: "{{ inventory_dir }}/../.."
+    admin_user: "admin"        # Owner for copied files
+
+    # Options (can be overridden by environment variables)
+    # opt - refresh config: 
+    # - level 1 "none": do nothing 
+    # - level 2 "generated": Copy paste the .env.generated file
+    # - level 3 "full": also copy .env and networking.env that exist in the controller root (always copy and override if one already exist)
+    refresh_config: "{{ lookup('env','REFRESH_CONFIG') | default('generated', true) }}" # none|generated|full
 
   tasks:
     # Init workdir
@@ -21,11 +29,14 @@
         path: "{{ work_dir }}"
         state: directory
         mode: "0755"
+        owner: "{{ admin_user }}"
+
     - name: Ensure subdirectories exist
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: "0755"
+        owner: "{{ admin_user }}"
       loop:
         - "{{ work_dir }}/src"
         - "{{ work_dir }}/apps"
@@ -40,38 +51,51 @@
         update: true
 
     # Copy the work files
-    - name: Copy src/app-bootstrap → destination root (remote_src)
+    - name: Copy src/app-bootstrap → destination root
       ansible.builtin.copy:
         src: "{{ clone_dir }}/src/app-bootstrap/"
         dest: "{{ work_dir }}/src/app-bootstrap/"
         remote_src: true
         mode: "0644"
+        owner: "{{ admin_user }}"
 
-    - name: Copy apps/<app_name> → destination (remote_src)
+    - name: Copy apps/<app_name> → destination
       ansible.builtin.copy:
         src: "{{ clone_dir }}/apps/{{ app_name }}/"
         dest: "{{ work_dir }}/apps/{{ app_name }}/"
         remote_src: true
         mode: "0644"
+        owner: "{{ admin_user }}"
 
     # Copy env files from the controller repo
     # From:   {{ inventory_dir }}/../apps/<app_name>/config/
     # Files:  networking.env, .env.generated, .env
+    - name: Set list of env files to copy
+      set_fact:
+        env_files: >-
+          {% if refresh_config == 'full' %}
+            ['networking.env', '.env.generated', '.env']
+          {% elif refresh_config == 'generated' %}
+            ['.env.generated']
+          {% else %}
+            []
+          {% endif %}
+
     - name: Stat controller apps/<app_name>/config files
       ansible.builtin.stat:
         path: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item }}"
-      loop:
-        - networking.env
-        - .env.generated
-        - .env
+      loop: "{{ env_files }}"
       register: st_repo_cfg
       delegate_to: localhost
       run_once: true
+      when: env_files | length > 0
+
     - name: Copy controller apps/<app_name>/config files → target if present
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item.item }}"
         dest: "{{ work_dir }}/apps/{{ app_name }}/config/{{ item.item }}"
         mode: "{{ '0600' if item.item in ['.env', '.env.generated'] else '0644' }}"
+        owner: "{{ admin_user }}"
       loop: "{{ st_repo_cfg.results }}"
       when: item.stat.exists
       delegate_to: localhost
@@ -83,6 +107,7 @@
         path: "{{ work_dir }}/apps/{{ app_name }}/compose.sh"
         mode: "0755"
         state: file
+        owner: "{{ admin_user }}"
 
     - name: Compose down via compose.sh (idempotent reset)
       ansible.builtin.command:

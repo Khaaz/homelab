@@ -7,6 +7,7 @@ get_script_dir() {
 	echo "$script_dir"
 }
 SCRIPT_DIR=$(get_script_dir)
+ROOT_DIR="$SCRIPT_DIR/../.."
 
 ## Usage
 usage() {
@@ -15,16 +16,14 @@ usage() {
 }
 
 ## Input verification
-if [ -z  "$1"]; then
+if [ -z  "$1" ]; then
 	usage
 fi
 
 #
 ## Core
 #
-# Execute command directely via jump / resolve vm name via dns
-ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
-    -o StrictHostKeyChecking=no \
-	-p 2222 \
-    admin@192.168.1.200 \
-	"./homelab/apps/jump/ansible_vm.sh $1"
+TARGET_IP=$("$SCRIPT_DIR/src/get_vm_ip.sh" "$1")
+SSH_KEY=$ROOT_DIR/config/ssh/$1/automation_key
+
+$ROOT_DIR/iac/5.setup_vm.sh setup --app "$1" --ip "$TARGET_IP" --key "$SSH_KEY" --refresh-config full

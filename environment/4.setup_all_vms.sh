@@ -19,19 +19,11 @@ if [ -z  "$1"]; then
 	usage
 fi
 
-$SCRIPT_DIR/4-1.setup_vm_jump.sh --auto
-
-$SCRIPT_DIR/4-3.setup_vms.sh
-
-# setup_jump
-# setup_vms
-
 #
 ## Core
 #
-# Execute command directely via jump / resolve vm name via dns
-# imagine something like:
-# ssh -t -i $SCRIPT_DIR/../config/ssh/proxmox/admin_key \
-#     -o StrictHostKeyChecking=no \
-#     homelab@192.168.1.200 \
-# 	  "execute_ansible $1"
+echo "Setting up jump VM"
+$SCRIPT_DIR/4-1.setup_vm_jump.sh --auto
+
+echo "Setting up all other VMs"
+$SCRIPT_DIR/4-3.setup_vms.sh
