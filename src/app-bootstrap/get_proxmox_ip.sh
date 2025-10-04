@@ -111,6 +111,9 @@ BEGIN{
 		ip=firsttok(ip)
 
 		if (matchThis) {
+			# Remove CIDR notation (e.g., /24) from IP address
+			sub(/\/[0-9]+$/, "", ip)
+			
 			# trunked case with requested VLAN
 			if (inTrunks && VLAN != "" && curVlan != "" && curVlan == VLAN) {
 				print ip; found=1; exit 0
