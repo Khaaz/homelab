@@ -35,7 +35,10 @@ source_ips
 
 VM_ENV_VAR_NAME=$(echo "$1" | tr '[:lower:]' '[:upper:]' | tr '-' '_')_IP
 
+echo "================" >&2
 echo "VM_ENV_VAR_NAME: $VM_ENV_VAR_NAME" >&2
+echo "Target IP: $(eval echo \$$VM_ENV_VAR_NAME)" >&2
+echo "================" >&2
 
 # Evaluate the value of the VM_ENV_VAR_NAME which will output the actual ip
 # echo the result so the caller script can use it
