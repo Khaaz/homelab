@@ -26,8 +26,11 @@ usage() {
 }
 
 ## Input verification
-REFRESH_CONFIG="full"
 PLAYBOOK="setup"
+REFRESH_CONFIG="full"
+APP=""
+IP=""
+KEY=""
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--refresh-config|-rc)
@@ -64,4 +67,4 @@ fi
 ## Core
 #
 # Execute the command
-$SCRIPT_DIR/src/ansible.sh "vm/$PLAYBOOK" --private-key "$KEY" --ip "$IP" -e "app_name=$APP refresh_config=$REFRESH_CONFIG" "$@"
+$SCRIPT_DIR/src/ansible.sh "vm/$PLAYBOOK" --private-key "$KEY" --i "$IP" -e "app_name=$APP refresh_config=$REFRESH_CONFIG" "$@"
