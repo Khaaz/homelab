@@ -26,6 +26,6 @@ users:
   
   - name: app
     groups: []
-    sudo: [""]
+    sudo: []
     shell: /bin/sh
     lock_passwd: true
