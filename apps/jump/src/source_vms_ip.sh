@@ -53,11 +53,11 @@ source_app_ip() {
 
 	local ip=$("$ROOT_DIR/src/app-bootstrap/get_app_ip.sh" --for "$1" --on "$2" $LOCAL_ARG)
 	export "$env_var_name"="$ip"
-	echo "$env_var_name=$ip"
+	echo "$env_var_name=$ip" >&2
 }
 
 
-echo "Sourcing environment variables:"
+echo "Sourcing environment variables:" >&2
 source_app_ip cloud vmbr3
 source_app_ip dns vmbr1
 source_app_ip firewall-gw vmbr1

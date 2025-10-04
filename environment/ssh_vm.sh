@@ -23,14 +23,8 @@ fi
 ## Core
 #
 # Execute command directely via jump / resolve vm name via dns
-# imagine something like:
-# ssh -t -i $SCRIPT_DIR/../config/ssh/proxmox/admin_key \
-#     -o StrictHostKeyChecking=no \
-#     homelab@192.168.1.200 \
-# 	  "ssh_in_host $1"
-
-# in host
-# ssh_in_host
-# ssh -t -i $SCRIPT_DIR/../config/ssh/$1/admin_key
-# 	  -o StrictHostKeyChecking=no \
-#     admin@<$(resolve_ip $1)>
+ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
+    -o StrictHostKeyChecking=no \
+	-p 2222 \
+    admin@192.168.1.200 \
+	"./homelab/apps/jump/ssh_vm.sh $1"
