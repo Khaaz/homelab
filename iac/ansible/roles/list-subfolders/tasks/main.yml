@@ -8,8 +8,8 @@
 
 - name: Set role output variable dynamically
   set_fact:
-    "{{ output_var_name }}": "{{ found_dirs.files | map(attribute='path') | list }}"
+    "{{ output_var }}": "{{ found_dirs.files | map(attribute='path') | list }}"
 
 - name: Debug - Show subfolder list
   ansible.builtin.debug:
-    var: "{{ output_var_name }}"
+    var: "{{ output_var }}"

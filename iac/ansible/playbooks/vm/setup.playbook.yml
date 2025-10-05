@@ -76,7 +76,7 @@
         name: list-subfolders
       vars:
         input_folder: "{{ clone_dir }}/apps"
-        output_var_name: "apps_list"
+        output_var: "apps_list"
 
     - name: Verify infra/proxmox.yml exists for each app
       ansible.builtin.stat:
@@ -165,14 +165,14 @@
 
     - name: Compose down via compose.sh (idempotent reset)
       ansible.builtin.command:
-        cmd: "./compose.sh down --remove-orphans"
+        cmd: "./compose.sh --proxmox down--remove-orphans"
         chdir: "{{ work_dir }}/apps/{{ app_name }}"
       register: compose_down
       changed_when: "'Stopping' in compose_down.stdout or 'Removing' in compose_down.stdout or compose_down.rc == 0"
 
     - name: Compose up via compose.sh (recreate/pull/build)
       ansible.builtin.command:
-        cmd: "./compose.sh up -d --pull always --build --renew-anon-volumes"
+        cmd: "./compose.sh --proxmox up -d --pull always --build --renew-anon-volumes"
         chdir: "{{ work_dir }}/apps/{{ app_name }}"
       register: compose_up
       changed_when: >
