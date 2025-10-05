@@ -7,7 +7,7 @@
 
     clone_dir: "/tmp/app-deploy-{{ app_name }}"
     work_dir: "/home/app/homelab"
-    controller_repo_root: "{{ inventory_dir }}/../.."
+    controller_repo_root: "{{ playbook_dir) }}/../../../.."
 
     admin_user: "admin" # Owner for copied files
 
@@ -29,6 +29,7 @@
         state: directory
         mode: "0755"
         owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
 
     - name: Ensure subdirectories exist
       ansible.builtin.file:
@@ -36,6 +37,7 @@
         state: directory
         mode: "0755"
         owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
       loop:
         - "{{ work_dir }}/src"
         - "{{ work_dir }}/apps"
@@ -61,6 +63,7 @@
         remote_src: true
         mode: "0644"
         owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
 
     - name: Copy apps/<app_name> -> target/apps/<app_name>
       ansible.builtin.copy:
@@ -69,6 +72,7 @@
         remote_src: true
         mode: "0644"
         owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
 
     # Copy infra folders
     - name: Get all apps from apps/
@@ -84,6 +88,7 @@
         state: directory
         mode: "0755"
         owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
       loop: "{{ apps_list }}"
 
     - name: Copy each apps/**/infra/proxmox.yml -> target/apps/**/infra/proxmox.yml
@@ -91,8 +96,9 @@
         src: "{{ item }}/infra/proxmox.yml"
         dest: "{{ work_dir }}/apps/{{ item | basename }}/infra/proxmox.yml"
         remote_src: true
-        owner: "{{ admin_user }}"
         mode: "0644"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
       loop: "{{ apps_list }}"
 
     # Copy env files from the controller repo
@@ -118,6 +124,7 @@
         dest: "{{ work_dir }}/apps/{{ app_name }}/config/{{ item.item }}"
         mode: "{{ '0600' if item.item in ['.env', '.env.generated'] else '0644' }}"
         owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
       loop: "{{ controller_env_files.results }}"
       when: item.stat.exists
       delegate_to: localhost
@@ -143,6 +150,7 @@
         dest: "{{ item | regex_replace('^' + (controller_repo_root | regex_escape) + '/', work_dir + '/') }}"
         mode: "{{ '0644' }}"
         owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
       loop: "{{ found_networking_envs.files | map(attribute='path') | list }}"
       when: found_networking_envs.matched > 0
       delegate_to: localhost
@@ -155,7 +163,7 @@
         mode: "0755"
         state: file
         owner: "{{ admin_user }}"
-
+        group: "{{ admin_user }}"
     - name: Compose down via compose.sh (idempotent reset)
       ansible.builtin.command:
         cmd: "./compose.sh --proxmox down --remove-orphans"
