@@ -71,16 +71,17 @@
         owner: "{{ admin_user }}"
 
     # Copy infra folders
-    - include_role:
+    - name: Get all apps from apps/
+      include_role:
         name: list-subfolders
       vars:
         input_folder: "{{ clone_dir }}/apps"
-      register: apps_list
+        output_var_name: "apps_list"
 
     - name: Verify infra/proxmox.yml exists for each app
       ansible.builtin.stat:
         path: "{{ item }}/infra/proxmox.yml"
-      loop: "{{ apps_list.result }}"
+      loop: "{{ apps_list }}"
       register: stat_per_app
 
     - name: Ensure infra directories exist for each app
@@ -89,7 +90,7 @@
         state: directory
         mode: "0755"
         owner: "{{ admin_user }}"
-      loop: "{{ apps_list.result }}"
+      loop: "{{ apps_list }}"
 
     - name: Copy app-specific infra/proxmox.yml to app workdir (when present)
       ansible.builtin.copy:
