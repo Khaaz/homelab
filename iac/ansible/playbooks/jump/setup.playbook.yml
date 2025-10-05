@@ -32,7 +32,7 @@
 
   tasks:
     ## Clone
-    - name: Clone or update full repo into {{ work_dir }}
+    - name: Clone or update full repo in target ({{ work_dir }})
       ansible.builtin.git:
         repo: "{{ git_repo_url }}"
         dest: "{{ work_dir }}"
@@ -62,7 +62,6 @@
         owner: admin
         group: admin
         recurse: yes
-
 
 - import_playbook: "./1.refresh-config.playbook.yml"
 - import_playbook: "./2.refresh-ssh.playbook.yml"

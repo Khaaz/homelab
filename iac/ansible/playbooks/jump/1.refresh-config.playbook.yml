@@ -31,7 +31,7 @@
     
     # => refresh_config: config/full <=
     # Copy the global-config.toml
-    - name: Copy controller config/global-config.toml -> cloned repo
+    - name: Copy controller config/global-config.toml -> target/config/global-config.toml
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/global-config.toml"
         dest: "{{ work_dir }}/config/global-config.toml"
@@ -44,7 +44,7 @@
         - st_controller_global_toml.stat.exists
 
     # Generate .env.generated (generate_env script)
-    - name: Check for generate_env.sh script in cloned repo
+    - name: Check for generate_env.sh script in target
       ansible.builtin.stat:
         path: "{{ work_dir }}/environment/generate_env.sh"
       register: st_generate_env_sh
@@ -80,7 +80,7 @@
       run_once: true
       when: refresh_config == 'full'
 
-    - name: Ensure destination config directories exist for discovered files
+    - name: Ensure destination config directories
       ansible.builtin.file:
         path:  >-
           {{
@@ -96,7 +96,7 @@
         - refresh_config == 'full'
         - found_app_env_files.matched is defined and found_app_env_files.matched > 0
 
-    - name: Copy discovered app config files from controller -> cloned repo (preserve path)
+    - name: Copy files from controller apps/**/config -> target/apps/**/config
       ansible.builtin.copy:
         src: "{{ item }}"
         dest:  >-

@@ -30,7 +30,7 @@
       run_once: true
       register: st_controller_ssh
 
-    - name: "Copy controller config/ssh -> cloned repo (new: no overwrite; full: overwrite)"
+    - name: "Copy controller config/ssh -> target/config/ssh (new: no overwrite; full: overwrite)"
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/ssh/"
         dest: "{{ work_dir }}/config/ssh/"
@@ -42,7 +42,7 @@
         - st_controller_ssh.stat.exists
         - refresh_ssh in ['new','full','generate','reset']
 
-    - name: Check for generate_ssh_keys script in cloned repo
+    - name: Check for generate_ssh_keys script in target
       ansible.builtin.stat:
         path: "{{ work_dir }}/environment/generate_ssh_keys.sh"
       register: st_generate_ssh_script
@@ -82,7 +82,7 @@
         - st_controller_ssh.stat.exists
         - refresh_ssh in ['new','full','generate','reset']
 
-    - name: Ensure ssh *_key files mode is 0700 (on target)
+    - name: Ensure ssh *_key files mode is 0700
       ansible.builtin.file:
         path: "{{ item }}"
         mode: "0700"

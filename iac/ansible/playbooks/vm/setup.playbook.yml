@@ -54,7 +54,7 @@
 
     ## Copy the work files
     # Copy app dir
-    - name: Copy src/app-bootstrap → destination root
+    - name: Copy src/app-bootstrap -> target/src/app-bootstrap
       ansible.builtin.copy:
         src: "{{ clone_dir }}/src/app-bootstrap/"
         dest: "{{ work_dir }}/src/app-bootstrap/"
@@ -62,7 +62,7 @@
         mode: "0644"
         owner: "{{ admin_user }}"
 
-    - name: Copy apps/<app_name> → destination
+    - name: Copy apps/<app_name> -> target/apps/<app_name>
       ansible.builtin.copy:
         src: "{{ clone_dir }}/apps/{{ app_name }}/"
         dest: "{{ work_dir }}/apps/{{ app_name }}/"
@@ -78,13 +78,7 @@
         input_folder: "{{ clone_dir }}/apps"
         output_var: "apps_list"
 
-    - name: Verify infra/proxmox.yml exists for each app
-      ansible.builtin.stat:
-        path: "{{ item }}/infra/proxmox.yml"
-      loop: "{{ apps_list }}"
-      register: stat_per_app
-
-    - name: Ensure infra directories exist for each app
+    - name: Create infra directories for each app in target
       ansible.builtin.file:
         path: "{{ work_dir }}/apps/{{ item | basename }}/infra"
         state: directory
@@ -92,15 +86,14 @@
         owner: "{{ admin_user }}"
       loop: "{{ apps_list }}"
 
-    - name: Copy app-specific infra/proxmox.yml to app workdir (when present)
+    - name: Copy each apps/**/infra/proxmox.yml -> target/apps/**/infra/proxmox.yml
       ansible.builtin.copy:
-        src: "{{ item.item }}/infra/proxmox.yml"
-        dest: "{{ work_dir }}/apps/{{ item.item | basename }}/infra/proxmox.yml"
+        src: "{{ item }}/infra/proxmox.yml"
+        dest: "{{ work_dir }}/apps/{{ item | basename }}/infra/proxmox.yml"
         remote_src: true
         owner: "{{ admin_user }}"
         mode: "0644"
-      loop: "{{ stat_per_app.results }}"
-      when: item.stat.exists
+      loop: "{{ apps_list }}"
 
     # Copy env files from the controller repo
     # From:   {{ inventory_dir }}/../apps/<app_name>/config/
@@ -110,22 +103,22 @@
         env_files: "{{ ['networking.env', '.env.generated', '.env'] if refresh_config == 'full'
                        else (['.env.generated'] if refresh_config == 'generated' else []) }}"
 
-    - name: Stat controller apps/<app_name>/config files
+    - name: Verify controller apps/<app_name>/config files exists
       ansible.builtin.stat:
         path: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item }}"
       loop: "{{ env_files }}"
-      register: st_repo_cfg
+      register: controller_env_files
       delegate_to: localhost
       run_once: true
       when: env_files | length > 0
 
-    - name: Copy controller apps/<app_name>/config files → target if present
+    - name: Copy controller apps/<app_name>/config files -> target/apps/<app_name>/config
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item.item }}"
         dest: "{{ work_dir }}/apps/{{ app_name }}/config/{{ item.item }}"
         mode: "{{ '0600' if item.item in ['.env', '.env.generated'] else '0644' }}"
         owner: "{{ admin_user }}"
-      loop: "{{ st_repo_cfg.results }}"
+      loop: "{{ controller_env_files.results }}"
       when: item.stat.exists
       delegate_to: localhost
       run_once: true
@@ -143,7 +136,7 @@
       delegate_to: localhost
       run_once: true
 
-    - name: Copy networking env files from controller -> corresponding target path
+    - name: Copy controller apps/**/config/networking.env -> target/apps/**/config/networking.env
       ansible.builtin.copy:
         src: "{{ item }}"
         # Replace controller_repo_root prefix with the work_dir prefix so file lands in the same apps/.../config/... location
@@ -165,7 +158,7 @@
 
     - name: Compose down via compose.sh (idempotent reset)
       ansible.builtin.command:
-        cmd: "./compose.sh --proxmox down--remove-orphans"
+        cmd: "./compose.sh --proxmox down --remove-orphans"
         chdir: "{{ work_dir }}/apps/{{ app_name }}"
       register: compose_down
       changed_when: "'Stopping' in compose_down.stdout or 'Removing' in compose_down.stdout or compose_down.rc == 0"

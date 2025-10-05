@@ -23,13 +23,13 @@
     # Users
     - name: Create Packer user
       ansible.builtin.shell: |
-        pveum user add {{ packer_user }} --password '{{ packer_password }}'  --enable 1 --expire 0
+        pveum user add {{ packer_user }} --password '{{ packer_password }}' --enable 1 --expire 0
       register: packer_user_add
       changed_when: packer_user_add.rc == 0
       failed_when: false
     - name: Create Terraform user
       ansible.builtin.shell: |
-        pveum user add {{ terraform_user }} --password '{{ terraform_password }}'  --enable 1 --expire 0
+        pveum user add {{ terraform_user }} --password '{{ terraform_password }}' --enable 1 --expire 0
       register: terraform_user_add
       changed_when: terraform_user_add.rc == 0
       failed_when: false
