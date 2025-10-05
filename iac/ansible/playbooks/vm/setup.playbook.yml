@@ -41,6 +41,7 @@
       loop:
         - "{{ work_dir }}/src"
         - "{{ work_dir }}/apps"
+        - "{{ work_dir }}/apps/{{ app_name }}"
 
     ## Clone the repo
     - name: Clone/Update repo into tmp on target
@@ -73,6 +74,17 @@
         mode: "0644"
         owner: "{{ admin_user }}"
         group: "{{ admin_user }}"
+    
+    - name: Adjust permissions
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+      loop:
+        - "{{ work_dir }}/src/app-bootstrap"
+        - "{{ work_dir }}/apps/{{ app_name }}"
 
     # Init infra and config directories
     - name: Get all apps from apps/
@@ -121,6 +133,7 @@
         owner: "{{ admin_user }}"
         group: "{{ admin_user }}"
       loop: "{{ apps_list }}"
+      failed_when: false
     
     # Copy each apps/**/config/networking.env -> target/apps/**/config/networking.env if exists
     - name: Copy each apps/**/config/networking.env -> target/apps/**/config/networking.env
@@ -182,7 +195,7 @@
 
     - name: Compose up via compose.sh (recreate/pull/build)
       ansible.builtin.command:
-        cmd: "./compose.sh --proxmox up -d --pull always --build --renew-anon-volumes"
+        cmd: "./compose.sh --proxmox up -d"
         chdir: "{{ work_dir }}/apps/{{ app_name }}"
       register: compose_up
       changed_when: >
