@@ -74,7 +74,7 @@
         owner: "{{ admin_user }}"
         group: "{{ admin_user }}"
 
-    # Copy infra folders
+    # Init infra and config directories
     - name: Get all apps from apps/
       include_role:
         name: list-subfolders
@@ -91,6 +91,16 @@
         group: "{{ admin_user }}"
       loop: "{{ apps_list }}"
 
+    - name: Create config directories for each app in target
+      ansible.builtin.file:
+        path: "{{ work_dir }}/apps/{{ item | basename }}/config"
+        state: directory
+        mode: "0755"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+      loop: "{{ apps_list }}"
+
+    # Copy each apps/**/infra/proxmox.yml -> target/apps/**/infra/proxmox.yml
     - name: Copy each apps/**/infra/proxmox.yml -> target/apps/**/infra/proxmox.yml
       ansible.builtin.copy:
         src: "{{ item }}/infra/proxmox.yml"
@@ -100,6 +110,31 @@
         owner: "{{ admin_user }}"
         group: "{{ admin_user }}"
       loop: "{{ apps_list }}"
+    
+    # Copy each apps/**/config/networking.env.default -> target/apps/**/config/networking.env.default
+    - name: Copy each apps/**/config/networking.env.default -> target/apps/**/config/networking.env.default
+      ansible.builtin.copy:
+        src: "{{ item }}/config/networking.env.default"
+        dest: "{{ work_dir }}/apps/{{ item | basename }}/config/networking.env.default"
+        remote_src: true
+        mode: "0644"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+      loop: "{{ apps_list }}"
+    
+    # Copy each apps/**/config/networking.env -> target/apps/**/config/networking.env if exists
+    - name: Copy each apps/**/config/networking.env -> target/apps/**/config/networking.env
+      ansible.builtin.copy:
+        src: "{{ item }}/config/networking.env"
+        dest: "{{ work_dir }}/apps/{{ item | basename }}/config/networking.env"
+        remote_src: true
+        mode: "0644"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+      loop: "{{ apps_list }}"
+      when:
+        - refresh_config == 'full'
+      failed_when: false
 
     # Copy env files from the controller repo
     # From:   {{ inventory_dir }}/../apps/<app_name>/config/
@@ -127,34 +162,6 @@
         group: "{{ admin_user }}"
       loop: "{{ controller_env_files.results }}"
       when: item.stat.exists
-      delegate_to: localhost
-      run_once: true
-
-    # Find all networking.env.default and networking.env files in controller apps/**/config
-    - name: Find networking env files in controller repo
-      ansible.builtin.find:
-        paths: "{{ controller_repo_root }}/apps"
-        patterns:
-          - 'networking.env'
-          - 'networking.env.default'
-        file_type: file
-        recurse: yes
-      register: found_networking_envs
-      delegate_to: localhost
-      run_once: true
-
-    - name: Copy controller apps/**/config/networking.env -> target/apps/**/config/networking.env
-      ansible.builtin.copy:
-        src: "{{ item }}"
-        dest:  >-
-          {{
-            item | regex_replace('^.*/apps/', work_dir + '/apps/')
-          }}
-        mode: "{{ '0644' }}"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
-      loop: "{{ found_networking_envs.files | map(attribute='path') | list }}"
-      when: found_networking_envs.matched > 0
       delegate_to: localhost
       run_once: true
 
