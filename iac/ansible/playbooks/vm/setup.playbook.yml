@@ -138,9 +138,8 @@
     # Copy each apps/**/config/networking.env -> target/apps/**/config/networking.env if exists
     - name: Copy each apps/**/config/networking.env -> target/apps/**/config/networking.env
       ansible.builtin.copy:
-        src: "{{ item }}/config/networking.env"
+        src: "{{ controller_repo_root }}/apps/{{ item | basename }}/config/networking.env"
         dest: "{{ work_dir }}/apps/{{ item | basename }}/config/networking.env"
-        remote_src: true
         mode: "0644"
         owner: "{{ admin_user }}"
         group: "{{ admin_user }}"
@@ -152,31 +151,27 @@
     # Copy env files from the controller repo
     # From:   {{ inventory_dir }}/../apps/<app_name>/config/
     # Files:  networking.env, .env.generated, .env
-    - name: Set list of env files to copy
-      set_fact:
-        env_files: "{{ ['networking.env', '.env.generated', '.env'] if refresh_config == 'full'
-                       else (['.env.generated'] if refresh_config == 'generated' else []) }}"
-
-    - name: Verify controller apps/<app_name>/config files
-      ansible.builtin.stat:
-        path: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item }}"
-      loop: "{{ env_files }}"
-      register: controller_env_files
-      delegate_to: localhost
-      run_once: true
-      when: env_files | length > 0
-
-    - name: Copy controller apps/<app_name>/config files -> target/apps/<app_name>/config
+    - name: Copy controller apps/<app_name>/config/.env.generated files -> target/apps/<app_name>/config/.env.generated
       ansible.builtin.copy:
-        src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item.item }}"
-        dest: "{{ work_dir }}/apps/{{ app_name }}/config/{{ item.item }}"
-        mode: "{{ '0600' if item.item in ['.env', '.env.generated'] else '0644' }}"
+        src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/.env.generated"
+        dest: "{{ work_dir }}/apps/{{ app_name }}/config/.env.generated"
+        mode: "0600"
         owner: "{{ admin_user }}"
         group: "{{ admin_user }}"
-      loop: "{{ controller_env_files.results }}"
-      when: item.stat.exists
-      delegate_to: localhost
-      run_once: true
+      when:
+        - refresh_config in ['generated','full']
+      failed_when: false
+
+    - name: Copy controller apps/<app_name>/config/.env files -> target/apps/<app_name>/config/.env
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/.env"
+        dest: "{{ work_dir }}/apps/{{ app_name }}/config/.env"
+        mode: "0600"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+      when:
+        - refresh_config in ['full']
+      failed_when: false
 
     # ---- Compose via apps/<app_name>/compose.sh ----
     - name: Ensure compose.sh is executable
