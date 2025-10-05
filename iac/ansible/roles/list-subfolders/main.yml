@@ -6,10 +6,10 @@
     depth: 1
   register: found_dirs
 
-- name: Store subfolder paths in local fact
-  ansible.builtin.set_fact:
-    result: "{{ found_dirs.files | map(attribute='path') | list }}"
+- name: Set role output variable dynamically
+  set_fact:
+    "{{ output_var_name }}": "{{ found_dirs.files | map(attribute='path') | list }}"
 
 - name: Debug - Show subfolder list
   ansible.builtin.debug:
-    var: result
+    var: "{{ output_var_name }}"
