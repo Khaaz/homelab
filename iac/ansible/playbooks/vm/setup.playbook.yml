@@ -7,7 +7,7 @@
 
     clone_dir: "/tmp/app-deploy-{{ app_name }}"
     work_dir: "/home/app/homelab"
-    controller_repo_root: "{{ playbook_dir) }}/../../../.."
+    controller_repo_root: "{{ playbook_dir }}/../../../.."
 
     admin_user: "admin" # Owner for copied files
 
@@ -109,7 +109,7 @@
         env_files: "{{ ['networking.env', '.env.generated', '.env'] if refresh_config == 'full'
                        else (['.env.generated'] if refresh_config == 'generated' else []) }}"
 
-    - name: Verify controller apps/<app_name>/config files exists
+    - name: Verify controller apps/<app_name>/config files
       ansible.builtin.stat:
         path: "{{ controller_repo_root }}/apps/{{ app_name }}/config/{{ item }}"
       loop: "{{ env_files }}"
@@ -146,8 +146,10 @@
     - name: Copy controller apps/**/config/networking.env -> target/apps/**/config/networking.env
       ansible.builtin.copy:
         src: "{{ item }}"
-        # Replace controller_repo_root prefix with the work_dir prefix so file lands in the same apps/.../config/... location
-        dest: "{{ item | regex_replace('^' + (controller_repo_root | regex_escape) + '/', work_dir + '/') }}"
+        dest:  >-
+          {{
+            item | regex_replace('^.*/apps/', work_dir + '/apps/')
+          }}
         mode: "{{ '0644' }}"
         owner: "{{ admin_user }}"
         group: "{{ admin_user }}"
