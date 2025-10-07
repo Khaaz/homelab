@@ -10,23 +10,19 @@ SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
 usage() {
-	echo "Usage: $0 <up|down> [--proxmox] [docker-compose-args...]"
-	echo "  up|down: Docker compose command"
+	echo "Usage: $0 [--proxmox] [compose options...] <compose command> [compose options...]"
 	echo "  --proxmox: Use proxmox IP from infra/proxmox.yml files (get_proxmox_ip.sh)"
 	echo "           If not specified, uses ip from infra/local.env* files"
-	echo "  docker-compose-args: Additional arguments passed to docker compose"
+	echo "  compose command: Docker compose command (up, down, restart...)"
+	echo "  compose options: Additional arguments passed to docker compose"
 	exit 1
 }
 
 ## Input verification
 LOCAL_FLAG="true"
-COMPOSE_ARGS=""
+COMMAND=""
 while [ $# -gt 0 ]; do
 	case "$1" in
-		up|down)
-			COMMAND="$1"
-			shift
-			;;
 		--proxmox)
 			LOCAL_FLAG="false"
 			shift
@@ -35,13 +31,7 @@ while [ $# -gt 0 ]; do
 			usage
 			;;
 		*)
-			if [ -z "$COMMAND" ]; then
-				usage
-			fi
-			if [ -n "$COMPOSE_ARGS" ]; then
-				COMPOSE_ARGS="$COMPOSE_ARGS "
-			fi
-			COMPOSE_ARGS="$COMPOSE_ARGS$1"
+			COMMAND="$COMMAND $1"
 			shift
 			;;
 	esac
@@ -87,4 +77,4 @@ docker compose -f $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
-	$COMMAND "$COMPOSE_ARGS"
+	"$COMMAND"
