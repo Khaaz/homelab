@@ -26,6 +26,10 @@ fi
 
 TARGET_IP=$("$SCRIPT_DIR/src/get_vm_ip.sh" "$1")
 
+LOCATE="cd /home/app/homelab/apps/$1 2> /dev/null"
+
 ssh -i $ROOT_DIR/config/ssh/$1/admin_key \
     -o StrictHostKeyChecking=no \
-    admin@$TARGET_IP
+    -t \
+	admin@$TARGET_IP \
+	"$LOCATE; exec "'$SHELL'
