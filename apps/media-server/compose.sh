@@ -31,7 +31,12 @@ while [ $# -gt 0 ]; do
 			usage
 			;;
 		*)
-			COMMAND="$COMMAND $1"
+			if [ -z "$COMMAND" ]; then
+				COMMAND="$1"
+			else
+				COMMAND="$COMMAND $1"
+			fi
+			# COMMAND="$COMMAND $1"
 			shift
 			;;
 	esac
@@ -81,4 +86,4 @@ docker compose -f $COMPOSE_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $MM_NETWORKING_ENV_FILE $(add_env_file "$MM_NETWORKING_OVERRIDE_ENV_FILE") \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
-	"$COMMAND"
+	$COMMAND

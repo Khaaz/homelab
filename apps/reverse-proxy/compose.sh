@@ -119,4 +119,4 @@ docker compose -f $COMPOSE_FILE \
 	--env-file $VSC_NETWORKING_ENV_FILE $(add_env_file "$VSC_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $WB_NETWORKING_ENV_FILE $(add_env_file "$WB_NETWORKING_OVERRIDE_ENV_FILE") \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
-	"$COMMAND"
+	$COMMAND

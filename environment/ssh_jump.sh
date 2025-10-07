@@ -11,7 +11,12 @@ SCRIPT_DIR=$(get_script_dir)
 #
 ## Core
 #
+
+LOCATE="cd /home/admin/homelab/apps/jump 2> /dev/null"
+
 ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
     -o StrictHostKeyChecking=no \
 	-p 2222 \
-    admin@192.168.1.200
+	-t \
+    admin@192.168.1.200 \
+	"$LOCATE; exec "'$SHELL'

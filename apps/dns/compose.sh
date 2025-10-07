@@ -77,4 +77,4 @@ docker compose -f $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
-	"$COMMAND"
+	$COMMAND
