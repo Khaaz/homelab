@@ -1,7 +1,7 @@
 specs:
   cores: 2
-  memory_size: 2048 # MB
-  disk_size: 10 # GB
+  memory_size: 3072 # MB
+  disk_size: 15 # GB
 config:
   docker: true
   router: false

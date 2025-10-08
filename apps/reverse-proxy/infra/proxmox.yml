@@ -1,6 +1,6 @@
 specs:
   cores: 2
-  memory_size: 2048 # MB
+  memory_size: 3072 # MB
   disk_size: 10 # GB
 config:
   docker: true

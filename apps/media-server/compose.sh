@@ -36,7 +36,6 @@ while [ $# -gt 0 ]; do
 			else
 				COMMAND="$COMMAND $1"
 			fi
-			# COMMAND="$COMMAND $1"
 			shift
 			;;
 	esac
