@@ -19,7 +19,7 @@
     # - level 1 "none": do nothing 
     # - level 2 "generated": Copy paste the .env.generated file
     # - level 3 "full": also copy .env and networking.env that exist in the controller root (always copy and override if one already exist)
-    refresh_config: "{{ lookup('env','REFRESH_CONFIG') | default('generated', true) }}" # none|generated|full
+    refresh_config: "{{ lookup('env','REFRESH_CONFIG') | default('full', true) }}" # none|generated|full
 
   tasks:
     # Init workdir
