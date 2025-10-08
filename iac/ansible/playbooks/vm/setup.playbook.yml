@@ -190,9 +190,12 @@
 
     - name: Compose up via compose.sh (recreate/pull/build)
       ansible.builtin.command:
-        cmd: "./compose.sh --proxmox up -d"
+        cmd: "./compose.sh --proxmox up -d --wait"
         chdir: "{{ work_dir }}/apps/{{ app_name }}"
       register: compose_up
+      retries: 5
+      delay: 10
+      until: compose_up.rc == 0
       changed_when: >
         'Creating' in compose_up.stdout or
         'Recreating' in compose_up.stdout or
