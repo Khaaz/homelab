@@ -152,3 +152,9 @@ Other tools todo:
 Links:
 
 - dashboard: https://trymotherboard.com/?utm_source=tldrfounders
+
+
+
+Notes:
+open a port (tcp): nc -lnvp <port>
+request (syn) (tcp): nc -nvz <ip> <port>
