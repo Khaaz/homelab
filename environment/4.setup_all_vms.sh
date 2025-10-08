@@ -8,17 +8,6 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
-## Usage
-usage() {
-	echo "Usage: $0 <vm>"
-	exit 1
-}
-
-## Input verification
-if [ -z  "$1"]; then
-	usage
-fi
-
 #
 ## Core
 #
