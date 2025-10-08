@@ -23,22 +23,53 @@ iface vmbr0 inet static
     post-up   echo 1 > /proc/sys/net/ipv4/ip_forward
     post-down echo 0 > /proc/sys/net/ipv4/ip_forward
 
-	# DNAT inbound traffic to FW1 (10.10.1.2) (443, 2222) ===
-	post-up   iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22 -j accept
+	## UP
+	# INPUT
+	# Allow ping, loopback, established
+	# Allow 22, 8006 from LAN
+	post-up   iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+	post-up   iptables -A INPUT -i lo -j ACCEPT
+	post-up   iptables -A INPUT -p icmp -j ACCEPT
+	post-up   iptables -A INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22   -j ACCEPT
+	post-up   iptables -A INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
+	post-up   iptables -A INPUT -j DROP
+
+	# PREROUTING DNAT
+	# Allow inbound traffic to FW1 (10.10.1.2) (443, 2222, 53)
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-up   iptables -t nat -A PREROUTING -p udp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 443  -j DNAT --to-destination 10.10.1.2:443
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
-    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
+    
+	# FORWARD
+	# Allow forwards for DNATed services (443, 2222, 53) and established traffic
+	# TODO RM: post-up   iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+	post-up   iptables -A FORWARD -p tcp -d 10.10.1.200 --dport 53 -j ACCEPT
+	post-up   iptables -A FORWARD -p udp -d 10.10.1.200 --dport 53 -j ACCEPT
+	post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
     post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 2222 -j ACCEPT
+	post-up   iptables -A FORWARD -j DROP
 
-	post-down iptables -D INPUT -p tcp -d {{ ansible_default_ipv4.address }} --dport 22 -j deny
+	## DOWN
+	# INPUT
+    post-down iptables -D INPUT -j DROP
+    post-down iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
+    post-down iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22   -j ACCEPT
+    post-down iptables -D INPUT -p icmp -j ACCEPT
+    post-down iptables -D INPUT -i lo -j ACCEPT
+    post-down iptables -D INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+	# PREROUTING DNAT
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-down iptables -t nat -D PREROUTING -p udp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 443  -j DNAT --to-destination 10.10.1.2:443
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
-    post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
+    # FORWARD
+	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
     post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 2222 -j ACCEPT
+    post-down iptables -D FORWARD -p tcp -d 10.10.1.200 --dport 53 -j ACCEPT
+    post-down iptables -D FORWARD -p udp -d 10.10.1.200 --dport 53 -j ACCEPT
+    # TODO RM: post-down iptables -D FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+    post-down iptables -D FORWARD -j DROP
 
 # vmbr1 = LAN GW (10.10.1.0/24) - internal L2 bridge [gateway]
 auto vmbr1
@@ -47,14 +78,31 @@ iface vmbr1 inet static
     bridge_ports none
     bridge_stp off
     bridge_fd 0
-
     comment "LAN GW"
+
 	# Add route to vmbr1
 	post-up   ip route add 10.10.1.0/24 dev vmbr1
     post-down ip route del 10.10.1.0/24 dev vmbr1
 
-	# SNAT outbound traffic to internet
+	## UP
+	# POSTROUTING SNAT
+	# Allow outbound traffic to internet via vmbr0
 	post-up iptables -t nat -A POSTROUTING -s 10.10.1.0/24 -o vmbr0 -j MASQUERADE
+	# FORWARD
+	# Block NEW connections from vmbr1 to LAN 192.168.1.0/24
+	# Allow vmbr1 to internet
+	post-up iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+	post-up iptables -A FORWARD -d 192.168.1.0/24 -j DROP
+	post-up iptables -A FORWARD -s 10.10.1.0/24 -o vmbr0 -j ACCEPT
+	post-up iptables -A FORWARD -j DROP
+	
+	## DOWN
+	# FORWARD
+	post-down iptables -D FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+	post-down iptables -D FORWARD -d 192.168.1.0/24 -j DROP
+	post-down iptables -D FORWARD -s 10.10.1.0/24 -o vmbr0 -j ACCEPT
+	post-down iptables -D FORWARD -j DROP
+	# POSTROUTING SNAT
 	post-down iptables -t nat -D POSTROUTING -s 10.10.1.0/24 -o vmbr0 -j MASQUERADE
 
 # vmbr2 = LAN MGMT (10.10.2.0/24) - internal L2 bridge [management]
