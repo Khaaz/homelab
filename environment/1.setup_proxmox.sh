@@ -62,4 +62,4 @@ if [ "$AUTO" = true ]; then
 fi
 
 # Execute the command
-$ROOT_DIR/iac/1.setup_proxmox.sh "$PLAYBOOK_ARGS" "$DEV_ARGS" "$@"
+$ROOT_DIR/iac/1.setup_proxmox.sh "$PLAYBOOK_ARGS" $DEV_ARGS "$@"
