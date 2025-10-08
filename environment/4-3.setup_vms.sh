@@ -8,58 +8,90 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
-## Usage
-usage() {
-	echo "Usage: $0"
-	echo "Setup all enabled VMs from global-config.toml"
+#
+## Core
+#
+
+# Load global config once
+CONFIG_FILE="$SCRIPT_DIR/../config/global-config.toml"
+if [ ! -f "$CONFIG_FILE" ]; then
+	echo "Error: Global config file not found: $CONFIG_FILE"
 	exit 1
-}
+fi
+CONFIG_CONTENT=$(cat "$CONFIG_FILE")
+
+# Initialize summary lists
+INSTALLED_VMS=""
+SKIPPED_VMS=""
 
 ## Check if VM is enabled in global config
 is_vm_enabled() {
 	local vm_name="$1"
-	local config_file="$SCRIPT_DIR/../config/global-config.toml"
-	
-	if [ ! -f "$config_file" ]; then
-		echo "Error: Global config file not found: $config_file"
-		return 1
-	fi
-	
-	# Extract the enabled value for the VM section
-	local enabled_value=$(grep -A 1 "^\[$vm_name\]" "$config_file" | grep "enabled=" | cut -d'=' -f2 | tr -d ' "')
-	
-	if [ "$enabled_value" = "true" ]; then
-		return 0  # enabled
-	else
-		return 1  # disabled or not found
-	fi
+
+	# Parse the preloaded config content once, robust to spaces/tabs/newlines and key order
+	# - Match section header [vm_name]
+	# - Within the section, find the last occurrence of enabled= and normalize whitespace
+	# - Ignore comments starting with #
+	printf "%s" "$CONFIG_CONTENT" | awk -v section="$vm_name" '
+		BEGIN { in_section = 0; enabled = "" }
+		{
+			line = $0
+			header = line
+			sub(/#.*/, "", header)                # strip comments for header detection
+		}
+		# any new section ends current
+		header ~ /^[[:space:]]*\[/ { in_section = 0 }
+		# match exact section header after removing comments and surrounding whitespace
+		header ~ "^[[:space:]]*\\[" section "\\][[:space:]]*$" { in_section = 1; next }
+		in_section {
+			work = line
+			sub(/#.*/, "", work)                 # strip comments
+			gsub(/[[:space:]]/, "", work)        # remove all whitespace
+			if (work ~ /^enabled=/) {
+				split(work, a, "=")
+				enabled = a[2]
+			}
+		}
+		END {
+			if (enabled == "true") exit 0; else exit 1
+		}
+	'
 }
 
 ## Setup VM if enabled
 setup_vm_if_enabled() {
 	local vm_name="$1"
-	
 	if is_vm_enabled "$vm_name"; then
 		echo "Setting up $vm_name (enabled in config)..."
 		$SCRIPT_DIR/4-2.setup_vm.sh "$vm_name"
+		# Add to installed list
+		if [ -z "$INSTALLED_VMS" ]; then
+			INSTALLED_VMS="$vm_name"
+		else
+			INSTALLED_VMS="$INSTALLED_VMS, $vm_name"
+		fi
 	else
 		echo "Skipping $vm_name (disabled in config)..."
+		# Add to skipped list
+		if [ -z "$SKIPPED_VMS" ]; then
+			SKIPPED_VMS="$vm_name"
+		else
+			SKIPPED_VMS="$SKIPPED_VMS, $vm_name"
+		fi
 	fi
 }
 
-#
-## Core - Setup all enabled VMs in order
-#
-
 echo "Checking global-config.toml for enabled VMs..."
 
-# Core infrastructure VMs (must be set up first)
+# Core infrastructure VMs (besides firewalls / routers) (must be set up first)
 setup_vm_if_enabled "dns"
 setup_vm_if_enabled "reverse-proxy"
 setup_vm_if_enabled "vpn"
 
 # Application VMs
+setup_vm_if_enabled "cloud"
 setup_vm_if_enabled "home-automation"
+setup_vm_if_enabled "immich"
 setup_vm_if_enabled "media-management"
 setup_vm_if_enabled "media-server"
 setup_vm_if_enabled "nas"
@@ -70,4 +102,19 @@ setup_vm_if_enabled "vault"
 setup_vm_if_enabled "vscode-server"
 setup_vm_if_enabled "white-board"
 
-echo "VM setup complete!"
+echo "VMs setup complete!"
+
+# Summary of VMs
+echo ""
+echo "=== VM Setup Summary ==="
+if [ -n "$INSTALLED_VMS" ]; then
+	echo "Installed VMs: $INSTALLED_VMS"
+else
+	echo "Installed VMs: none"
+fi
+
+if [ -n "$SKIPPED_VMS" ]; then
+	echo "Skipped VMs: $SKIPPED_VMS"
+else
+	echo "Skipped VMs: none"
+fi
