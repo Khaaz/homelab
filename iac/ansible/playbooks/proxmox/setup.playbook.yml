@@ -1,6 +1,6 @@
 ---
 # Wait for the proxmox server to be reachable
-- import_playbook: common/wait-for-connection.playbook.yml
+- import_playbook: ../common/wait-for-connection.playbook.yml
   vars:
     target_group: homelab
 # Install proxmox on raw debian
