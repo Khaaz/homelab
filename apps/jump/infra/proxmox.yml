@@ -18,5 +18,5 @@ order_tier: 2
 dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr2 # mgmt
-    ipv4: 10.10.2.11/24
+    ipv4: 10.10.2.10/24
     gateway: 10.10.2.1

@@ -13,5 +13,5 @@ dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
     vlan: 32 # intern
-    ipv4: 10.10.32.10/24
+    ipv4: 10.10.32.30/24
     gateway: 10.10.32.1
