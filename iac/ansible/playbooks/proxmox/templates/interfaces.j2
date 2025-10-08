@@ -24,6 +24,7 @@ iface vmbr0 inet static
     post-down echo 0 > /proc/sys/net/ipv4/ip_forward
 
 	## UP
+
 	# INPUT
 	# Allow ping, loopback, established
 	# Allow 22, 8006 from LAN
@@ -40,17 +41,27 @@ iface vmbr0 inet static
     post-up   iptables -t nat -A PREROUTING -p udp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 443  -j DNAT --to-destination 10.10.1.2:443
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
-    
+    # == Additional ports / app specifics ==
+	# Allow plex ports from LAN (local network discovery)
+    post-up   iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32400       -j DNAT --to-destination 10.10.1.2:32400
+    post-up   iptables -t nat -A PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32410:32414 -j DNAT --to-destination 10.10.1.2
+    # == Additional ports / app specifics==
+
 	# FORWARD
 	# Allow forwards for DNATed services (443, 2222, 53) and established traffic
-	# TODO RM: post-up   iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-	post-up   iptables -A FORWARD -p tcp -d 10.10.1.200 --dport 53 -j ACCEPT
-	post-up   iptables -A FORWARD -p udp -d 10.10.1.200 --dport 53 -j ACCEPT
-	post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
-    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 2222 -j ACCEPT
+	post-up   iptables -A FORWARD -p tcp -d 10.10.1.200 --dport 53   -j ACCEPT
+	post-up   iptables -A FORWARD -p udp -d 10.10.1.200 --dport 53   -j ACCEPT
+	post-up   iptables -A FORWARD -p tcp -d 10.10.1.2   --dport 443  -j ACCEPT
+    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2   --dport 2222 -j ACCEPT
+	# == Additional ports / app specifics==
+    # Plex ports forwarding (local network discovery)
+    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 32400       -j ACCEPT
+    post-up   iptables -A FORWARD -p udp -d 10.10.1.2 --dport 32410:32414 -j ACCEPT
+	# == Additional ports / app specifics==
 	post-up   iptables -A FORWARD -j DROP
 
 	## DOWN
+
 	# INPUT
     post-down iptables -D INPUT -j DROP
     post-down iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
@@ -58,17 +69,28 @@ iface vmbr0 inet static
     post-down iptables -D INPUT -p icmp -j ACCEPT
     post-down iptables -D INPUT -i lo -j ACCEPT
     post-down iptables -D INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
 	# PREROUTING DNAT
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-down iptables -t nat -D PREROUTING -p udp -d {{ ansible_default_ipv4.address }} --dport 53   -j DNAT --to-destination 10.10.1.200:53
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 443  -j DNAT --to-destination 10.10.1.2:443
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
-    # FORWARD
-	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 443 -j ACCEPT
-    post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 2222 -j ACCEPT
-    post-down iptables -D FORWARD -p tcp -d 10.10.1.200 --dport 53 -j ACCEPT
-    post-down iptables -D FORWARD -p udp -d 10.10.1.200 --dport 53 -j ACCEPT
-    # TODO RM: post-down iptables -D FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+    # == Additional ports / app specifics==
+	# Plex ports cleanup
+    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32400 -j DNAT --to-destination 10.10.1.2:32400
+    post-down iptables -t nat -D PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32410:32414 -j DNAT --to-destination 10.10.1.2
+    # == Additional ports / app specifics==
+	
+	# FORWARD
+	post-down iptables -D FORWARD -p tcp -d 10.10.1.2   --dport 443  -j ACCEPT
+    post-down iptables -D FORWARD -p tcp -d 10.10.1.2   --dport 2222 -j ACCEPT
+    post-down iptables -D FORWARD -p tcp -d 10.10.1.200 --dport 53 	 -j ACCEPT
+    post-down iptables -D FORWARD -p udp -d 10.10.1.200 --dport 53 	 -j ACCEPT
+    # == Additional ports / app specifics==
+	# Plex ports cleanup
+    post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 32400       -j ACCEPT
+    post-down iptables -D FORWARD -p udp -d 10.10.1.2 --dport 32410:32414 -j ACCEPT
+	# == Additional ports / app specifics==
     post-down iptables -D FORWARD -j DROP
 
 # vmbr1 = LAN GW (10.10.1.0/24) - internal L2 bridge [gateway]
