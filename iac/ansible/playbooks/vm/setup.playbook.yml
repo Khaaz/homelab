@@ -188,20 +188,39 @@
       register: compose_down
       changed_when: "'Stopping' in compose_down.stdout or 'Removing' in compose_down.stdout or compose_down.rc == 0"
 
-    - name: Compose up via compose.sh (recreate/pull/build)
-      ansible.builtin.command:
-        cmd: "./compose.sh --proxmox up -d --wait"
-        chdir: "{{ work_dir }}/apps/{{ app_name }}"
-      register: compose_up
-      retries: 5
-      delay: 10
-      until: compose_up.rc == 0
-      changed_when: >
-        'Creating' in compose_up.stdout or
-        'Recreating' in compose_up.stdout or
-        'Pulling' in compose_up.stdout or
-        'Building' in compose_up.stdout or
-        compose_up.rc == 0
+    - blocks:
+        - name: Compose up via compose.sh (recreate/pull/build)
+          ansible.builtin.command:
+            cmd: "./compose.sh --proxmox up -d --wait"
+            chdir: "{{ work_dir }}/apps/{{ app_name }}"
+          register: compose_up
+          retries: 5
+          delay: 10
+          until: compose_up.rc == 0
+          changed_when: >
+            'Creating' in compose_up.stdout or
+            'Recreating' in compose_up.stdout or
+            'Pulling' in compose_up.stdout or
+            'Building' in compose_up.stdout or
+            compose_up.rc == 0
+      rescue:
+        - name: Retry 5 times down/up sequence (first launch)
+          ansible.builtin.shell: |
+            set -o pipefail
+            ./compose.sh --proxmox down --remove-orphans || true
+            ./compose.sh --proxmox up -d --wait
+          args:
+            chdir: "{{ work_dir }}/apps/{{ app_name }}"
+          register: compose_try
+          retries: 5
+          delay: 10
+          until: compose_try.rc == 0
+          changed_when: >
+            'Creating' in compose_try.stdout or
+            'Recreating' in compose_try.stdout or
+            'Pulling' in compose_try.stdout or
+            'Building' in compose_try.stdout or
+            compose_try.rc == 0
 
   post_tasks:
     - name: Cleanup temporary clone directory
