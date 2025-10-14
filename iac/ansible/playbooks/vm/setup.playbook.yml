@@ -188,7 +188,7 @@
       register: compose_down
       changed_when: "'Stopping' in compose_down.stdout or 'Removing' in compose_down.stdout or compose_down.rc == 0"
 
-    - blocks:
+    - block:
         - name: Compose up via compose.sh (recreate/pull/build)
           ansible.builtin.command:
             cmd: "./compose.sh --proxmox up -d --wait"
