@@ -28,6 +28,28 @@
         mode: "0644"
       notify: Reload networking
   handlers:
+    - name: Flush iptables before networking reload
+      ansible.builtin.shell: |
+        set -e
+        # Set default policies to ACCEPT to avoid lockout during reload
+        iptables -P INPUT ACCEPT || true
+        iptables -P FORWARD ACCEPT || true
+        iptables -P OUTPUT ACCEPT || true
+
+        # Flush and delete chains in all relevant tables
+        iptables -F || true
+        iptables -X || true
+        iptables -t nat -F || true
+        iptables -t nat -X || true
+        iptables -t mangle -F || true
+        iptables -t mangle -X || true
+        iptables -t raw -F || true
+        iptables -t raw -X || true
+      args:
+        executable: /bin/bash
+      listen: Reload networking
+
     - name: Reload networking
       become: true
       ansible.builtin.command: ifreload -a
+      listen: Reload networking
