@@ -161,4 +161,4 @@ echo "NFS services started"
 rc-update add samba default || true
 rc-service samba restart || rc-service samba start || true
 
-echo "Samba services started"
+echo "SAMBA services started"

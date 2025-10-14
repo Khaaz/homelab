@@ -148,3 +148,4 @@ Enable network storage on windows:
 - ->->->-> Enable insecure guest logons / Activer les ouvertures de session invité non sécurisé
 
 - in cmd: `net use Z: \\192.168.1.200\media`
+- in cmd: `net use Z: \\192.168.1.200\media /persistent:yes`

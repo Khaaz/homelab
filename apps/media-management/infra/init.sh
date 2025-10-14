@@ -5,28 +5,28 @@ modprobe tun
 echo "tun" >> /etc/modules
 
 # Create dl directories
-mkdir -p /mnt/media/media/anime
-mkdir -p /mnt/media/media/movies
-mkdir -p /mnt/media/media/series
-mkdir -p /mnt/media/media/unsorted
+mkdir -p /mnt/data/media/anime
+mkdir -p /mnt/data/media/movies
+mkdir -p /mnt/data/media/series
+mkdir -p /mnt/data/media/unsorted
 
-mkdir -p /mnt/media/torrents/anime
-mkdir -p /mnt/media/torrents/complete
-mkdir -p /mnt/media/torrents/incomplete
-mkdir -p /mnt/media/torrents/movies
-mkdir -p /mnt/media/torrents/series
-mkdir -p /mnt/media/torrents/unsorted
+mkdir -p /mnt/data/torrents/anime
+mkdir -p /mnt/data/torrents/complete
+mkdir -p /mnt/data/torrents/incomplete
+mkdir -p /mnt/data/torrents/movies
+mkdir -p /mnt/data/torrents/series
+mkdir -p /mnt/data/torrents/unsorted
 
-mkdir -p /mnt/media/usenet/anime
-mkdir -p /mnt/media/usenet/complete
-mkdir -p /mnt/media/usenet/incomplete
-mkdir -p /mnt/media/usenet/movies
-mkdir -p /mnt/media/usenet/series
-mkdir -p /mnt/media/usenet/unsorted
+mkdir -p /mnt/data/usenet/anime
+mkdir -p /mnt/data/usenet/complete
+mkdir -p /mnt/data/usenet/incomplete
+mkdir -p /mnt/data/usenet/movies
+mkdir -p /mnt/data/usenet/series
+mkdir -p /mnt/data/usenet/unsorted
 
-mkdir -p /mnt/media/filebot
-mkdir -p /mnt/media/watch
+mkdir -p /mnt/data/filebot
+mkdir -p /mnt/data/watch
 
 # Change permissionsw
-chown -R nobody:nogroup /mnt/media
-chmod -R 777 /mnt/media
+chown -R nobody:nogroup /mnt/data
+chmod -R 777 /mnt/data
