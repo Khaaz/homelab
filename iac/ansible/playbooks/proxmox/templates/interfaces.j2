@@ -121,12 +121,16 @@ iface vmbr1 inet static
 	# FORWARD
 	# Block NEW connections from vmbr1 to LAN 192.168.1.0/24
 	# Allow vmbr1 to internet
+	post-up iptables -A FORWARD -p tcp -d {{ nameserver_ip }} --dport 53 -j ACCEPT
+	post-up iptables -A FORWARD -p udp -d {{ nameserver_ip }} --dport 53 -j ACCEPT
 	post-up iptables -A FORWARD -d 192.168.1.0/24 -j DROP
 	post-up iptables -A FORWARD -s 10.10.1.0/24 -o vmbr0 -j ACCEPT
 	post-up iptables -A FORWARD -j DROP
 	
 	## DOWN
 	# FORWARD
+	post-down iptables -D FORWARD -p tcp -d {{ nameserver_ip }} --dport 53 -j ACCEPT
+	post-down iptables -D FORWARD -p udp -d {{ nameserver_ip }} --dport 53 -j ACCEPT
 	post-down iptables -D FORWARD -d 192.168.1.0/24 -j DROP
 	post-down iptables -D FORWARD -s 10.10.1.0/24 -o vmbr0 -j ACCEPT
 	post-down iptables -D FORWARD -j DROP

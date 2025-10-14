@@ -2,6 +2,8 @@
 - name: Configure Proxmox networking and host filtering
   hosts: homelab
   become: true
+  vars:
+    nameserver_ip: "{{ lookup('env', 'IP_NAMESERVER') | default('192.168.1.254', true) }}"
   tasks:
     - name: Detect physical NIC automatically
       ansible.builtin.set_fact:
