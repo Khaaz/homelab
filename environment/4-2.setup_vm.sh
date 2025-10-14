@@ -11,7 +11,7 @@ SCRIPT_DIR=$(get_script_dir)
 ## Usage
 usage() {
 	echo "Usage: $0 [--auto] <vm>"
-	echo "--auto mode will use sensible defaults (no-op in this script)"
+	echo "--auto mode will use sensible defaults"
 	exit 1
 }
 
@@ -45,11 +45,18 @@ fi
 #
 ## Core
 #
-# --auto is intentionally a no-op in this script to keep behavior unchanged
+AUTO_ARGS=""
+if [ "$AUTO" = true ]; then
+	AUTO_ARGS="--auto"
+fi
 
-# Execute command directely via jump / resolve vm name via dns
-ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
-	-o StrictHostKeyChecking=no \
-	-p 2222 \
-	admin@192.168.1.200 \
-	"./homelab/apps/jump/ansible_vm.sh $VM_NAME"
+if [ "$VM_NAME" = "jump" ]; then
+	$SCRIPT_DIR/4-1.setup_vm_jump.sh $AUTO_ARGS
+else
+	# Execute command directely via jump / resolve vm name via dns
+	ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
+		-o StrictHostKeyChecking=no \
+		-p 2222 \
+		admin@192.168.1.200 \
+		"./homelab/apps/jump/ansible_vm.sh $VM_NAME"
+fi

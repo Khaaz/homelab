@@ -22,10 +22,14 @@ fi
 #
 ## Core
 #
-# Execute command directely via jump / resolve vm name via dns
-ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
-    -o StrictHostKeyChecking=no \
-	-p 2222 \
-    -t \
-	admin@192.168.1.200 \
-	"./homelab/apps/jump/ssh_vm.sh $1"
+if [ "$1" = "jump" ]; then
+	$SCRIPT_DIR/ssh_jump.sh
+else
+	# Execute command directely via jump / resolve vm name via dns
+	ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
+		-o StrictHostKeyChecking=no \
+		-p 2222 \
+		-t \
+		admin@192.168.1.200 \
+		"./homelab/apps/jump/ssh_vm.sh $1"
+fi
