@@ -1,17 +1,32 @@
 specs:
   cores: 2
-  memory_size: 3072 # MB
+  ram_size: 3072 # MB
   disk_size: 10 # GB
+  additional_disks: []
+  # PCI Passthrough: Intel iGPU for Plex hardware transcoding (Quick Sync)
+  # Find your Intel iGPU PCI address with: lspci | grep -i vga
+  # Common PCI address: 0000:00:02.0 (Intel Integrated Graphics)
+  # We use 'mapping' instead of 'id' because direct PCI passthrough requires root
+  # The mapping 'pci_igpu_mapping' is created by Ansible playbook 4.additional-setup
+  pci_devices:
+    - mapping: "pci_igpu_mapping"  # Use mapping for non-root access
+    # Alternative (requires root):
+    # - id: "0000:00:02.0"
+order_tier: 3
 config:
   docker: true
   router: false
   routes:
     - network: 10.10.32.0/24 # intern
       via: 10.10.31.2 # firewall-srv
-order_tier: 3
-dns_servers: [1.1.1.1, 8.8.8.8]
+  dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
     vlan: 31 # extern
     ipv4: 10.10.31.11/24
     gateway: 10.10.31.1
+# Mount NAS /media share
+nas:
+  ip: "10.10.32.30"
+  mount_path: "/mnt/media"
+  nfs_export: "/media"

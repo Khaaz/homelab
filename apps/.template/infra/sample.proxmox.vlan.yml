@@ -1,13 +1,15 @@
 specs:
   cores: 2
-  memory_size: 2048 # MB
+  ram_size: 2048 # MB
   disk_size: 10 # GB
+  additional_disks: []
+  pci_devices: []
 config:
   docker: true
   router: false
   routes: []
-order: 100
-dns_servers: [1.1.1.1, 8.8.8.8]
+  dns_servers: [1.1.1.1, 8.8.8.8]
+order_tier: 100
 nics:
   - bridge: vmbr3 # srv
     trunks: 
@@ -18,3 +20,4 @@ nics:
         ipv4: 10.10.31.2/24
       - id: 32 # intern
         ipv4: 10.10.32.2/24
+nas: null

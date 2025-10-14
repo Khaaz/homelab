@@ -1,14 +1,17 @@
 specs:
   cores: 1
-  memory_size: 2048 # MB
+  ram_size: 2048 # MB
   disk_size: 10 # GB
+  additional_disks: []
+  pci_devices: []
+order_tier: 1
 config:
   docker: true
   router: false
   routes: []
-order_tier: 1
-dns_servers: [1.1.1.1, 8.8.8.8]
+  dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr1 # gw
     ipv4: 10.10.1.200/24
     gateway: 10.10.1.2
+nas: null

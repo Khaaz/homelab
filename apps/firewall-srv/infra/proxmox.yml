@@ -1,18 +1,21 @@
 specs:
   cores: 1
-  memory_size: 1024 # MB
+  ram_size: 1024 # MB
   disk_size: 8 # GB
+  additional_disks: []
+  pci_devices: []
+order_tier: 1
 config:
   docker: false
   router: true
   routes: []
-order_tier: 1
-dns_servers: [1.1.1.1, 8.8.8.8]
+  dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
     trunks: 
       - id: 31 # extern
         ipv4: 10.10.31.2/24
-        gateway: 10.10.31.2
+        gateway: 10.10.31.1
       - id: 32 # intern
         ipv4: 10.10.32.2/24
+nas: null

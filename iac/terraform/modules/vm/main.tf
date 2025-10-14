@@ -24,8 +24,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
     type  = "x86-64-v2-AES"
   }
   memory {
-    dedicated = try(var.vm_cfg.specs.memory_size, 2048)
-    floating  = try(var.vm_cfg.specs.memory_size, 2048) # enable ballooning (if floating = dedicated) 
+    dedicated = try(var.vm_cfg.specs.ram_size, 2048)
+    floating  = try(var.vm_cfg.specs.ram_size, 2048) # enable ballooning (if floating = dedicated) 
   }
 
   boot_order = ["scsi0"]

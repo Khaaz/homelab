@@ -17,16 +17,19 @@ variable "proxmox_vm_template_id" {
 variable "tier_vms" {
   type = map(object({
     specs = object({
-      cores       = number
-      memory_size = number
-      disk_size   = number 
-    })
-    config = object({
-      docker = bool
-      router = bool
-      routes = optional(list(object({
-        network = string                # Target network (ip/mask)
-        via     = string                # Gateway to access this network (ip)
+      cores     = number
+      ram_size  = number
+      disk_size = number
+      # Additional disks (optional) - supports regular disks and passthrough
+      additional_disks = optional(list(object({
+        size         = optional(number)        # Size in GB (for regular disks)
+        passthrough  = optional(string)        # For passthrough: "/dev/disk/by-id/ata-XXX"
+      })))
+      # PCI device passthrough (optional) - for SATA controllers, GPUs, etc.
+      # Provide either 'id' (direct PCI address, requires root) OR 'mapping' (resource mapping, non-root)
+      pci_devices = optional(list(object({
+        id      = optional(string)        # Direct PCI address: "0000:00:17.0" (requires root)
+        mapping = optional(string)        # Resource mapping: "pci_igpu_mapping" (non-root, recommended)
       })))
     })
     # tier 0 is GW
@@ -34,7 +37,15 @@ variable "tier_vms" {
     # tier 2 is management and other mandatory VMs
     # tier 3 is all the "app" VM
     order_tier  = number
-    dns_servers = optional(list(string), ["1.1.1.1", "8.8.8.8"])
+    config = object({
+      docker = bool
+      router = bool
+      routes = optional(list(object({
+        network = string                # Target network (ip/mask)
+        via     = string                # Gateway to access this network (ip)
+      })))
+      dns_servers = optional(list(string), ["1.1.1.1", "8.8.8.8"])
+    })
     nics = list(object({
       bridge  = string                  # vmbr3
       ipv4    = optional(string)        # "10.10.x.x/24"
@@ -48,6 +59,12 @@ variable "tier_vms" {
         ipv4    = string                        # IP on that VLAN
         gateway = optional(string)              # default GW for this vlan (if any)
       })))
+    }))
+    # NAS configuration (optional) - for VMs that need NFS mounts
+    nas = optional(object({
+      ip         = string              # IP address of the NAS VM
+      mount_path = string              # Local mount point (e.g., "/mnt/nas")
+      nfs_export = string              # NFS export path on NAS (e.g., "/data")
     }))
   }))
   description = "Map of VMs config (vm name => vm config) for this tier"
