@@ -1,128 +1,130 @@
-# nas
+# NAS VM
 
-## Context
+Simple NAS VM with NFS server and disk passthrough support.
 
-### Overview
+## Configuration
 
-Central hub for all home automation tasks using Home Assistant. This stack enables orchestration of smart devices, automations, and integrations, providing a unified dashboard and control system for your home.
-
-### Services
-
-- **Home Assistant**:
-  - Orchestrates automations, device integrations, and provides the main dashboard.
-  - Connects smart devices (lights, sensors, switches, etc.)
-  - Creates automations and routines
-  - Monitors home status and events
-  - Integrates with voice assistants (Google Assistant, Alexa) and third-party services
-
-## Architecture
-
-### Schema
-
-(To be added)
-
-### Features
-
-- Single-container deployment: Runs Home Assistant in a dedicated Docker container on its own isolated Docker network for security and reliability.
-- Configuration templates: Initial configuration is applied from the `_setup` directory on first start.
-- Reverse proxy integration: Designed to work with a reverse proxy (see the reverse-proxy stack) for secure external access and custom domains.
-- Auto-discovery: Home Assistant will auto-discover supported devices on your network and allow you to set up automations via its web UI.
-- Extensible: Add functionality with integrations, add-ons, and custom scripts.
-
-### File structure
-
-- `apps/`: Contains all apps for this stack.
-  - `home-assistant/`
-- `src/`: Docker Compose file and configuration templates for Home Assistant.
-  - `docker-compose.yaml`
-  - `config/`: Stores environment files and configuration templates.
-- `compose.sh`: main script to start the stack
-
-### _setup directory
-
-A `_setup` directory can be added in each app in the stack to help automating the setup of the app.
-
-Configuration templates stored in `_setup` are automatically applied the first time the container is started, ensuring a consistent initial setup. 
-
-- SQL files in `_setup/sql` are executed against the database
-- Template files in `_setup/templates` are parsed and filled with environment variable values. 
-
-These operations are handled via the `post_start` hook in the Docker Compose configuration, using scripts located in `src/app-bootstrap` at the root of the monorepo.
-
-A setup directory look like this:
-
-- `_setup/`: Initial configuration templates applied on first container start.
-  - `_setup/sql/`: SQL files to be executed against the database (if any).
-  - `_setup/templates/`: Template files parsed and filled with environment variable values.
+The NAS VM is configured with:
+- **Alpine Linux** base
+- **NFS server** for network file sharing
+- **Disk passthrough** for direct access to a physical disk
+- **Network**: srv network (10.10.32.30/24)
 
 ## Setup
 
-### Initial setup
+### 1. Configure Disk Passthrough
 
-1. Copy the networking environment template:
-   ```bash
-   cp src/config/networking.env.template src/config/networking.env
-   ```
-  Adjust the environment variables, see next section.
-2. Copy the main environment template:
-   ```bash
-   cp src/config/.env.template src/config/.env
-   ```
-  Adjust the environment variables, see next section.
-
-### Environment files
-
-**networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
-
-| Variable                | Description                                 | Example         |
-|-------------------------|---------------------------------------------|-----------------|
-| NAS_HOST_IP | IP of the machine that hosts this stack     | 192.168.1.200   |
-
-**.env**: Used to override values from `.env.default` if needed (see `.env.template`).
-
-| Variable     | Description                                 | Example |
-|--------------|---------------------------------------------|---------|
-| (none)       | No secrets required for this stack           |         |
-
-You may override any other environment variable as needed in either file.
-
-### Running service
-
-Start the stack with:
+Before deploying, update the disk ID in `infra/proxmox.yml`:
 
 ```bash
-./compose.sh up -d
+# On Proxmox host, find your disk ID:
+ls -la /dev/disk/by-id/
+
+# Update proxmox.yml with the actual disk ID:
+additional_disks:
+  - device: "/dev/disk/by-id/ata-YOUR_DISK_ID_HERE"
 ```
 
-This will launch the Home Assistant container and apply configuration templates from `_setup` on first start.
+### 2. Deploy the NAS VM
 
-### Accessing service
+```bash
+cd iac/terraform
+terraform apply
+```
 
-- **URL:** `http://127.0.0.1:8123` (or `https://ha.l.ab` with reverse proxy setup)
-- **Default port:** `8123`
+The init script will automatically:
+- Install NFS server
+- Format and mount the passthrough disk at `/data`
+- Configure NFS exports for the srv network
+- Ensure NFS server starts on boot
 
-## Details
+## NFS Export
 
-### Services and ports
+The NAS exports `/data` to the entire srv network (10.10.32.0/24) with:
+- **Read/Write** access
+- **No root squash** (root on client has root access to share)
+- **Sync** writes
 
-- Home assistant - `8123`
+## Using NAS from Other VMs
 
-### Use cases
+To mount the NAS share from another VM, add the `nas` configuration to that VM's `proxmox.yml`:
 
-- Centralized control of smart home devices
-- Automated routines (e.g., lights on at sunset, notifications for motion detection)
-- Energy monitoring and reporting
-- Voice assistant integration (Google Assistant, Alexa)
+```yaml
+# Example: apps/cloud/infra/proxmox.yml
+specs:
+  cores: 2
+  ram_size: 4096
+  disk_size: 20
+  additional_disks: []
+order_tier: 3
+config:
+  docker: true
+  router: false
+  routes:
+    - network: 10.10.31.0/24
+      via: 10.10.32.2
+  dns_servers: [1.1.1.1, 8.8.8.8]
+nics:
+  - bridge: vmbr3
+    vlan: 32
+    ipv4: 10.10.32.12/24
+    gateway: 10.10.32.1
+# Mount NAS share
+nas:
+  ip: "10.10.32.30"             # NAS VM IP
+  mount_path: "/mnt/nas"        # Local mount point
+  nfs_export: "/data"           # NFS export path
+```
 
-### Documentation
+The vendor-data cloud-init will automatically:
+- Install NFS client utilities
+- Create the mount point
+- Add fstab entry for persistence
+- Mount the NFS share
 
-- [Home Assistant Main Site](https://www.home-assistant.io/)
-- [Getting Started Guide](https://www.home-assistant.io/getting-started/)
-- [Official Documentation](https://www.home-assistant.io/docs/)
-- [Community Forums](https://community.home-assistant.io/)
+## Future Enhancements
 
-### Troubleshooting
+### Multiple Exports
 
-- Check container logs with `docker logs <container_name>`
-- Review configuration files in `src/config/`
-- For network issues, verify your reverse proxy and DNS settings
+You can configure multiple NFS exports for different purposes:
+
+1. Update `/etc/exports` in the NAS init script:
+```bash
+/data/medias  10.10.31.0/24(rw,sync,no_subtree_check) 10.10.32.0/24(rw,sync,no_subtree_check)
+/data/cloud   10.10.31.0/24(rw,sync,no_subtree_check) 10.10.32.0/24(rw,sync,no_subtree_check)
+```
+
+2. Mount different exports in different VMs:
+```yaml
+# Media server
+nas:
+  ip: "10.10.32.30"
+  mount_path: "/mnt/medias"
+  nfs_export: "/data/medias"
+
+# Cloud storage
+nas:
+  ip: "10.10.32.30"
+  mount_path: "/mnt/cloud"
+  nfs_export: "/data/cloud"
+```
+
+## Troubleshooting
+
+### Check NFS Server Status
+```bash
+ssh admin@10.10.32.30
+rc-service nfs status
+exportfs -v
+```
+
+### Check Mount on Client
+```bash
+mount | grep nfs
+df -h | grep nfs
+```
+
+### Manual Mount
+```bash
+mount -t nfs 10.10.32.30:/data /mnt/nas
+```

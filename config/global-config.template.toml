@@ -100,7 +100,7 @@
 	API_KEY_OVERSEERR=""
 
 [nas]
-	enabled=false
+	enabled=true
 
 [notes]
 	enabled=false

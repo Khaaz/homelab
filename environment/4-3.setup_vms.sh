@@ -86,6 +86,7 @@ echo "Checking global-config.toml for enabled VMs..."
 # Core infrastructure VMs (besides firewalls / routers) (must be set up first)
 setup_vm_if_enabled "dns"
 setup_vm_if_enabled "reverse-proxy"
+# setup_vm_if_enabled "nas" # no need to setup NAS vm: simple nfs server for now
 setup_vm_if_enabled "vpn"
 
 # Application VMs
@@ -94,7 +95,6 @@ setup_vm_if_enabled "home-automation"
 setup_vm_if_enabled "immich"
 setup_vm_if_enabled "media-management"
 setup_vm_if_enabled "media-server"
-setup_vm_if_enabled "nas"
 setup_vm_if_enabled "notes"
 setup_vm_if_enabled "sandbox"
 setup_vm_if_enabled "todo"
