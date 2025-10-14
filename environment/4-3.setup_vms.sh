@@ -9,6 +9,39 @@ get_script_dir() {
 SCRIPT_DIR=$(get_script_dir)
 
 #
+## Usage
+#
+usage() {
+	echo "Usage: $0 [--auto]"
+	echo "--auto mode will use sensible defaults (no-op in this script)"
+	exit 1
+}
+
+#
+## Input verification
+#
+AUTO=false
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--auto)
+			AUTO=true
+			shift
+			;;
+		--help)
+			usage
+			;;
+		*)
+			shift
+			;;
+	esac
+done
+
+# --auto is intentionally a no-op in this script to keep behavior unchanged
+if [ "$AUTO" = true ]; then
+	echo "INFO: Executing in AUTO mode (infra ready)"
+fi
+
+#
 ## Core
 #
 

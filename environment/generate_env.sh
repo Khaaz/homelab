@@ -8,6 +8,8 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
+ROOT_DIR="$SCRIPT_DIR/.."
+
 ## Usage
 usage() {
 	echo "Usage: $0 [--auto]"
@@ -32,8 +34,6 @@ done
 if [ "$AUTO" = true ]; then
 	echo "INFO: Executing in AUTO mode (infra ready)"
 fi
-
-ROOT_DIR="$SCRIPT_DIR/.."
 
 #
 ## Core

@@ -47,6 +47,10 @@ if [ "$AUTO" = false ] && [ -z "$PLAYBOOK_ARGS" ]; then
 	usage
 fi
 
+if [ "$AUTO" = true ]; then
+	echo "INFO: Executing in AUTO mode (infra ready)"
+fi
+
 #
 ## Core
 #
