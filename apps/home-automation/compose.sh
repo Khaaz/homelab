@@ -55,6 +55,9 @@ OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/.env"
 NETWORKING_ENV_FILE="$SCRIPT_DIR/config/networking.env.default"
 NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/networking.env"
 
+# proxmox env
+PROXMOX_ENV_FILE="$SCRIPT_DIR/config/proxmox.env"
+
 # source
 COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
 
@@ -62,8 +65,15 @@ COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
 export ROOT_PATH=$SCRIPT_DIR
 echo "Root: $SCRIPT_DIR"
 
+# If running with proxmox flag, include proxmox.env if present
+PROXMOX_ENV_ARG=""
+if [ "$LOCAL_FLAG" = "false" ]; then
+	PROXMOX_ENV_ARG=$(add_env_file "$PROXMOX_ENV_FILE")
+fi
+
 docker compose -f $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
+	$PROXMOX_ENV_ARG \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
 	$COMMAND

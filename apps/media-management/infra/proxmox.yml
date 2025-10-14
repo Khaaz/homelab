@@ -20,5 +20,5 @@ nics:
 # Mount NAS /media share
 nas:
   ip: "10.10.32.30"
-  mount_path: "/mnt/media"
+  mount_path: "/mnt/data"
   nfs_export: "/media"
