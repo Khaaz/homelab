@@ -3,7 +3,7 @@ set -eu
 
 MOUNT_POINT="/data"
 
-apk add --no-cache lsblk nfs-utils >/dev/null 2>&1 || true
+apk add --no-cache lsblk nfs-utils samba samba-common-tools >/dev/null 2>&1 || true
 
 ## DETERMINE DISK
 detect_data_disk() {
@@ -107,6 +107,44 @@ $MOUNT_POINT/media 10.10.31.0/24(rw,sync,no_subtree_check,no_root_squash) 10.10.
 $MOUNT_POINT/cloud 10.10.31.0/24(rw,sync,no_subtree_check,no_root_squash) 10.10.32.0/24(rw,sync,no_subtree_check,no_root_squash) 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
 EOF
 
+## CONFIGURE SAMBA
+# Minimal guest-access Samba shares for Windows clients
+mkdir -p /etc/samba
+cat > /etc/samba/smb.conf <<EOF
+[global]
+   workgroup = WORKGROUP
+   server role = standalone server
+   security = user
+   map to guest = Bad User
+   guest account = nobody
+   disable netbios = yes
+   smb ports = 445
+   server min protocol = SMB2
+
+[media]
+   path = /data/media
+   browseable = yes
+   read only = no
+   guest ok = yes
+   public = yes
+   force user = nobody
+   force group = nogroup
+   create mask = 0666
+   directory mask = 0777
+
+[cloud]
+   path = /data/cloud
+   browseable = yes
+   read only = no
+   guest ok = yes
+   public = yes
+   force user = nobody
+   force group = nogroup
+   create mask = 0666
+   directory mask = 0777
+EOF
+
+echo "Shares: $MOUNT_POINT/media, $MOUNT_POINT/cloud"
 ## START NFS SERVICES
 # Enable and start rpcbind and rpc.statd (OpenRC nfs requires it)
 rc-service rpcbind restart || rc-service rpcbind start || true
@@ -117,4 +155,10 @@ rc-update add nfs boot || true
 rc-service nfs restart || rc-service nfs start || true
 exportfs -ra || true
 
-echo "Exports: $MOUNT_POINT/media, $MOUNT_POINT/cloud"
+echo "NFS services started"
+
+## START SAMBA SERVICES
+rc-update add samba default || true
+rc-service samba restart || rc-service samba start || true
+
+echo "Samba services started"
