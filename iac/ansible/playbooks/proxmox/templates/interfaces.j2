@@ -45,10 +45,13 @@ iface vmbr0 inet static
 	# Allow plex ports from LAN (local network discovery)
     post-up   iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32400       -j DNAT --to-destination 10.10.1.2:32400
     post-up   iptables -t nat -A PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32410:32414 -j DNAT --to-destination 10.10.1.2
-    # == Additional ports / app specifics==
+	# Allow NAS ports from LAN
+    post-up   iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 2049        -j DNAT --to-destination 10.10.1.2:2049
+	# == Additional ports / app specifics==
 
 	# FORWARD
 	# Allow forwards for DNATed services (443, 2222, 53) and established traffic
+	post-up   iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 	post-up   iptables -A FORWARD -p tcp -d 10.10.1.200 --dport 53   -j ACCEPT
 	post-up   iptables -A FORWARD -p udp -d 10.10.1.200 --dport 53   -j ACCEPT
 	post-up   iptables -A FORWARD -p tcp -d 10.10.1.2   --dport 443  -j ACCEPT
@@ -57,8 +60,9 @@ iface vmbr0 inet static
     # Plex ports forwarding (local network discovery)
     post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 32400       -j ACCEPT
     post-up   iptables -A FORWARD -p udp -d 10.10.1.2 --dport 32410:32414 -j ACCEPT
+	# NAS ports forwarding
+    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 2049 -j ACCEPT
 	# == Additional ports / app specifics==
-	post-up   iptables -A FORWARD -j DROP
 
 	## DOWN
 
@@ -79,19 +83,23 @@ iface vmbr0 inet static
 	# Plex ports cleanup
     post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32400 -j DNAT --to-destination 10.10.1.2:32400
     post-down iptables -t nat -D PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32410:32414 -j DNAT --to-destination 10.10.1.2
-    # == Additional ports / app specifics==
+	# NAS ports cleanup
+    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 2049 -j DNAT --to-destination 10.10.1.2:2049
+	# == Additional ports / app specifics==
 	
 	# FORWARD
+	post-down iptables -D FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 	post-down iptables -D FORWARD -p tcp -d 10.10.1.2   --dport 443  -j ACCEPT
     post-down iptables -D FORWARD -p tcp -d 10.10.1.2   --dport 2222 -j ACCEPT
     post-down iptables -D FORWARD -p tcp -d 10.10.1.200 --dport 53 	 -j ACCEPT
     post-down iptables -D FORWARD -p udp -d 10.10.1.200 --dport 53 	 -j ACCEPT
     # == Additional ports / app specifics==
 	# Plex ports cleanup
-    post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 32400       -j ACCEPT
-    post-down iptables -D FORWARD -p udp -d 10.10.1.2 --dport 32410:32414 -j ACCEPT
+	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 32400       -j ACCEPT
+	post-down iptables -D FORWARD -p udp -d 10.10.1.2 --dport 32410:32414 -j ACCEPT
+	# NAS ports cleanup
+	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 2049 -j ACCEPT
 	# == Additional ports / app specifics==
-    post-down iptables -D FORWARD -j DROP
 
 # vmbr1 = LAN GW (10.10.1.0/24) - internal L2 bridge [gateway]
 auto vmbr1
@@ -113,14 +121,12 @@ iface vmbr1 inet static
 	# FORWARD
 	# Block NEW connections from vmbr1 to LAN 192.168.1.0/24
 	# Allow vmbr1 to internet
-	post-up iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 	post-up iptables -A FORWARD -d 192.168.1.0/24 -j DROP
 	post-up iptables -A FORWARD -s 10.10.1.0/24 -o vmbr0 -j ACCEPT
 	post-up iptables -A FORWARD -j DROP
 	
 	## DOWN
 	# FORWARD
-	post-down iptables -D FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 	post-down iptables -D FORWARD -d 192.168.1.0/24 -j DROP
 	post-down iptables -D FORWARD -s 10.10.1.0/24 -o vmbr0 -j ACCEPT
 	post-down iptables -D FORWARD -j DROP
