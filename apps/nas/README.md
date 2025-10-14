@@ -128,3 +128,23 @@ df -h | grep nfs
 ```bash
 mount -t nfs 10.10.32.30:/data /mnt/nas
 ```
+
+## detect disk for passthrough / detect pci passthrough
+
+... lsblk
+/dev/disk/by-id => uinque hardware coded
+
+lspci -nn | grep -i "SATA"
+lspci -nn | grep -i "VGA.*Intel"
+
+## windows setup
+Enable network storage on windows:
+- windows + R
+- `gpedit.msc`
+- Computer Configuration / configuration ordinateur
+- -> Administrative Templates / modèle d'administration
+- ->-> Network / Réseau
+- ->->-> Lanman Workstation / Station de travail LANMAN
+- ->->->-> Enable insecure guest logons / Activer les ouvertures de session invité non sécurisé
+
+- in cmd: `net use Z: \\192.168.1.200\media`
