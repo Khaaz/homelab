@@ -26,7 +26,7 @@
 	# Root user
 	ROOT_PASSWORD="long_root_password1!"
 	# Admin user (homelab)
-	USER_PASSWORD="long_password1!"
+	USER_HOMELAB_PASSWORD="long_password1!"
 
 [cloud] # apps/cloud
 	enabled=false
