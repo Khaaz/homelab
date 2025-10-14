@@ -68,7 +68,7 @@ create_export_dir() {
   local dir="$1"
   mkdir -p "$dir"
   chown -R nobody:nogroup "$dir"
-  chmod 777 "$dir"
+  chmod -R 777 "$dir"
 }
 
 # Ensure mount point exists
