@@ -116,6 +116,10 @@
 	# The token for your DNS provider (see apps/reverse-proxy/apps/swag/dns-conf)
 	DNS_PROVIDER_TOKEN=""
 
+    # DNS Propagation time (in second)
+	DNS_PROPAGATION_TIME=30
+
+
 	# The secret key used to sign and verify the JWT.
 	# Any token you want.
 	AUTHELIA_JWT_SECRET="a_very_important_secret"
