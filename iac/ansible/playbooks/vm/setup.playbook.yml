@@ -147,10 +147,23 @@
       when:
         - refresh_config == 'full'
       failed_when: false
+   
+    # Copy each apps/**/config/proxmox.env -> target/apps/**/config/proxmox.env if exists
+    - name: Copy each apps/**/config/proxmox.env -> target/apps/**/config/proxmox.env
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/apps/{{ item | basename }}/config/proxmox.env"
+        dest: "{{ work_dir }}/apps/{{ item | basename }}/config/proxmox.env"
+        mode: "0644"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+      loop: "{{ apps_list }}"
+      when:
+        - refresh_config == 'full'
+      failed_when: false
 
     # Copy env files from the controller repo
     # From:   {{ inventory_dir }}/../apps/<app_name>/config/
-    # Files:  networking.env, .env.generated, .env
+    # Files:  .env.generated, .env
     - name: Copy controller apps/<app_name>/config/.env.generated files -> target/apps/<app_name>/config/.env.generated
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/.env.generated"
