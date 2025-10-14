@@ -76,6 +76,7 @@ services:
       - ${APPS_FOLDER:?err}/swag/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
+      - PROPAGATION=${DNS_PROPAGATION_TIME:?err}
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
