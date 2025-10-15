@@ -96,7 +96,7 @@ setup_vm_if_enabled() {
 	local vm_name="$1"
 	if is_vm_enabled "$vm_name"; then
 		echo "Setting up $vm_name (enabled in config)..."
-		$SCRIPT_DIR/4-2.setup_vm.sh "$vm_name"
+		$SCRIPT_DIR/4-2.setup_vm.sh --auto --skip-jump "$vm_name"
 		# Add to installed list
 		if [ -z "$INSTALLED_VMS" ]; then
 			INSTALLED_VMS="$vm_name"

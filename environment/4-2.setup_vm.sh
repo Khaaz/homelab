@@ -10,19 +10,26 @@ SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
 usage() {
-    echo "Usage: $0 [--auto] [--refresh-config <none|generated|full>] <vm>"
+    echo "Usage: $0 [--auto] [--skip-jump] [--refresh-config <none|generated|full>] <vm>"
     echo "--auto mode will use sensible defaults (implies --refresh-config full)"
+    echo "--skip-jump mode will skip the jump VM before setuping the target VM"
+	echo "--refresh-config <none|generated|full> will set the refresh config level (default: full)"
     exit 1
 }
 
 ## Input verification
 AUTO=false
+SKIP_JUMP=false
 REFRESH_CONFIG="full"
 VM_NAME=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --auto)
             AUTO=true
+            shift
+            ;;
+        --skip-jump)
+            SKIP_JUMP=true
             shift
             ;;
         --refresh-config|-rc)
@@ -60,6 +67,10 @@ fi
 if [ "$VM_NAME" = "jump" ]; then
 	$SCRIPT_DIR/4-1.setup_vm_jump.sh $AUTO_ARGS
 else
+	if [ "$SKIP_JUMP" = false ]; then
+		$SCRIPT_DIR/4-1.setup_vm_jump.sh $AUTO_ARGS
+	fi
+
     # Execute command directely via jump / resolve vm name via dns
 	ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
 		-o StrictHostKeyChecking=no \
