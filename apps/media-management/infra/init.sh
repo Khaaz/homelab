@@ -27,6 +27,6 @@ mkdir -p /mnt/data/usenet/unsorted
 mkdir -p /mnt/data/filebot
 mkdir -p /mnt/data/watch
 
-# Change permissionsw
+# Change permissions
 chown -R nobody:nogroup /mnt/data
-chmod -R 777 /mnt/data
+chmod -R 2777 /mnt/data

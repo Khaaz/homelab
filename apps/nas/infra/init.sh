@@ -68,7 +68,7 @@ create_export_dir() {
   local dir="$1"
   mkdir -p "$dir"
   chown -R nobody:nogroup "$dir"
-  chmod -R 777 "$dir"
+  chmod -R 2777 "$dir"
 }
 
 # Ensure mount point exists
@@ -102,9 +102,10 @@ EOF
 # Allow extern, intern and local networks
 cat > /etc/exports <<EOF
 # NFSv4 exports for NAS
-$MOUNT_POINT 10.10.31.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,no_root_squash) 10.10.32.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,no_root_squash) 192.168.1.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,no_root_squash)
-$MOUNT_POINT/media 10.10.31.0/24(rw,sync,no_subtree_check,no_root_squash) 10.10.32.0/24(rw,sync,no_subtree_check,no_root_squash) 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
-$MOUNT_POINT/cloud 10.10.31.0/24(rw,sync,no_subtree_check,no_root_squash) 10.10.32.0/24(rw,sync,no_subtree_check,no_root_squash) 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+$MOUNT_POINT 10.10.31.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 10.10.32.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 192.168.1.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
+$MOUNT_POINT/media 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
+$MOUNT_POINT/cloud 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
+$MOUNT_POINT/share 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
 EOF
 
 ## CONFIGURE SAMBA
@@ -120,6 +121,17 @@ cat > /etc/samba/smb.conf <<EOF
    disable netbios = yes
    smb ports = 445
    server min protocol = SMB2
+
+[media]
+   path = /data/share
+   browseable = yes
+   read only = no
+   guest ok = yes
+   public = yes
+   force user = nobody
+   force group = nogroup
+   create mask = 0666
+   directory mask = 0777
 
 [media]
    path = /data/media
