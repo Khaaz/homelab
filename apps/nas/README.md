@@ -146,6 +146,15 @@ Enable network storage on windows:
 - ->-> Network / Réseau
 - ->->-> Lanman Workstation / Station de travail LANMAN
 - ->->->-> Enable insecure guest logons / Activer les ouvertures de session invité non sécurisé
+- `gpupdate /force`
 
 - in cmd: `net use Z: \\192.168.1.200\media`
 - in cmd: `net use Z: \\192.168.1.200\media /persistent:yes`
+
+## macbook
+
+in /etc/fstab
+`192.168.1.200:/share /Volumes/share nfs rw,bg,vers=4,intr,noresvport 0 0`
+
+cmd + k: connecto to server
+`nfs://192.168.1.200/share`
