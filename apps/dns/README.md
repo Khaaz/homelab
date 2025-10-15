@@ -124,6 +124,96 @@ This will launch the Unbound DNS server and apply configuration templates from `
 - **Service:** DNS resolution on port 53 (TCP/UDP)
 - **Configuration:** Set device DNS to this server's IP
 
+## Infrastructure
+
+### Proxmox VM Configuration
+
+The `infra/proxmox.yml` file defines the VM specifications for Proxmox deployment:
+
+```yaml
+specs:
+  cores: 1                    # CPU cores allocated to VM
+  ram_size: 2048              # RAM in MB
+  disk_size: 10               # Disk size in GB
+  additional_disks: []        # Additional disks (empty for this app)
+  pci_devices: []             # PCI passthrough devices (empty for this app)
+
+order_tier: 1                 # Deployment order (tier 1 = infrastructure layer)
+
+config:
+  docker: true                # Enable Docker installation
+  router: false               # Not a routing VM
+  routes: []                  # No additional routes needed (on gateway network)
+  dns_servers: [1.1.1.1, 8.8.8.8]  # Upstream DNS servers
+
+nics:                         # Network interface configuration
+  - bridge: vmbr1             # Proxmox bridge (gw network)
+    ipv4: 10.10.1.200/24      # Static IP address
+    gateway: 10.10.1.2        # Default gateway (firewall-gw)
+
+nas: null                     # NAS mount configuration (null = not using NAS)
+```
+
+**Key concepts:**
+- **order_tier**: 1 = infrastructure layer (deployed first, before management and apps)
+- **docker**: Enables automatic Docker installation for running Unbound container
+- **routes**: Empty because DNS is on gateway network with direct access everywhere
+- **nas**: Not applicable for DNS service
+
+### Network Architecture
+
+This VM is deployed on the **gateway network** (no VLAN):
+- **Network**: 10.10.1.0/24
+- **VM IP**: 10.10.1.200
+- **Gateway**: 10.10.1.2 (firewall-gw)
+- **Access**: Accessible from all networks (provides DNS for entire homelab)
+
+### Firewall Rules
+
+The `infra/nftable.conf` file defines nftables firewall rules for this VM:
+
+```nftables
+# INPUT chain - incoming traffic to this VM
+chain input {
+    policy drop;                        # Default deny all incoming
+
+    iifname lo accept                   # Allow loopback
+    ct state established,related accept # Allow established connections
+    ct state invalid drop               # Drop invalid packets
+
+    # ICMP
+    ip protocol icmp accept             # Allow ping (IPv4)
+    ip6 nexthdr icmpv6 accept          # Allow ping (IPv6)
+
+    # SSH Access
+    ip saddr 10.10.1.9 tcp dport 22 accept   # Allow SSH from jump server
+
+    # DNS Service
+    tcp dport 53 accept                 # Allow DNS queries (TCP) from anywhere
+    udp dport 53 accept                 # Allow DNS queries (UDP) from anywhere
+}
+
+# FORWARD chain - traffic routed through this VM
+chain forward {
+    policy drop;                        # Default deny forwarding
+    
+    # Docker networking
+    ip saddr 172.17.0.0/12 accept      # Allow Docker container traffic
+    ip daddr 172.17.0.0/12 accept      # Allow traffic to Docker containers
+}
+
+# OUTPUT chain - outgoing traffic from this VM
+chain output {
+    policy accept;                      # Allow all outgoing traffic
+}
+```
+
+**Authorized traffic:**
+- **SSH (port 22)**: Only from jump server (10.10.1.9)
+- **DNS (port 53 TCP/UDP)**: From any source (required for DNS service)
+- **Docker**: Full container networking enabled
+- **Outgoing**: All outgoing connections allowed (for upstream DNS queries)
+
 ## Details
 
 ### Services and ports

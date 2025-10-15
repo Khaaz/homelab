@@ -115,6 +115,100 @@ This will launch the Immich containers and apply configuration templates from `_
 - **URL:** `http://127.0.0.1:2283` (or `https://immich.l.ab` with reverse proxy setup)
 - **Default port:** `2283`
 
+## Infrastructure
+
+### Proxmox VM Configuration
+
+The `infra/proxmox.yml` file defines the VM specifications for Proxmox deployment:
+
+```yaml
+specs:
+  cores: 1                    # CPU cores allocated to VM
+  ram_size: 2048              # RAM in MB
+  disk_size: 10               # Disk size in GB
+  additional_disks: []        # Additional disks (empty for this app)
+  pci_devices: []             # PCI passthrough devices (empty for this app)
+
+order_tier: 3                 # Deployment order (tier 3 = application layer)
+
+config:
+  docker: true                # Enable Docker installation
+  router: false               # Not a routing VM
+  routes:                     # Static routes for inter-VLAN communication
+    - network: 10.10.32.0/24  # Route to intern network
+      via: 10.10.31.2         # via firewall-srv
+  dns_servers: [1.1.1.1, 8.8.8.8]  # DNS servers
+
+nics:                         # Network interface configuration
+  - bridge: vmbr3             # Proxmox bridge (srv network)
+    vlan: 31                  # VLAN ID (extern)
+    ipv4: 10.10.31.12/24      # Static IP address
+    gateway: 10.10.31.1       # Default gateway
+
+nas: null                     # NAS mount configuration (null = not using NAS)
+```
+
+**Key concepts:**
+- **order_tier**: Controls deployment order (1=infrastructure, 2=management, 3=applications)
+- **docker**: Enables automatic Docker installation via cloud-init
+- **routes**: Required for communication between VLANs (extern ↔ intern)
+- **nas**: Optional NFS mount configuration for shared storage
+
+### Network Architecture
+
+This VM is deployed on the **extern network** (VLAN 31):
+- **Network**: 10.10.31.0/24
+- **VM IP**: 10.10.31.12
+- **Gateway**: 10.10.31.1 (firewall-gw)
+- **Access**: Reachable from reverse-proxy (10.10.31.10) and intern network (10.10.32.0/24)
+
+### Firewall Rules
+
+The `infra/nftable.conf` file defines nftables firewall rules for this VM:
+
+```nftables
+# INPUT chain - incoming traffic to this VM
+chain input {
+    policy drop;                        # Default deny all incoming
+
+    iifname lo accept                   # Allow loopback
+    ct state established,related accept # Allow established connections
+    ct state invalid drop               # Drop invalid packets
+
+    # ICMP
+    ip protocol icmp accept             # Allow ping (IPv4)
+    ip6 nexthdr icmpv6 accept          # Allow ping (IPv6)
+
+    # SSH Access
+    ip saddr 10.10.31.9 tcp dport 22 accept   # Allow SSH from jump server
+    tcp dport 22 drop                          # Block SSH from everywhere else
+
+    # Application Access
+    ip saddr 10.10.31.10 accept        # Allow all ports from reverse-proxy
+    ip saddr 10.10.32.0/24 accept      # Allow all ports from intern network
+}
+
+# FORWARD chain - traffic routed through this VM
+chain forward {
+    policy drop;                        # Default deny forwarding
+    
+    # Docker networking
+    ip saddr 172.17.0.0/12 accept      # Allow Docker container traffic
+    ip daddr 172.17.0.0/12 accept      # Allow traffic to Docker containers
+}
+
+# OUTPUT chain - outgoing traffic from this VM
+chain output {
+    policy accept;                      # Allow all outgoing traffic
+}
+```
+
+**Authorized traffic:**
+- **SSH (port 22)**: Only from jump server (10.10.31.9)
+- **All ports**: From reverse-proxy (10.10.31.10) and intern network (10.10.32.0/24)
+- **Docker**: Full container networking enabled
+- **Outgoing**: All outgoing connections allowed
+
 ## Details
 
 ### Services and ports
