@@ -92,6 +92,9 @@
           - Sys.Console
           - Sys.Modify
           - SDN.Use
+          - Mapping.Use        # Required to use PCI device resource mappings
+          - Mapping.Modify     # Required to modify PCI device resource mappings
+          - Mapping.Audit      # Required to view PCI device resource mappings
       ansible.builtin.shell: >
         pveum role add {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}' 
         || pveum role modify {{ terraform_role }} -privs '{{ terraform_privs | join(" ") }}'

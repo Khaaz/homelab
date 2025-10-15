@@ -147,10 +147,23 @@
       when:
         - refresh_config == 'full'
       failed_when: false
+   
+    # Copy each apps/**/config/proxmox.env -> target/apps/**/config/proxmox.env if exists
+    - name: Copy each apps/**/config/proxmox.env -> target/apps/**/config/proxmox.env
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/apps/{{ item | basename }}/config/proxmox.env"
+        dest: "{{ work_dir }}/apps/{{ item | basename }}/config/proxmox.env"
+        mode: "0644"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+      loop: "{{ apps_list }}"
+      when:
+        - refresh_config == 'full'
+      failed_when: false
 
     # Copy env files from the controller repo
     # From:   {{ inventory_dir }}/../apps/<app_name>/config/
-    # Files:  networking.env, .env.generated, .env
+    # Files:  .env.generated, .env
     - name: Copy controller apps/<app_name>/config/.env.generated files -> target/apps/<app_name>/config/.env.generated
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/.env.generated"
@@ -173,7 +186,7 @@
         - refresh_config in ['full']
       failed_when: false
 
-    # ---- Compose via apps/<app_name>/compose.sh ----
+    ## Stop / Start / restart the app
     - name: Ensure compose.sh is executable
       ansible.builtin.file:
         path: "{{ work_dir }}/apps/{{ app_name }}/compose.sh"
@@ -188,21 +201,78 @@
       register: compose_down
       changed_when: "'Stopping' in compose_down.stdout or 'Removing' in compose_down.stdout or compose_down.rc == 0"
 
-    - name: Compose up via compose.sh (recreate/pull/build)
+    - block:
+        - name: Compose up via compose.sh (recreate/pull/build)
+          ansible.builtin.command:
+            cmd: "./compose.sh --proxmox up -d --wait"
+            chdir: "{{ work_dir }}/apps/{{ app_name }}"
+          register: compose_up
+          retries: 5
+          delay: 10
+          until: compose_up.rc == 0
+          changed_when: >
+            'Creating' in compose_up.stdout or
+            'Recreating' in compose_up.stdout or
+            'Pulling' in compose_up.stdout or
+            'Building' in compose_up.stdout or
+            compose_up.rc == 0
+      rescue:
+        - name: Retry 5 times down/up sequence (first launch)
+          ansible.builtin.shell: |
+            set -o pipefail
+            ./compose.sh --proxmox down --remove-orphans || true
+            ./compose.sh --proxmox up -d --wait
+          args:
+            chdir: "{{ work_dir }}/apps/{{ app_name }}"
+          register: compose_try
+          retries: 5
+          delay: 10
+          until: compose_try.rc == 0
+          changed_when: >
+            'Creating' in compose_try.stdout or
+            'Recreating' in compose_try.stdout or
+            'Pulling' in compose_try.stdout or
+            'Building' in compose_try.stdout or
+            compose_try.rc == 0
+
+    ## On first initialization, restart the app via compose down/up again
+    - name: Check if /root/.init exists
+      ansible.builtin.stat:
+        path: "/root/.init"
+      register: init_file
+
+    - name: First initialization - Restart app (compose down)
+      ansible.builtin.command:
+        cmd: "./compose.sh --proxmox down --remove-orphans"
+        chdir: "{{ work_dir }}/apps/{{ app_name }}"
+      register: init_compose_down
+      when: not init_file.stat.exists
+      changed_when: "'Stopping' in init_compose_down.stdout or 'Removing' in init_compose_down.stdout or init_compose_down.rc == 0"
+
+    - name: First initialization - Restart app (compose up)
       ansible.builtin.command:
         cmd: "./compose.sh --proxmox up -d --wait"
         chdir: "{{ work_dir }}/apps/{{ app_name }}"
-      register: compose_up
+      register: init_compose_up
+      when: not init_file.stat.exists
       retries: 5
       delay: 10
-      until: compose_up.rc == 0
+      until: init_compose_up.rc == 0
       changed_when: >
-        'Creating' in compose_up.stdout or
-        'Recreating' in compose_up.stdout or
-        'Pulling' in compose_up.stdout or
-        'Building' in compose_up.stdout or
-        compose_up.rc == 0
+        'Creating' in init_compose_up.stdout or
+        'Recreating' in init_compose_up.stdout or
+        'Pulling' in init_compose_up.stdout or
+        'Building' in init_compose_up.stdout or
+        init_compose_up.rc == 0
 
+    - name: Create /root/.init marker file
+      ansible.builtin.file:
+        path: "/root/.init"
+        state: touch
+        mode: "0600"
+        owner: "root"
+        group: "root"
+      when: not init_file.stat.exists
   post_tasks:
     - name: Cleanup temporary clone directory
       ansible.builtin.file:

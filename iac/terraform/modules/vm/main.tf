@@ -24,8 +24,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
     type  = "x86-64-v2-AES"
   }
   memory {
-    dedicated = try(var.vm_cfg.specs.memory_size, 2048)
-    floating  = try(var.vm_cfg.specs.memory_size, 2048) # enable ballooning (if floating = dedicated) 
+    dedicated = try(var.vm_cfg.specs.ram_size, 2048)
+    floating  = try(var.vm_cfg.specs.ram_size, 2048) # enable ballooning (if floating = dedicated) 
   }
 
   boot_order = ["scsi0"]
@@ -36,6 +36,44 @@ resource "proxmox_virtual_environment_vm" "vm" {
     datastore_id = var.proxmox_datastore_id
     size         = try(var.vm_cfg.specs.disk_size, 10)
     discard      = "ignore"
+  }
+
+  # Additional disks (regular or passthrough)
+  dynamic "disk" {
+    for_each = try(var.vm_cfg.specs.additional_disks, [])
+    iterator = additional_disk
+    content {
+      interface    = "scsi${additional_disk.key + 1}"  # scsi1, scsi2, etc.
+      iothread     = true
+      # Disk passthrough mode (when passthrough is set) (use mapping for non-root users):
+      #   - datastore_id must be "" (empty string, not null)
+      #   - file_format must be "raw"
+      #   - path_in_datastore contains the host device path
+      # Regular disk mode (when size is set):
+      #   - datastore_id = actual datastore
+      #   - size = disk size in GB
+      datastore_id = try(additional_disk.value.passthrough, null) != null ? "" : var.proxmox_datastore_id
+      size         = try(additional_disk.value.size, null)
+      file_format  = try(additional_disk.value.passthrough, null) != null ? "raw" : null
+      path_in_datastore = try(additional_disk.value.passthrough, null)
+      discard      = "ignore"
+    }
+  }
+
+  # PCI Device Passthrough (SATA controllers, GPUs, etc.)
+  # Supports either direct PCI ID (requires root) or resource mapping (non-root)
+  dynamic "hostpci" {
+    for_each = try(var.vm_cfg.specs.pci_devices, [])
+    iterator = pci
+    content {
+      device  = "hostpci${pci.key}"
+      # Use mapping if provided (for non-root users), otherwise use direct PCI ID
+      id      = try(pci.value.id, null)       # Direct PCI address: "0000:00:17.0" (requires root)
+      mapping = try(pci.value.mapping, null)  # Resource mapping: "pci_igpu_mapping" (non-root)
+      pcie    = true                          # Always enable PCIe for modern systems
+      rombar  = true                          # Enable option ROM (required for most devices)
+      xvga    = false                         # Not primary display
+    }
   }
 
   # Ignore changes to the network

@@ -1,17 +1,33 @@
 specs:
   cores: 1
-  memory_size: 2048 # MB
+  ram_size: 2048 # MB
   disk_size: 10 # GB
+  # Additional disk for NAS storage with passthrough
+  # 8TB Seagate ST8000VN002 (serial: ZPV0T1XZ)
+  additional_disks: [] # Use PCI passthrough instead
+    # Disk passthrough requires root
+    # - passthrough: "/dev/disk/by-id/ata-ST8000VN002-2ZM188_ZPV0T1XZ"
+    # - passthrough: "/dev/sda"
+  # PCI Passthrough: SATA Controller for direct disk access
+  # Find your SATA controller PCI address with: lspci | grep -i sata
+  # Common PCI address: 0000:00:17.0 (Intel AHCI SATA)
+  # We use 'mapping' instead of 'id' because direct PCI passthrough requires root
+  # The mapping 'pci_sata_mapping' is created by Ansible playbook 4.additional-setup
+  pci_devices:
+    - mapping: "pci_sata_mapping"  # Use mapping for non-root access
+    # Alternative (requires root):
+    # - id: "0000:00:17.0"
+order_tier: 2
 config:
-  docker: true
+  docker: false
   router: false
   routes:
     - network: 10.10.31.0/24 # extern
       via: 10.10.32.2 # firewall-srv
-order_tier: 3
-dns_servers: [1.1.1.1, 8.8.8.8]
+  dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
     vlan: 32 # intern
     ipv4: 10.10.32.30/24
     gateway: 10.10.32.1
+nas: null

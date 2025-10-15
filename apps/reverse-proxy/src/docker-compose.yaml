@@ -60,6 +60,9 @@ services:
   swag:
     image: lscr.io/linuxserver/swag:latest
     container_name: swag
+    depends_on:
+      minica:
+        condition: service_completed_successfully
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -76,6 +79,7 @@ services:
       - ${APPS_FOLDER:?err}/swag/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
+      - PROPAGATION=${DNS_PROPAGATION_TIME:?err}
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}

@@ -25,7 +25,7 @@ usage() {
 ## Input verification
 APP=""
 ON=""
-LOCAL_FLAG=""
+LOCAL_FLAG="false"
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--for) 

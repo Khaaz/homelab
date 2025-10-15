@@ -59,8 +59,8 @@
       changed_when: generate_env_run.rc == 0
 
     # => refresh_config: full <=
-    # Copy apps/**/config/.env and apps/**/config/networking.env
-    - name: Find .env and networking.env files under controller apps/**/config
+    # Copy apps/**/config/.env, apps/**/config/proxmox.env and apps/**/config/networking.env
+    - name: Find .env, proxmox.env and networking.env files under controller apps/**/config
       ansible.builtin.find:
         paths: "{{ controller_repo_root }}/apps/"
         recurse: yes
@@ -69,6 +69,7 @@
         patterns:
           - '.env'
           - 'networking.env'
+          - 'proxmox.env'
       delegate_to: localhost
       run_once: true
       register: found_app_env_files

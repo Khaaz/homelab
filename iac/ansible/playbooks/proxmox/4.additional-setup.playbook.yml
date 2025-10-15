@@ -1,5 +1,191 @@
 ---
-- name: Setup additional configuration for proxmox
+# Enable IOMMU for PCI passthrough (intel or amd)
+- name: Setup PCI Passthrough Configuration (enable IOMMU)
+  hosts: homelab
+  become: true
+  tasks:
+    - name: Detect CPU vendor (Intel or AMD)
+      ansible.builtin.shell: grep -o 'GenuineIntel\|AuthenticAMD' /proc/cpuinfo | head -1
+      register: cpu_vendor
+      changed_when: false
+
+    - name: Set IOMMU parameter based on CPU vendor
+      ansible.builtin.set_fact:
+        iommu_param: "{{ 'intel_iommu=on' if cpu_vendor.stdout == 'GenuineIntel' else 'amd_iommu=on' }}"
+
+    - name: Check if IOMMU is already enabled in GRUB
+      ansible.builtin.shell: grep -E "intel_iommu=on|amd_iommu=on" /etc/default/grub || true
+      register: grub_iommu_check
+      changed_when: false
+
+    - name: Enable IOMMU in GRUB bootloader
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet {{ iommu_param }} iommu=pt"'
+        state: present
+      when: grub_iommu_check.stdout == ""
+      register: grub_updated
+
+    - name: Update GRUB configuration
+      ansible.builtin.command: update-grub
+      when: grub_updated.changed
+
+    - name: Load VFIO kernel modules for PCI passthrough
+      ansible.builtin.lineinfile:
+        path: /etc/modules
+        line: "{{ item }}"
+        state: present
+        create: yes
+      loop:
+        - vfio              # Virtual Function I/O framework
+        - vfio_iommu_type1  # IOMMU support for VFIO
+        - vfio_pci          # PCI device passthrough support
+        - vfio_virqfd       # Virtual IRQ file descriptor (interrupt handling)
+      register: modules_updated
+
+    - name: Update initramfs with new kernel modules
+      ansible.builtin.command: update-initramfs -u -k all
+      when: grub_updated.changed or modules_updated.changed
+
+    - name: Restart system to apply IOMMU
+      import_role:
+        name: restart
+
+    - name: Verify IOMMU is enabled after reboot
+      ansible.builtin.shell: dmesg | grep -E "DMAR.*IOMMU enabled|AMD-Vi.*loaded"
+      register: iommu_verify
+      changed_when: false
+      failed_when: false
+      when: grub_updated.changed or modules_updated.changed
+
+    - name: Display IOMMU status
+      ansible.builtin.debug:
+        msg: "{{ 'IOMMU successfully enabled!' if iommu_verify.rc == 0 else 'IOMMU not detected - check BIOS settings' }}"
+      when: grub_updated.changed or modules_updated.changed
+
+# Setup PCI Device Resource Mappings
+# Fetch dynamically PCI Addresses; vendore device; subsystem device
+- name: Setup PCI Device Resource Mappings
+  hosts: homelab
+  become: true
+  tasks:
+    
+    - name: Detect Intel iGPU PCI address
+      ansible.builtin.shell: lspci -nn | grep -i "VGA.*Intel" | awk '{print $1}' | head -1
+      register: igpu_pci_address
+      changed_when: false
+      failed_when: false
+
+    - name: Detect SATA controller PCI address
+      ansible.builtin.shell: lspci -nn | grep -i "SATA" | awk '{print $1}' | head -1
+      register: sata_pci_address
+      changed_when: false
+      failed_when: false
+
+    - name: Display detected PCI devices
+      ansible.builtin.debug:
+        msg:
+          - "Intel iGPU: {{ igpu_pci_address.stdout if igpu_pci_address.stdout else 'Not found' }}"
+          - "SATA Controller: {{ sata_pci_address.stdout if sata_pci_address.stdout else 'Not found' }}"
+
+    - name: Get Proxmox node name
+      ansible.builtin.command: hostname
+      register: proxmox_node_name
+      changed_when: false
+
+    # Gather details for Intel iGPU
+    - name: Build full PCI address for iGPU
+      ansible.builtin.set_fact:
+        igpu_pci_full: "0000:{{ igpu_pci_address.stdout }}"
+      when: igpu_pci_address.stdout != ""
+
+    - name: Read iGPU vendor:device id (e.g., 8086:4682)
+      ansible.builtin.shell: |
+        set -o pipefail
+        lspci -nns {{ igpu_pci_full }} | sed -n 's/.*\[\([0-9a-fA-F]\{4\}:[0-9a-fA-F]\{4\}\)\].*/\1/p' | head -1
+      args:
+        executable: /bin/bash
+      register: igpu_vendor_device
+      changed_when: false
+      when: igpu_pci_address.stdout != ""
+
+    - name: Read iGPU subsystem vendor:device id (e.g., 1462:7e02)
+      ansible.builtin.shell: |
+        bash -lc 'echo $(cat /sys/bus/pci/devices/{{ igpu_pci_full }}/subsystem_vendor | sed s/^0x//):$(cat /sys/bus/pci/devices/{{ igpu_pci_full }}/subsystem_device | sed s/^0x//)'
+      register: igpu_subsystem_id
+      changed_when: false
+      when: igpu_pci_address.stdout != ""
+
+    - name: Read iGPU IOMMU group number
+      ansible.builtin.shell: |
+        bash -lc 'basename $(readlink /sys/bus/pci/devices/{{ igpu_pci_full }}/iommu_group)'
+      register: igpu_iommu_group
+      changed_when: false
+      when: igpu_pci_address.stdout != ""
+
+    - name: Create Intel iGPU resource mapping
+      ansible.builtin.shell: |
+        pvesh create /cluster/mapping/pci \
+          --id pci_igpu_mapping \
+          --map "id={{ igpu_vendor_device.stdout }},iommugroup={{ igpu_iommu_group.stdout }},node={{ proxmox_node_name.stdout }},path={{ igpu_pci_full }},subsystem-id={{ igpu_subsystem_id.stdout }}" \
+          --description "Intel iGPU for hardware transcoding" \
+          || pvesh set /cluster/mapping/pci/pci_igpu_mapping \
+             --map "id={{ igpu_vendor_device.stdout }},iommugroup={{ igpu_iommu_group.stdout }},node={{ proxmox_node_name.stdout }},path={{ igpu_pci_full }},subsystem-id={{ igpu_subsystem_id.stdout }}"
+      when: igpu_pci_address.stdout != ""
+      changed_when: false
+      failed_when: false
+
+    # Gather details for SATA controller
+    - name: Build full PCI address for SATA controller
+      ansible.builtin.set_fact:
+        sata_pci_full: "0000:{{ sata_pci_address.stdout }}"
+      when: sata_pci_address.stdout != ""
+
+    - name: Read SATA vendor:device id (e.g., 8086:7a62)
+      ansible.builtin.shell: |
+        set -o pipefail
+        lspci -nns {{ sata_pci_full }} | sed -n 's/.*\[\([0-9a-fA-F]\{4\}:[0-9a-fA-F]\{4\}\)\].*/\1/p' | head -1
+      args:
+        executable: /bin/bash
+      register: sata_vendor_device
+      changed_when: false
+      when: sata_pci_address.stdout != ""
+
+    - name: Read SATA subsystem vendor:device id (e.g., 1462:7e02)
+      ansible.builtin.shell: |
+        bash -lc 'echo $(cat /sys/bus/pci/devices/{{ sata_pci_full }}/subsystem_vendor | sed s/^0x//):$(cat /sys/bus/pci/devices/{{ sata_pci_full }}/subsystem_device | sed s/^0x//)'
+      register: sata_subsystem_id
+      changed_when: false
+      when: sata_pci_address.stdout != ""
+
+    - name: Read SATA IOMMU group number
+      ansible.builtin.shell: |
+        bash -lc 'basename $(readlink /sys/bus/pci/devices/{{ sata_pci_full }}/iommu_group)'
+      register: sata_iommu_group
+      changed_when: false
+      when: sata_pci_address.stdout != ""
+
+    - name: Create SATA controller resource mapping
+      ansible.builtin.shell: |
+        pvesh create /cluster/mapping/pci \
+          --id pci_sata_mapping \
+          --map "id={{ sata_vendor_device.stdout }},iommugroup={{ sata_iommu_group.stdout }},node={{ proxmox_node_name.stdout }},path={{ sata_pci_full }},subsystem-id={{ sata_subsystem_id.stdout }}" \
+          --description "SATA controller for NAS direct disk access" \
+          || pvesh set /cluster/mapping/pci/pci_sata_mapping \
+             --map "id={{ sata_vendor_device.stdout }},iommugroup={{ sata_iommu_group.stdout }},node={{ proxmox_node_name.stdout }},path={{ sata_pci_full }},subsystem-id={{ sata_subsystem_id.stdout }}"
+      when: sata_pci_address.stdout != ""
+      changed_when: false
+      failed_when: false
+
+    - name: Display created mappings
+      ansible.builtin.debug:
+        msg:
+          - "✓ Created PCI resource mappings:"
+          - "  - pci_igpu_mapping: {{ '0000:' + igpu_pci_address.stdout if igpu_pci_address.stdout else 'skipped' }}"
+          - "  - pci_sata_mapping: {{ '0000:' + sata_pci_address.stdout if sata_pci_address.stdout else 'skipped' }}"
+
+- name: Setup additional prerequesites configuration for proxmox
   hosts: homelab
   become: true
   tasks:
@@ -18,6 +204,10 @@
         regexp: ^(.*)Ext\.Msg\.show\(\{(.*)$\n^(.*)No valid subscription(.*)$
         replace: \1void({\2\n\3No valid subscription\4
 
+- name: Download base ISOs for template VMs (Debian, Alpine)
+  hosts: homelab
+  become: true
+  tasks:
     # Install debian image to create template VMs if needed
     - name: Ensure ISO directory exists
       ansible.builtin.file:

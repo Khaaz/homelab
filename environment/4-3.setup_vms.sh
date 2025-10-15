@@ -9,6 +9,39 @@ get_script_dir() {
 SCRIPT_DIR=$(get_script_dir)
 
 #
+## Usage
+#
+usage() {
+	echo "Usage: $0 [--auto]"
+	echo "--auto mode will use sensible defaults (no-op in this script)"
+	exit 1
+}
+
+#
+## Input verification
+#
+AUTO=false
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--auto)
+			AUTO=true
+			shift
+			;;
+		--help)
+			usage
+			;;
+		*)
+			shift
+			;;
+	esac
+done
+
+# --auto is intentionally a no-op in this script to keep behavior unchanged
+if [ "$AUTO" = true ]; then
+	echo "INFO: Executing in AUTO mode (infra ready)"
+fi
+
+#
 ## Core
 #
 
@@ -86,6 +119,7 @@ echo "Checking global-config.toml for enabled VMs..."
 # Core infrastructure VMs (besides firewalls / routers) (must be set up first)
 setup_vm_if_enabled "dns"
 setup_vm_if_enabled "reverse-proxy"
+# setup_vm_if_enabled "nas" # no need to setup NAS vm: simple nfs server for now
 setup_vm_if_enabled "vpn"
 
 # Application VMs
@@ -94,7 +128,6 @@ setup_vm_if_enabled "home-automation"
 setup_vm_if_enabled "immich"
 setup_vm_if_enabled "media-management"
 setup_vm_if_enabled "media-server"
-setup_vm_if_enabled "nas"
 setup_vm_if_enabled "notes"
 setup_vm_if_enabled "sandbox"
 setup_vm_if_enabled "todo"

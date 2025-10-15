@@ -1,17 +1,24 @@
 specs:
   cores: 2
-  memory_size: 3072 # MB
+  ram_size: 3072 # MB
   disk_size: 15 # GB
+  additional_disks: []
+  pci_devices: []
+order_tier: 3
 config:
   docker: true
   router: false
   routes:
     - network: 10.10.31.0/24 # extern
       via: 10.10.32.2 # firewall-srv
-order_tier: 3
-dns_servers: [1.1.1.1, 8.8.8.8]
+  dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
     vlan: 32 # intern
     ipv4: 10.10.32.11/24
     gateway: 10.10.32.1
+# Mount NAS /media share
+nas:
+  ip: "10.10.32.30"
+  mount_path: "/mnt/data"
+  nfs_export: "/media"
