@@ -135,6 +135,54 @@ This will launch all containers and apply configuration templates from `_setup` 
 
 - **URL:** Service URLs depend on your reverse proxy and port configuration.
 
+## Infrastructure
+
+### Proxmox VM Configuration
+
+```yaml
+specs:
+  cores: 2                    # CPU cores (higher for media processing)
+  ram_size: 3072              # RAM in MB (higher for multiple services)
+  disk_size: 15               # Disk size in GB (larger for downloads)
+  additional_disks: []        
+  pci_devices: []             
+
+order_tier: 3                 # Deployment order (tier 3 = applications)
+
+config:
+  docker: true                
+  router: false               
+  routes:                     
+    - network: 10.10.31.0/24  # Route to extern network
+      via: 10.10.32.2         # via firewall-srv
+  dns_servers: [1.1.1.1, 8.8.8.8]
+
+nics:                         
+  - bridge: vmbr3             
+    vlan: 32                  # VLAN ID (intern)
+    ipv4: 10.10.32.11/24      
+    gateway: 10.10.32.1       
+
+nas:                          # NAS mount for media storage
+  ip: "10.10.32.30"           
+  mount_path: "/mnt/data"     
+  nfs_export: "/media"        
+```
+
+### Network Architecture
+
+- **Network**: 10.10.32.0/24 (intern VLAN 32)
+- **VM IP**: 10.10.32.11
+- **NAS Mount**: 10.10.32.30:/media → /mnt/data
+
+### Firewall Rules
+
+**Authorized traffic:**
+- **SSH (port 22)**: From jump server (10.10.32.9)
+- **All ports**: From reverse-proxy (10.10.32.10) and extern network
+- **Docker**: Full container networking
+- **NAS**: NFS mount from 10.10.32.30
+
 ## Details
 
 ### Services and ports

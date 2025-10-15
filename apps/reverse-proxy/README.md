@@ -148,6 +148,88 @@ This will launch all containers and apply configuration templates from `_setup` 
 - **URL:** Depends on your domain and service configuration. See your reverse proxy and DNS settings.
 - **Root certificate:** `https://l.ab/ca`
 
+## Infrastructure
+
+### Proxmox VM Configuration
+
+```yaml
+specs:
+  cores: 2                    # CPU cores for proxy processing
+  ram_size: 3072              # RAM in MB
+  disk_size: 10               # Disk size in GB
+  additional_disks: []        
+  pci_devices: []             
+
+order_tier: 2                 # Deployment order (tier 2 = management/infrastructure)
+
+config:
+  docker: true                
+  router: false               
+  routes: []                  # No routes - has access to all VLANs via trunks
+  dns_servers: [1.1.1.1, 8.8.8.8]
+
+nics:                         # Multi-VLAN trunk configuration
+  - bridge: vmbr3             # Proxmox bridge (srv network)
+    trunks:                   # VLAN trunk configuration (presence on all VLANs)
+      - id: 30                # VLAN 30 (dmz)
+        ipv4: 10.10.30.10/24  # IP on DMZ VLAN (primary)
+        gateway: 10.10.30.1   # Gateway on DMZ
+      - id: 31                # VLAN 31 (extern)
+        ipv4: 10.10.31.10/24  # IP on extern VLAN
+      - id: 32                # VLAN 32 (intern)
+        ipv4: 10.10.32.10/24  # IP on intern VLAN
+
+nas: null
+```
+
+**Key concepts:**
+- **order_tier**: 2 = management layer (critical infrastructure service)
+- **Multi-VLAN trunks**: Has IPs on all three service VLANs to proxy traffic
+- **DMZ primary**: Main IP on DMZ VLAN (30) for external access
+- **Routes**: None needed - directly connected to all VLANs
+
+### Network Architecture
+
+This VM is the **reverse proxy** with presence on all service VLANs:
+- **DMZ (VLAN 30)**: 10.10.30.10/24 - Primary interface, receives external HTTPS
+- **Extern (VLAN 31)**: 10.10.31.10/24 - Access to extern apps
+- **Intern (VLAN 32)**: 10.10.32.10/24 - Access to intern apps
+
+**Routing:**
+- External HTTPS (443) traffic arrives at DMZ interface
+- Proxies requests to apps on extern and intern VLANs
+- No routing needed - directly connected to all networks
+
+### Firewall Rules
+
+```nftables
+# INPUT chain
+chain input {
+    policy drop;
+
+    # SSH Access
+    ip saddr 10.10.30.9 tcp dport 22 accept   # From jump server (DMZ side)
+
+    # HTTPS Access
+    tcp dport 443 ip saddr 10.10.0.0/16 drop  # Block HTTPS from internal networks
+    tcp dport 443 accept                       # Allow HTTPS from external
+}
+
+# FORWARD chain
+chain forward {
+    policy drop;
+    
+    # Docker networking
+    ip saddr 172.17.0.0/12 accept
+    ip daddr 172.17.0.0/12 accept
+}
+```
+
+**Authorized traffic:**
+- **SSH (port 22)**: Only from jump server via DMZ interface
+- **HTTPS (port 443)**: From external sources only (blocks internal 10.10.0.0/16)
+- **Proxied traffic**: Can reach apps on all VLANs (31, 32)
+
 ## Details
 
 ### Services and ports

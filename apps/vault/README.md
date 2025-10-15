@@ -111,6 +111,48 @@ This will launch the Vaultwarden container and apply configuration templates fro
 - **URL:** `http://127.0.0.1:8087` (or your reverse proxy domain)
 - **Default port:** `8087`
 
+## Infrastructure
+
+### Proxmox VM Configuration
+
+```yaml
+specs:
+  cores: 1                    
+  ram_size: 2048              
+  disk_size: 10               
+  additional_disks: []        
+
+order_tier: 3                 
+
+config:
+  docker: true                
+  router: false               
+  routes:                     
+    - network: 10.10.31.0/24  # Route to extern
+      via: 10.10.32.2         # via firewall-srv
+  dns_servers: [1.1.1.1, 8.8.8.8]
+
+nics:                         
+  - bridge: vmbr3             
+    vlan: 32                  # VLAN ID (intern)
+    ipv4: 10.10.32.15/24      
+    gateway: 10.10.32.1       
+
+nas: null
+```
+
+### Network Architecture
+
+- **Network**: 10.10.32.0/24 (intern VLAN 32)
+- **VM IP**: 10.10.32.15
+
+### Firewall Rules
+
+**Authorized traffic:**
+- **SSH (port 22)**: From jump server (10.10.32.9)
+- **All ports**: From reverse-proxy (10.10.32.10) and extern network
+- **Docker**: Full container networking
+
 ## Details
 
 ### Services and ports
