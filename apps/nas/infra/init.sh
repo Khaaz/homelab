@@ -86,6 +86,7 @@ mountpoint -q "$MOUNT_POINT" || mount "$MOUNT_POINT"
 
 create_export_dir "$MOUNT_POINT/media"
 create_export_dir "$MOUNT_POINT/cloud"
+create_export_dir "$MOUNT_POINT/share"
 
 ## CONFIGURE NFS
 # Force NFSv4-only server configuration
@@ -102,10 +103,10 @@ EOF
 # Allow extern, intern and local networks
 cat > /etc/exports <<EOF
 # NFSv4 exports for NAS
-$MOUNT_POINT 10.10.31.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 10.10.32.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 192.168.1.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
-$MOUNT_POINT/media 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
-$MOUNT_POINT/cloud 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
-$MOUNT_POINT/share 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65534)
+$MOUNT_POINT 10.10.31.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=3) 10.10.32.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 192.168.1.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533)
+$MOUNT_POINT/media 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533)
+$MOUNT_POINT/cloud 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65533,anongid=65533)
+$MOUNT_POINT/share 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533)
 EOF
 
 ## CONFIGURE SAMBA
@@ -122,7 +123,7 @@ cat > /etc/samba/smb.conf <<EOF
    smb ports = 445
    server min protocol = SMB2
 
-[media]
+[share]
    path = /data/share
    browseable = yes
    read only = no
@@ -144,16 +145,6 @@ cat > /etc/samba/smb.conf <<EOF
    create mask = 0666
    directory mask = 0777
 
-[cloud]
-   path = /data/cloud
-   browseable = yes
-   read only = no
-   guest ok = yes
-   public = yes
-   force user = nobody
-   force group = nogroup
-   create mask = 0666
-   directory mask = 0777
 EOF
 
 echo "Shares: $MOUNT_POINT/media, $MOUNT_POINT/cloud"
