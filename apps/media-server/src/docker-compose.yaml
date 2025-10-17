@@ -10,12 +10,13 @@ networks:
 services:
   # Overseer - Media Management
   overseerr:
-    image: lscr.io/linuxserver/overseerr:latest
+    image: lscr.io/linuxserver/overseerr:1.34.0
     container_name: overseerr
     restart: unless-stopped
     networks:
       media-server:
         ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.20
+    user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_OVERSEERR:?err}:5055
     volumes:
@@ -24,8 +25,6 @@ services:
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - LOG_LEVEL=debug
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
@@ -50,7 +49,7 @@ services:
   
   # Plex - Media Server
   plex:
-    image: lscr.io/linuxserver/plex:latest
+    image: lscr.io/linuxserver/plex:1.42.2
     container_name: plex
     restart: unless-stopped
     networks:
@@ -62,6 +61,7 @@ services:
         #      - /dev/dri/card0:/dev/dri/card0
         #      - /dev/dri:/dev/dri
         # Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
+    user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_PLEX:?err}:32400
       - 1900:1900/udp
@@ -78,8 +78,6 @@ services:
       - ${APPS_FOLDER:?err}/plex/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
       - VERSION=docker
