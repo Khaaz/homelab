@@ -34,7 +34,7 @@ services:
       - USER_NAME=${AUTHELIA_USER_NAME:?err}
       - USER_PASSWORD=${AUTHELIA_USER_PASSWORD:?err}
       - USER_EMAIL=${AUTHELIA_USER_EMAIL:?err}
-      - AUTHELIA_USER2_PASSWORD=${AUTHELIA_USER2_PASSWORD:?err}
+      - AUTHELIA_USER_FAMILY_PASSWORD=${AUTHELIA_USER_FAMILY_PASSWORD:?err}
   
   # Authelia - Multi-factor authentication portal
   authelia:

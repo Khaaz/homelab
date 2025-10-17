@@ -6,6 +6,6 @@ users:
     groups: []
   family:
     displayname: famille
-    password: ${AUTHELIA_USER_FAMILY}
+    password: ${AUTHELIA_USER_FAMILY_PASSWORD}
     email: family@no-mail.com
     groups: []

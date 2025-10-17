@@ -132,7 +132,7 @@
 	AUTHELIA_USER_EMAIL="admin@gmail.com"
 	# Password will automatically be hashed with argon2
 	AUTHELIA_USER_PASSWORD="long_password1!"
-	AUTHELIA_USER_FAMILY="long_password2!"
+	AUTHELIA_USER_FAMILY_PASSWORD="long_password2!"
 
 [sandbox]
 	enabled=false
