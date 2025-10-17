@@ -83,6 +83,9 @@
 	OPENSUBTITLE_USERNAME=""
 	OPENSUBTITLE_PASSWORD=""
 
+	# Sharewood indexer passkey
+	SHAREWOOD_PASSKEY=""
+
 [media-server] # apps/media-server
 	enabled=true
 
