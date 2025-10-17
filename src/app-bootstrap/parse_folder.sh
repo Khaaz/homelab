@@ -48,7 +48,12 @@ process_files() {
 		elif [ -f "$file" ]; then
 			# If it's a file, parse it and save to the corresponding output folder
 			local output_file="$(echo "$file" | sed "s|^$INPUT_DIR|$OUTPUT_DIR|")"
-			mkdir -p "$(dirname "$output_file")"
+			local output_dir="$(dirname "$output_file")"
+			mkdir -p "$output_dir"
+			if [ -n "$PUID" ] && [ -n "$PGID" ]; then
+				echo "FOLDER_PARSER: Setting ownership of '$output_dir' to '$PUID:$PGID'"
+				chown -R $PUID:$PGID $output_dir
+			fi
 			sh "$SCRIPT_DIR/parse_file.sh" "$file" "$output_file"
 		fi
 	done

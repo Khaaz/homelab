@@ -119,6 +119,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh /config/prowlarr.db
         user: root
         
@@ -219,6 +222,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.yaml /config/config/config.yaml
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh /config/db/bazarr.db
         user: root
   
@@ -260,6 +266,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh /config/radarr.db
         user: root
   
@@ -301,6 +310,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh /config/radarr.db
         user: root
   
@@ -342,6 +354,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh /config/sonarr.db
         user: root
   
@@ -383,6 +398,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh /config/sonarr.db
         user: root
   
@@ -434,6 +452,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/default.json /app/data/configs/default.json
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
   
   # Maintainerr - Management Dashboard
   maintainerr:

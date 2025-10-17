@@ -46,6 +46,9 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/settings.json /config/settings.json
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
   
   # Plex - Media Server
   plex:
@@ -94,5 +97,8 @@ services:
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/Preferences.xml "/config/Library/Application Support/Plex Media Server/Preferences.xml"
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh "/config/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
         user: root

@@ -10,7 +10,7 @@ networks:
 
 services:
   unbound-pre-start:
-    image: alpine:latest
+    image: alpine:3.22
     container_name: unbound-pre-start
     command:
       - /bin/sh
@@ -50,7 +50,7 @@ services:
   
   # Unbound - DNS server for local resolution
   unbound:
-    image: mvance/unbound:latest
+    image: mvance/unbound:1.22.0
     container_name: unbound
     restart: unless-stopped
     networks:

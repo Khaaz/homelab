@@ -125,6 +125,9 @@ services:
     post_start:
       - command: /scripts/parse_folder.sh /_setup/templates /config
         user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
   
   # Minica - Generate self signed certificat
   minica:
@@ -202,3 +205,6 @@ services:
     # post_start:
     #   - command: /scripts/parse_folder.sh /_setup/templates /www/assets
     #     user: root
+    #     environment:
+    #       - PUID=${PUID:?err}
+    #       - PGID=${PGID:?err}

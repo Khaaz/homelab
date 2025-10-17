@@ -39,6 +39,11 @@ sh "$SCRIPT_DIR/lib/install_dependencies.sh" gettext
 echo "FILE_PARSER: Processing file '$INPUT_FILE' as '$OUTPUT_FILE'..."
 parse_file $INPUT_FILE > $OUTPUT_FILE
 
+if [ -n "$PUID" ] && [ -n "$PGID" ]; then
+	echo "FILE_PARSER: Setting ownership of '$OUTPUT_FILE' to '$PUID:$PGID'"
+	chown $PUID:$PGID $OUTPUT_FILE
+fi
+
 if [ $? -eq 0 ]; then
 	echo "FILE_PARSER: Success => Successfully processed file. Output written to: $OUTPUT_FILE"
 else
