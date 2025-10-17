@@ -17,7 +17,7 @@ services:
       - /scripts/parse_folder.sh /_setup/templates /config
     networks:
       reverse-proxy:
-        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.33
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.32
     volumes:
       - ${APPS_FOLDER:?err}/authelia:/config # config
       - ${APPS_FOLDER:?err}/authelia/_setup:/_setup # setup
@@ -135,7 +135,7 @@ services:
       no_cache: true
     networks:
       reverse-proxy:
-        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.20
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.31
     volumes:
       - ${APPS_FOLDER:?err}/ca/certs:/app/certs
       - ${APPS_FOLDER:?err}/swag/keys-private:/swag/keys-private
@@ -146,15 +146,15 @@ services:
   
   # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:
-    image: qmcgaw/ddns-updater:latest
+    image: qmcgaw/ddns-updater:v2.9
     container_name: ddns-updater
     restart: unless-stopped
     networks:
       reverse-proxy:
-        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.21
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.22
     user: ${PUID:?err}:${PGID:?err}
     ports:
-      - ${PORT_UI_DDNS_UPDATER:?err}:${PORT_UI_DDNS_UPDATER:?err}/tcp
+      - ${PORT_UI_DDNS_UPDATER:?err}:8000/tcp
     volumes:
       - ${APPS_FOLDER:?err}/ddns-updater:/updater/data
     environment:
@@ -171,7 +171,7 @@ services:
       - PUBLICIP_DNS_TIMEOUT=3s
       - HTTP_TIMEOUT=10s
       # Web UI
-      - LISTENING_ADDRESS=:${PORT_UI_DDNS_UPDATER:?err}
+      - LISTENING_ADDRESS=:8000
       - ROOT_URL=/
       # Backup
       - BACKUP_PERIOD=0 # 0 to disable
@@ -180,3 +180,25 @@ services:
       - LOG_LEVEL=info
       - LOG_CALLER=hidden
       - SHOUTRRR_ADDRESSES=
+
+  # Homer - Dashboard
+  # generic service name for internal.conf to work out of the box
+  # generic port 8080 for internal.conf to work out of the box
+  dashboard:
+    image: b4bz/homer:v25.10.1
+    container_name: homer
+    restart: unless-stopped
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.21
+    user: ${PUID:?err}:${PGID:?err}
+    ports:
+      - 8080:8080
+    volumes:
+      - ${APPS_FOLDER:?err}/homer:/www/assets
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - INIT_ASSETS=1 # default, requires the config directory to be writable for the container user (see user option)
+    # post_start:
+    #   - command: /scripts/parse_folder.sh /_setup/templates /www/assets
+    #     user: root
