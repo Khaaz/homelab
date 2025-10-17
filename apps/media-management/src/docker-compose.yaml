@@ -396,7 +396,7 @@ services:
 
   # Homarr - Application Dashboard
   homarr:
-    image: ghcr.io/homarr-labs/homarr:1.41.0
+    image: ghcr.io/homarr-labs/homarr:v1.41.0
     container_name: homarr
     restart: unless-stopped
     networks:
