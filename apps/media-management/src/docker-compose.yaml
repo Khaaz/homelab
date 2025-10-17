@@ -81,10 +81,9 @@ services:
     image: lscr.io/linuxserver/prowlarr:2.0.5
     container_name: prowlarr
     restart: unless-stopped
-    
     networks:
       media-management:
-        ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.
+        ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.15
     user: ${PUID:?err}:${PGID:?err}
     depends_on:
       flaresolverr:
@@ -289,8 +288,6 @@ services:
       - ${APPS_FOLDER:?err}/radarr4k/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
       - TP_THEME=${TP_THEME:?err}
