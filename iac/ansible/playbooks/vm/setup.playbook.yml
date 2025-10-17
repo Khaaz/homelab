@@ -9,7 +9,7 @@
     work_dir: "/home/app/homelab"
     controller_repo_root: "{{ playbook_dir }}/../../../.."
 
-    admin_user: "admin" # Owner for copied files
+    app_user: "app" # Owner for copied files
 
     # App name from controller env var APP_NAME
     app_name: "{{ lookup('env', 'APP_NAME') | default('', true) }}"
@@ -28,16 +28,16 @@
         path: "{{ work_dir }}"
         state: directory
         mode: "0755"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
 
     - name: Ensure subdirectories exist
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: "0755"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop:
         - "{{ work_dir }}/src"
         - "{{ work_dir }}/apps"
@@ -63,8 +63,8 @@
         dest: "{{ work_dir }}/src/app-bootstrap/"
         remote_src: true
         mode: "0644"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
 
     - name: Copy apps/<app_name> -> target/apps/<app_name>
       ansible.builtin.copy:
@@ -72,16 +72,16 @@
         dest: "{{ work_dir }}/apps/{{ app_name }}/"
         remote_src: true
         mode: "0644"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
     
     - name: Adjust permissions
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: "0755"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop:
         - "{{ work_dir }}/src/app-bootstrap"
         - "{{ work_dir }}/apps/{{ app_name }}"
@@ -99,8 +99,8 @@
         path: "{{ work_dir }}/apps/{{ item | basename }}/infra"
         state: directory
         mode: "0755"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop: "{{ apps_list }}"
 
     - name: Create config directories for each app in target
@@ -108,8 +108,8 @@
         path: "{{ work_dir }}/apps/{{ item | basename }}/config"
         state: directory
         mode: "0755"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop: "{{ apps_list }}"
 
     # Copy each apps/**/infra/proxmox.yml -> target/apps/**/infra/proxmox.yml
@@ -119,8 +119,8 @@
         dest: "{{ work_dir }}/apps/{{ item | basename }}/infra/proxmox.yml"
         remote_src: true
         mode: "0644"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop: "{{ apps_list }}"
     
     # Copy each apps/**/config/networking.env.default -> target/apps/**/config/networking.env.default
@@ -130,8 +130,8 @@
         dest: "{{ work_dir }}/apps/{{ item | basename }}/config/networking.env.default"
         remote_src: true
         mode: "0644"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop: "{{ apps_list }}"
       failed_when: false
     
@@ -141,8 +141,8 @@
         src: "{{ controller_repo_root }}/apps/{{ item | basename }}/config/networking.env"
         dest: "{{ work_dir }}/apps/{{ item | basename }}/config/networking.env"
         mode: "0644"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop: "{{ apps_list }}"
       when:
         - refresh_config == 'full'
@@ -154,8 +154,8 @@
         src: "{{ controller_repo_root }}/apps/{{ item | basename }}/config/proxmox.env"
         dest: "{{ work_dir }}/apps/{{ item | basename }}/config/proxmox.env"
         mode: "0644"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       loop: "{{ apps_list }}"
       when:
         - refresh_config == 'full'
@@ -169,8 +169,8 @@
         src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/.env.generated"
         dest: "{{ work_dir }}/apps/{{ app_name }}/config/.env.generated"
         mode: "0600"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       when:
         - refresh_config in ['generated','full']
       failed_when: false
@@ -180,8 +180,8 @@
         src: "{{ controller_repo_root }}/apps/{{ app_name }}/config/.env"
         dest: "{{ work_dir }}/apps/{{ app_name }}/config/.env"
         mode: "0600"
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
       when:
         - refresh_config in ['full']
       failed_when: false
@@ -192,8 +192,8 @@
         path: "{{ work_dir }}/apps/{{ app_name }}/compose.sh"
         mode: "0755"
         state: file
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
     - name: Compose down via compose.sh (idempotent reset)
       ansible.builtin.command:
         cmd: "./compose.sh --proxmox down --remove-orphans"

@@ -24,7 +24,7 @@ services:
 
   # Gluetun - VPN Client
   gluetun:
-    image: qmcgaw/gluetun:latest
+    image: qmcgaw/gluetun:v3.40.0
     container_name: gluetun
     restart: unless-stopped
     cap_add:
@@ -78,12 +78,13 @@ services:
 
   # Prowlarr - Indexer and Search Manager
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:develop
+    image: lscr.io/linuxserver/prowlarr:2.0.5
     container_name: prowlarr
     restart: unless-stopped
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.15
+    user: ${PUID:?err}:${PGID:?err}
     depends_on:
       flaresolverr:
         condition: service_started
@@ -97,8 +98,6 @@ services:
       - ${APPS_FOLDER:?err}/prowlarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:prowlarr
       - TP_THEME=${TP_THEME:?err}
@@ -124,7 +123,7 @@ services:
         
   # Flaresolverr - Cloudflare Proxy Server 
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:latest
+    image: ghcr.io/flaresolverr/flaresolverr:v3.4.2
     container_name: flaresolverr
     restart: unless-stopped
     networks:
@@ -143,9 +142,10 @@ services:
   # Qbittorrent - Torrent client
   # default user/password: admin/admin!
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent:5.1.2
     container_name: qbittorrent
     restart: unless-stopped
+    user: ${PUID:?err}:${PGID:?err}
     network_mode: service:gluetun
     depends_on:
       gluetun:
@@ -155,8 +155,6 @@ services:
       - ${APPS_FOLDER:?err}/qbittorrent:/config # config
       - ${DATA_FOLDER:?err}/torrents:/data # data
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
       - WEBUI_PORT=${PORT_UI_QBITTORRENT:?err}
@@ -190,12 +188,13 @@ services:
 
   # Bazarr - Subtitle library
   bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
+    image: lscr.io/linuxserver/bazarr:1.5.3
     container_name: bazarr
     restart: unless-stopped
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.21
+    user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_BAZARR:?err}:6767
     volumes:
@@ -204,8 +203,6 @@ services:
       - ${APPS_FOLDER:?err}/bazarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
       - TP_THEME=${TP_THEME:?err}
@@ -226,12 +223,13 @@ services:
   
   # Radarr - Movie library
   radarr:
-    image: lscr.io/linuxserver/radarr:latest
+    image: lscr.io/linuxserver/radarr:5.27.5
     container_name: radarr
     restart: unless-stopped
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.22
+    user: ${PUID:?err}:${PGID:?err}
     depends_on:
       prowlarr:
         condition: service_started
@@ -249,8 +247,6 @@ services:
       - ${APPS_FOLDER:?err}/radarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
       - TP_THEME=${TP_THEME:?err}
@@ -268,12 +264,13 @@ services:
   
   # Radarr - Movie library (4k)
   radarr4k:
-    image: lscr.io/linuxserver/radarr:latest
+    image: lscr.io/linuxserver/radarr:5.27.5
     container_name: radarr4k
     restart: unless-stopped
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.23
+    user: ${PUID:?err}:${PGID:?err}
     depends_on:
       prowlarr:
         condition: service_started
@@ -291,8 +288,6 @@ services:
       - ${APPS_FOLDER:?err}/radarr4k/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
       - TP_THEME=${TP_THEME:?err}
@@ -310,12 +305,13 @@ services:
   
   # Sonarr - Serie library
   sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
+    image: lscr.io/linuxserver/sonarr:4.0.15
     container_name: sonarr
     restart: unless-stopped
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.24
+    user: ${PUID:?err}:${PGID:?err}
     depends_on:
       prowlarr:
         condition: service_started
@@ -333,8 +329,6 @@ services:
       - ${APPS_FOLDER:?err}/sonarr/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:sonarr
       - TP_THEME=${TP_THEME:?err}
@@ -352,12 +346,13 @@ services:
   
   # Sonarr - Serie library (4K)
   sonarr4k:
-    image: lscr.io/linuxserver/sonarr:latest
+    image: lscr.io/linuxserver/sonarr:4.0.15
     container_name: sonarr4k
     restart: unless-stopped
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.25
+    user: ${PUID:?err}:${PGID:?err}
     depends_on:
       prowlarr:
         condition: service_started
@@ -375,8 +370,6 @@ services:
       - ${APPS_FOLDER:?err}/sonarr4k/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:sonarr
       - TP_THEME=${TP_THEME:?err}
@@ -400,7 +393,7 @@ services:
 
   # Homarr - Application Dashboard
   homarr:
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:v1.41.0
     container_name: homarr
     restart: unless-stopped
     networks:
@@ -443,7 +436,7 @@ services:
   
   # Maintainerr - Management Dashboard
   maintainerr:
-    image: ghcr.io/jorenn92/maintainerr:latest
+    image: ghcr.io/jorenn92/maintainerr:2.19.0
     container_name: maintainerr
     restart: unless-stopped
     networks:
