@@ -4,3 +4,8 @@ users:
     password: ${USER_PASSWORD}
     email: ${USER_EMAIL}
     groups: []
+  family:
+    displayname: famille
+    password: ${AUTHELIA_USER_FAMILY}
+    email: family@no-mail.com
+    groups: []
