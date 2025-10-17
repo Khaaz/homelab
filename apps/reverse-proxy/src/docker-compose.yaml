@@ -95,6 +95,8 @@ services:
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - DNS_PROVIDER_TOKEN=${DNS_PROVIDER_TOKEN:?err}
       # ports
+      - PORT_UI_PROXMOX=${PORT_UI_PROXMOX:?err}
+      - HOST_LAN_IP=${HOST_LAN_IP:?err}
       # - RP
       - PORT_UI_AUTHELIA=${PORT_UI_AUTHELIA:?err}
       # - HA
