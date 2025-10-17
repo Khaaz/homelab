@@ -9,7 +9,7 @@ networks:
           gateway: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.1
 services:
   authelia-pre-start:
-    image: alpine:latest
+    image: alpine:3.22
     container_name: authelia-pre-start
     command:
       - /bin/sh
@@ -37,7 +37,7 @@ services:
   
   # Authelia - Multi-factor authentication portal
   authelia:
-    image: ghcr.io/authelia/authelia:latest
+    image: ghcr.io/authelia/authelia:4
     container_name: authelia
     restart: unless-stopped
     networks:
@@ -58,7 +58,7 @@ services:
   
   # SWAG - Reverse proxy with Certbot, for Let's Encrypt / ZeroSSL
   swag:
-    image: lscr.io/linuxserver/swag:latest
+    image: lscr.io/linuxserver/swag:5.1.0
     container_name: swag
     depends_on:
       minica:
@@ -143,7 +143,7 @@ services:
   
   # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:
-    image: qmcgaw/ddns-updater:latest
+    image: qmcgaw/ddns-updater:2
     container_name: ddns-updater
     restart: unless-stopped
     networks:
