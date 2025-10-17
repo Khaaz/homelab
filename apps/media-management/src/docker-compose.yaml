@@ -115,6 +115,7 @@ services:
       - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
       - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - SHAREWOOD_PASSKEY=${SHAREWOOD_PASSKEY:?err}
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root

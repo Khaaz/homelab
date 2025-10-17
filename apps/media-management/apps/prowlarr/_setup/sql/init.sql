@@ -230,22 +230,7 @@ VALUES
     "preferMagnetUrl": false
   }
 }', 'CardigannSettings', 1, 25, '2024-12-22 16:26:51.0781464Z', 0, 1, '[]', 0),
-(5, 'Badass Torrents', 'Cardigann', '{
-  "definitionFile": "badasstorrents",
-  "extraFieldData": {
-    "info_flaresolverr": "This site may use Cloudflare DDoS Protection, therefore Prowlarr requires <a href=\"https://wiki.servarr.com/prowlarr/faq#can-i-use-flaresolverr-indexers\" target=\"_blank\" rel=\"noreferrer\">FlareSolverr</a> to access it.",
-    "downloadlink": 1,
-    "downloadlink2": 0,
-    "info_download": "You can optionally set as a fallback an automatic alternate link, so if the .torrent download link fails your download will still be successful."
-  },
-  "baseSettings": {
-    "limitsUnit": 0
-  },
-  "torrentBaseSettings": {
-    "preferMagnetUrl": false
-  }
-}', 'CardigannSettings', 1, 25, '2024-12-22 16:27:07.8061553Z', 0, 1, '[]', 0),
-(6, 'BitSearch', 'Cardigann', '{
+(5, 'BitSearch', 'Cardigann', '{
   "definitionFile": "bitsearch",
   "extraFieldData": {
     "prefer_magnet_links": false,
@@ -260,19 +245,7 @@ VALUES
     "preferMagnetUrl": false
   }
 }', 'CardigannSettings', 1, 25, '2024-12-22 16:27:15.5148844Z', 0, 1, '[]', 0),
-(7, 'ExtraTorrent.st', 'Cardigann', '{
-  "definitionFile": "extratorrent-st",
-  "extraFieldData": {
-    "info_flaresolverr": "This site may use Cloudflare DDoS Protection, therefore Prowlarr requires <a href=\"https://wiki.servarr.com/prowlarr/faq#can-i-use-flaresolverr-indexers\" target=\"_blank\" rel=\"noreferrer\">FlareSolverr</a> to access it."
-  },
-  "baseSettings": {
-    "limitsUnit": 0
-  },
-  "torrentBaseSettings": {
-    "preferMagnetUrl": false
-  }
-}', 'CardigannSettings', 1, 25, '2024-12-22 16:27:26.0340891Z', 0, 1, '[]', 0),
-(8, 'EZTV', 'Cardigann', '{
+(6, 'EZTV', 'Cardigann', '{
   "definitionFile": "eztv",
   "extraFieldData": {},
   "baseSettings": {
@@ -282,22 +255,7 @@ VALUES
     "preferMagnetUrl": false
   }
 }', 'CardigannSettings', 1, 25, '2024-12-22 16:27:37.0766043Z', 0, 1, '[]', 0),
-(9, 'Internet Archive', 'Cardigann', '{
-  "definitionFile": "internetarchive",
-  "extraFieldData": {
-    "titleOnly": true,
-    "noMagnet": false,
-    "sort": 2,
-    "type": 1
-  },
-  "baseSettings": {
-    "limitsUnit": 0
-  },
-  "torrentBaseSettings": {
-    "preferMagnetUrl": false
-  }
-}', 'CardigannSettings', 1, 25, '2024-12-22 16:27:52.9916519Z', 0, 1, '[]', 0),
-(10, 'kickasstorrents.ws', 'Cardigann', '{
+(7, 'kickasstorrents.ws', 'Cardigann', '{
   "definitionFile": "kickasstorrents-ws",
   "extraFieldData": {
     "sort": 2,
@@ -310,32 +268,7 @@ VALUES
     "preferMagnetUrl": false
   }
 }', 'CardigannSettings', 1, 25, '2024-12-22 16:28:15.5148885Z', 0, 1, '[]', 0),
-(11, 'Torlock', 'Cardigann', '{
-  "definitionFile": "torlock",
-  "extraFieldData": {
-    "sort": 0,
-    "type": 1
-  },
-  "baseSettings": {
-    "limitsUnit": 0
-  },
-  "torrentBaseSettings": {
-    "preferMagnetUrl": false
-  }
-}', 'CardigannSettings', 1, 25, '2024-12-22 16:28:30.8833762Z', 0, 1, '[]', 0),
-(12, 'Torrentz2nz', 'Cardigann', '{
-  "definitionFile": "torrentz2nz",
-  "extraFieldData": {
-    "info_category_8000": "Torrentz2nz does not return categories in its search results. To sync to your apps, include 8000(Other) in your Apps\' Sync Categories."
-  },
-  "baseSettings": {
-    "limitsUnit": 0
-  },
-  "torrentBaseSettings": {
-    "preferMagnetUrl": false
-  }
-}', 'CardigannSettings', 1, 25, '2024-12-22 16:29:15.7200997Z', 0, 1, '[]', 0),
-(13, 'cpasbien clone', 'Cardigann', '{
+(8, 'cpasbien clone', 'Cardigann', '{
   "definitionFile": "cpasbienclone",
   "extraFieldData": {
     "info_category_8000": "cpasbien clone does not return categories in its search results. To sync to your apps, include 8000(Other) in your Apps\' Sync Categories.",
@@ -350,7 +283,57 @@ VALUES
   "torrentBaseSettings": {
     "preferMagnetUrl": false
   }
-}', 'CardigannSettings', 1, 25, '2024-12-22 16:30:06.7809622Z', 0, 1, '[]', 0);
+}', 'CardigannSettings', 1, 25, '2024-12-22 16:30:06.7809622Z', 0, 1, '[]', 0),
+(9, 'OxTorrent', 'Cardigann', '{
+  "definitionFile": "oxtorrent-co",
+  "extraFieldData": {
+    "multilang": false,
+    "multilanguage": 1,
+    "vostfr": false
+  },
+  "baseSettings": {
+    "limitsUnit": 0
+  },
+  "torrentBaseSettings": {
+    "preferMagnetUrl": false
+  }
+}', 'CardigannSettings', 1, 25, '2025-10-17 14:38:43.1089855Z', 0, 1, '[]', 0),
+
+(10, 'Sharewood (API)', 'Cardigann', '{
+  "definitionFile": "sharewood-api",
+  "extraFieldData": {
+    "passkey": "${SHAREWOOD_PASSKEY}",
+    "info_passkey": "Find your Passkey by accessing your <a href=\"https://www.sharewood.tv/\" target=\"_blank\">Sharewood</a> profile on the <i>My Profile</i> page and scrolling down to the <b>Passkey</b> field.",
+    "freeleech": false,
+    "multilang": false,
+    "multilanguage": 1,
+    "vostfr": false
+  },
+  "baseUrl": "https://www.sharewood.tv/",
+  "baseSettings": {
+    "limitsUnit": 0
+  },
+  "torrentBaseSettings": {
+    "seedRatio": 1,
+    "preferMagnetUrl": false
+  }
+}', 'CardigannSettings', 1, 25, '2025-10-17 14:42:37.0517244Z', 0, 1, '[]', 0),
+
+(11, 'ZkTorrent', 'Cardigann', '{
+  "definitionFile": "zktorrent",
+  "extraFieldData": {
+    "info_flaresolverr": "This site may use Cloudflare DDoS Protection, therefore Prowlarr requires <a href=\"https://wiki.servarr.com/prowlarr/faq#can-i-use-flaresolverr-indexers\" target=\"_blank\" rel=\"noreferrer\">FlareSolverr</a> to access it.",
+    "multilang": false,
+    "multilanguage": 1,
+    "vostfr": false
+  },
+  "baseSettings": {
+    "limitsUnit": 0
+  },
+  "torrentBaseSettings": {
+    "preferMagnetUrl": false
+  }
+}', 'CardigannSettings', 1, 25, '2025-10-17 15:00:08.4276366Z', 0, 1, '[]', 0);
 
 -- ScheduledTasks
 DELETE FROM ScheduledTasks;
