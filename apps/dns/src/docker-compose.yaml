@@ -46,7 +46,7 @@ services:
       - VLT_IP=${VAULT_IP:?err}
       - VPN_IP=${VPN_IP:?err}
       - VSC_IP=${VSCODE_SERVER_IP:?err}
-      - WB_IP=${WHITE_BOARD_IP:?err}
+      - WB_IP=${WHITEBOARD_IP:?err}
   
   # Unbound - DNS server for local resolution
   unbound:

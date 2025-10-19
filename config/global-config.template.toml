@@ -158,5 +158,5 @@
 
 	VSCODE_SERVER_PASSWORD=""
 
-[white-board]
+[whiteboard]
 	enabled=false

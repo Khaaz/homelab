@@ -133,7 +133,7 @@ setup_vm_if_enabled "sandbox"
 setup_vm_if_enabled "todo"
 setup_vm_if_enabled "vault"
 setup_vm_if_enabled "vscode-server"
-setup_vm_if_enabled "white-board"
+setup_vm_if_enabled "whiteboard"
 
 echo "VMs setup complete!"
 

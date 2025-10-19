@@ -76,4 +76,4 @@ source_app_ip todo vmbr3
 source_app_ip vault vmbr3
 source_app_ip vpn vmbr2
 source_app_ip vscode-server vmbr3
-source_app_ip white-board vmbr3
+source_app_ip whiteboard vmbr3

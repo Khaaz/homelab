@@ -87,8 +87,8 @@ VPN_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vpn/config/networking.env"
 VSC_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vscode-server/config/networking.env.default"
 VSC_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vscode-server/config/networking.env"
 
-WB_NETWORKING_ENV_FILE="$SCRIPT_DIR/../white-board/config/networking.env.default"
-WB_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../white-board/config/networking.env"
+WB_NETWORKING_ENV_FILE="$SCRIPT_DIR/../whiteboard/config/networking.env.default"
+WB_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../whiteboard/config/networking.env"
 
 # proxmox env
 PROXMOX_ENV_FILE="$SCRIPT_DIR/config/proxmox.env"
