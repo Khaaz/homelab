@@ -214,9 +214,10 @@ services:
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - INIT_ASSETS=1 # default, requires the config directory to be writable for the container user (see user option)
-    # post_start:
-    #   - command: /scripts/parse_folder.sh /_setup/templates /www/assets
-    #     user: root
-    #     environment:
-    #       - PUID=${PUID:?err}
-    #       - PGID=${PGID:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+    post_start:
+      - command: /scripts/parse_file.sh /_setup/templates/config.yml /www/assets/config.yml
+        user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}

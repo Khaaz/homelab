@@ -1,0 +1,202 @@
+---
+# Homepage configuration
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bastienwirtz/homer/main/.schema/config-schema.json
+
+title: "Homelab"
+subtitle: "Bookmarks"
+logo: "logo.png"
+# icon: "fas fa-skull-crossbones" # Optional icon
+
+header: false
+footer: false
+
+# Optional theme customization
+theme: walkxcode
+
+defaults:
+  layout: list # Either 'columns', or 'list'
+  colorTheme: dark # One of 'auto', 'light', or 'dark'
+
+# Optional theme customization (color overrrides)
+# overrrides can also be done using CSS vars 
+# colors:
+#   light:
+#     highlight-primary: "#3367d6"
+#     highlight-secondary: "#4285f4"
+#     highlight-hover: "#5a95f5"
+#     background: "#f5f5f5"
+#     card-background: "#ffffff"
+#     text: "#363636"
+#     text-header: "#ffffff"
+#     text-title: "#303030"
+#     text-subtitle: "#424242"
+#     card-shadow: rgba(0, 0, 0, 0.1)
+#     link: "#3273dc"
+#     link-hover: "#363636"
+#   dark:
+#     highlight-primary: "#3367d6"
+#     highlight-secondary: "#4285f4"
+#     highlight-hover: "#5a95f5"
+#     background: "#131313"
+#     card-background: "#2b2b2b"
+#     text: "#eaeaea"
+#     text-header: "#ffffff"
+#     text-title: "#fafafa"
+#     text-subtitle: "#f5f5f5"
+#     card-shadow: rgba(0, 0, 0, 0.4)
+#     link: "#3273dc"
+#     link-hover: "#ffdd57"
+
+# Optional message
+# message:
+  # style: "is-dark" # See https://bulma.io/documentation/components/message/#colors for styling options.
+  # title: "Notification"
+  # icon: "fa fa-grin"
+  # content: "Fetch certificate <a href=https://${INTERNAL_DOMAIN}/ca>here</a>"
+
+# Optional navbar
+# links: [] # Allows for navbar (dark mode, layout, and search) without any links
+links:
+  - name: "Github"
+    icon: "fab fa-github"
+    url: "https://github.com/khaaz/homelab"
+    target: "_blank" # optional html a tag target attribute
+  - name: "Root CA"
+    icon: "fa-solid fa-lock-open"
+    url: "https://${INTERNAL_DOMAIN}/ca"
+    target: "_blank" # optional html a tag target attribute
+  # this will link to a second homer page that will load config from additional-page.yml and keep default config values as in config.yml file
+  # see url field and assets/additional-page.yml.dist used in this example:
+  #- name: "another page!"
+  #  icon: "fas fa-file-alt"
+  #  url: "#additional-page" 
+
+# Services
+# First level array represent a group.
+# Leave only a "items" key if not using group (group name, icon & tagstyle are optional, section separation will not be displayed).
+# icons:
+# https://fontawesome.com/search
+# https://selfh.st/icons/
+# https://dashboardicons.com/
+services:
+  - name: "Applications"
+    icon: "fas fa-microchip"
+    items:
+      - name: "Home automation"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg"
+        url: "https://home-assistant.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+      - name: "Cloud"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg"
+        url: "https://cloud.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+      - name: "Photos"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg"
+        url: "https://immich.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+      - name: "Vault"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/vaultwarden.svg"
+        url: "https://vault.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+      - name: "White board"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/excalidraw.svg"
+        url: "https://whiteboard.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+      - name: "Notes"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/many-notes.svg"
+        url: "https://notes.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+
+  - name: "Media"
+    icon: "fas fa-photo-film"
+    items:
+      - name: "Media-player"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/plex.svg"
+        url: "https://plex.${INTERNAL_DOMAIN}"
+        subtitle: "Plex"
+      - name: "Media-player"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyfin.svg"
+        url: "https://jellyfin.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Jellyfin"
+      - name: "Overseer"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/overseerr.svg"
+        url: "https://overseerr.${INTERNAL_DOMAIN}"
+      - name: "Watcharr"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/watcharr.png"
+        url: "https://watcharr.${INTERNAL_DOMAIN}"
+      - name: "Homarr"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/homarr.svg"
+        url: "https://homarr.${INTERNAL_DOMAIN}"
+
+  - name: "Media management"
+    icon: "fas fa-download"
+    items:
+      - name: "Radarr"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr.svg"
+        url: "https://radarr.${INTERNAL_DOMAIN}"
+      - name: "Radarr4k"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr-4k.svg"
+        url: "https://radarr4k.${INTERNAL_DOMAIN}"
+      - name: "Sonarr"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sonarr.svg"
+        url: "https://sonarr.${INTERNAL_DOMAIN}"
+      - name: "Sonarr4k"
+        logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sonarr-4k.svg"
+        url: "https://sonarr4k.${INTERNAL_DOMAIN}"
+      - name: "Bazarr"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bazarr.svg"
+        url: "https://bazarr.${INTERNAL_DOMAIN}"
+      - name: "Prowlarr"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg"
+        url: "https://prowlarr.${INTERNAL_DOMAIN}"
+      - name: "Qbittorrent"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/qbittorrent.svg"
+        url: "https://qbittorrent.${INTERNAL_DOMAIN}"
+
+  - name: "Management"
+    icon: "fas fa-gears"
+    items:
+      - name: "Proxmox"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/proxmox.svg"
+        url: "https://proxmox.${INTERNAL_DOMAIN}"
+        class: "is-justify-content-space-between"
+      - name: "Portainer"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/portainer.svg"
+        url: "https://portainer.${INTERNAL_DOMAIN}"
+      - name: "TrueNAS"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/truenas-scale.svg"
+        url: "https://nas.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+      - name: "DDNS"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/ddns-updater.svg"
+        url: "https://ddns.${INTERNAL_DOMAIN}"
+
+  
+  - name: "Monitoring"
+    icon: "fas fa-chart-line"
+    # monitoring tools and dashboard
+    items: []
+
+  - name: "Services"
+    icon: "fas fa-toolbox"
+    # Various other services and utilities
+    items:
+      - name: "Sandbox"
+        icon: "fa-solid fa-vial"
+        url: "https://sandbox.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+      - name: "Shortener"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/shlink.svg"
+        url: "https://shrt.${INTERNAL_DOMAIN}"
+        tag: "Coming soon"
+        subtitle: "Coming soon"
+  
