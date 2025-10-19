@@ -1,0 +1,12 @@
+---
+- name: Reboot Proxmox hosts
+  hosts: homelab
+  become: true
+  tasks:
+    - name: Restart system and wait for SSH
+      import_role:
+        name: restart
+    - name: Log reboot completion
+      ansible.builtin.debug:
+        msg: "Reboot complete and host is reachable"
+

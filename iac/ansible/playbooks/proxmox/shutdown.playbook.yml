@@ -1,0 +1,10 @@
+---
+- name: Shutdown Proxmox hosts
+  hosts: homelab
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Initiate clean shutdown
+      ansible.builtin.command: shutdown -h now
+      changed_when: true
+

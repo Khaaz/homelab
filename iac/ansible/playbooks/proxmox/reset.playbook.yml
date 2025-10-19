@@ -1,0 +1,11 @@
+---
+- name: Run server reset script on Proxmox hosts
+  hosts: homelab
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Execute /root/bin/reset_server.sh
+      ansible.builtin.command: /root/bin/reset_server.sh
+      register: reset_script_result
+      changed_when: true
+
