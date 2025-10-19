@@ -1,0 +1,20 @@
+{
+    "settings": [
+        {
+			"provider": "cloudflare",
+			"domain": "${EXTERNAL_DOMAIN}",
+			"zone_identifier": "${CLOUDFLARE_ZONE_ID}",
+			"ttl": 600,
+			"token": "${DNS_PROVIDER_TOKEN}",
+			"ip_version": "ipv4",
+			"ipv6_suffix": ""
+		},
+		{
+			"provider": "duckdns",
+			"domain": "${EXTERNAL_DOMAIN}",
+			"token": "${DNS_PROVIDER_TOKEN}",
+			"ip_version": "ipv4",
+			"ipv6_suffix": ""
+		  }
+    ]
+}

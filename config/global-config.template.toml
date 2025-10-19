@@ -134,6 +134,11 @@
 	AUTHELIA_USER_PASSWORD="long_password1!"
 	AUTHELIA_USER_FAMILY_PASSWORD="long_password2!"
 
+	# DDNS
+	# For cloudflare only
+	# https://dash.cloudflare.com/<zone_id>/<domain>/dns/records
+	CLOUDFLARE_ZONE_ID=""
+
 [sandbox]
 	enabled=false
 
