@@ -28,11 +28,13 @@ iface vmbr0 inet static
 	# INPUT
 	# Allow ping, loopback, established
 	# Allow 22, 8006 from LAN
+	# Allow 8006 from RP (proxmox host dashboard) for https domain
 	post-up   iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 	post-up   iptables -A INPUT -i lo -j ACCEPT
 	post-up   iptables -A INPUT -p icmp -j ACCEPT
 	post-up   iptables -A INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22   -j ACCEPT
 	post-up   iptables -A INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
+	post-up   iptables -A INPUT -p tcp -s 10.10.1.2 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
 	post-up   iptables -A INPUT -j DROP
 
 	# PREROUTING DNAT
@@ -72,6 +74,7 @@ iface vmbr0 inet static
     post-down iptables -D INPUT -j DROP
     post-down iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
     post-down iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22   -j ACCEPT
+    post-down iptables -D INPUT -p tcp -s 10.10.1.2 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
     post-down iptables -D INPUT -p icmp -j ACCEPT
     post-down iptables -D INPUT -i lo -j ACCEPT
     post-down iptables -D INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
@@ -123,6 +126,7 @@ iface vmbr1 inet static
 	# Allow outbound traffic to internet via vmbr0
 	post-up iptables -t nat -A POSTROUTING -s 10.10.1.0/24 -o vmbr0 -j MASQUERADE
 	# FORWARD
+	# Allow to use default DNS server (box)
 	# Block NEW connections from vmbr1 to LAN 192.168.1.0/24
 	# Allow vmbr1 to internet
 	post-up iptables -A FORWARD -p tcp -d {{ nameserver_ip }} --dport 53 -j ACCEPT
