@@ -28,10 +28,13 @@ Media streaming stack running Plex with Overseerr for managing user requests. Th
 
 - `apps/`: Contains all apps for this stack.
   - `plex/`, `overseerr/`
-- `src/`: Docker Compose file and configuration templates for media-server.
+- `src/`: Docker Compose file and configuration templates.
   - `docker-compose.yaml`
   - `config/`: Stores environment files and configuration templates.
-- `compose.sh`: main script to start the stack
+- `infra/`: Infrastructure configuration for deployment.
+  - `local.env.default` & `local.env.template`: Local deployment configuration
+  - `proxmox.yml`: Proxmox VM specification for deployment
+- `compose.sh`: Main script to start the stack
 
 ### _setup directory
 
@@ -67,6 +70,13 @@ A setup directory look like this:
 
 ### Environment files
 
+This stack uses a layered environment configuration system with the following priority (later files override earlier ones):
+
+1. `.env.default` - Default values for all variables
+2. `networking.env.default` - Default networking configuration  
+3. `networking.env` - Custom networking overrides (copied from template)
+4. `.env` - Custom application overrides (copied from template)
+
 **networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
 
 | Variable              | Description                                      | Example           |
@@ -93,13 +103,19 @@ A setup directory look like this:
 
 You may override any other environment variable as needed in either file.
 
-### Running service
+### Deployment options
 
-Start the stack with:
-
+**Local development:**
 ```bash
 ./compose.sh up -d
 ```
+
+**Proxmox deployment:**
+```bash
+./compose.sh --proxmox up -d
+```
+
+The `--proxmox` flag uses the IP configuration from `infra/proxmox.yml` instead of local settings.
 
 This will launch Plex and Overseerr containers and apply configuration templates from `_setup` on first start.
 
@@ -107,6 +123,113 @@ This will launch Plex and Overseerr containers and apply configuration templates
 
 - **URL:** `http://127.0.0.1:32400` (Plex) and `http://127.0.0.1:5055` (Overseerr), or via your reverse proxy domain.
 - **Default ports:** Plex - `32400`, Overseerr - `5055`
+
+## Infrastructure
+
+### Proxmox VM Configuration
+
+The `infra/proxmox.yml` file defines the VM specifications for Proxmox deployment:
+
+```yaml
+specs:
+  cores: 2                    # CPU cores allocated to VM (higher for transcoding)
+  ram_size: 3072              # RAM in MB (higher for media processing)
+  disk_size: 10               # Disk size in GB
+  additional_disks: []        # Additional disks (empty for this app)
+  pci_devices:                # PCI passthrough devices for hardware transcoding
+    - mapping: "pci_igpu_mapping"  # Intel iGPU for Plex hardware transcoding (Quick Sync)
+    # Note: The mapping 'pci_igpu_mapping' is created by Ansible playbook 4.additional-setup
+    # Find your Intel iGPU PCI address with: lspci | grep -i vga
+    # Common PCI address: 0000:00:02.0 (Intel Integrated Graphics)
+
+order_tier: 3                 # Deployment order (tier 3 = application layer)
+
+config:
+  docker: true                # Enable Docker installation
+  router: false               # Not a routing VM
+  routes:                     # Static routes for inter-VLAN communication
+    - network: 10.10.32.0/24  # Route to intern network
+      via: 10.10.31.2         # via firewall-srv
+  dns_servers: [1.1.1.1, 8.8.8.8]  # DNS servers
+
+nics:                         # Network interface configuration
+  - bridge: vmbr3             # Proxmox bridge (srv network)
+    vlan: 31                  # VLAN ID (extern)
+    ipv4: 10.10.31.11/24      # Static IP address
+    gateway: 10.10.31.1       # Default gateway
+
+nas:                          # NAS mount configuration for media storage
+  ip: "10.10.32.30"           # NAS VM IP address
+  mount_path: "/mnt/data"     # Local mount point
+  nfs_export: "/media"        # NFS export path on NAS
+```
+
+**Key concepts:**
+- **order_tier**: Controls deployment order (1=infrastructure, 2=management, 3=applications)
+- **docker**: Enables automatic Docker installation via cloud-init
+- **routes**: Required for communication between VLANs (extern ↔ intern)
+- **pci_devices**: Intel iGPU passthrough for Plex hardware transcoding (Quick Sync)
+- **nas**: NFS mount from NAS VM for media file storage
+
+### Network Architecture
+
+This VM is deployed on the **extern network** (VLAN 31):
+- **Network**: 10.10.31.0/24
+- **VM IP**: 10.10.31.11
+- **Gateway**: 10.10.31.1 (firewall-gw)
+- **Access**: Reachable from reverse-proxy (10.10.31.10), intern network (10.10.32.0/24), and LAN (192.168.1.0/24) for Plex
+
+### Firewall Rules
+
+The `infra/nftable.conf` file defines nftables firewall rules for this VM:
+
+```nftables
+# INPUT chain - incoming traffic to this VM
+chain input {
+    policy drop;                        # Default deny all incoming
+
+    iifname lo accept                   # Allow loopback
+    ct state established,related accept # Allow established connections
+    ct state invalid drop               # Drop invalid packets
+
+    # ICMP
+    ip protocol icmp accept             # Allow ping (IPv4)
+    ip6 nexthdr icmpv6 accept          # Allow ping (IPv6)
+
+    # SSH Access
+    ip saddr 10.10.31.9 tcp dport 22 accept   # Allow SSH from jump server
+    tcp dport 22 drop                          # Block SSH from everywhere else
+
+    # Application Access
+    ip saddr 10.10.31.10 accept        # Allow all ports from reverse-proxy
+    ip saddr 10.10.32.0/24 accept      # Allow all ports from intern network
+
+    # Plex local network discovery from LAN
+    ip saddr 192.168.1.0/24 tcp dport 32400 accept         # Plex web/streaming
+    ip saddr 192.168.1.0/24 udp dport 32410-32414 accept   # Plex network discovery
+}
+
+# FORWARD chain - traffic routed through this VM
+chain forward {
+    policy drop;                        # Default deny forwarding
+    
+    # Docker networking
+    ip saddr 172.17.0.0/12 accept      # Allow Docker container traffic
+    ip daddr 172.17.0.0/12 accept      # Allow traffic to Docker containers
+}
+
+# OUTPUT chain - outgoing traffic from this VM
+chain output {
+    policy accept;                      # Allow all outgoing traffic
+}
+```
+
+**Authorized traffic:**
+- **SSH (port 22)**: Only from jump server (10.10.31.9)
+- **All ports**: From reverse-proxy (10.10.31.10) and intern network (10.10.32.0/24)
+- **Plex (port 32400 TCP, 32410-32414 UDP)**: From LAN (192.168.1.0/24) for local streaming
+- **Docker**: Full container networking enabled
+- **Outgoing**: All outgoing connections allowed
 
 ## Details
 
@@ -132,5 +255,6 @@ This will launch Plex and Overseerr containers and apply configuration templates
 ### Troubleshooting
 
 - Check container logs with `docker logs <container_name>`
-- Review configuration files in `src/config/`
+- Review configuration files in `config/`
 - For network issues, verify your reverse proxy and DNS settings
+- For Proxmox deployment issues, check the `infra/proxmox.yml` configuration

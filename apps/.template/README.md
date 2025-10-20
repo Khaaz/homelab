@@ -4,16 +4,12 @@
 
 ### Overview
 
-Central hub for all home automation tasks using Home Assistant. This stack enables orchestration of smart devices, automations, and integrations, providing a unified dashboard and control system for your home.
+Template application stack for the homelab infrastructure. This serves as a base template for creating new application stacks with consistent structure and documentation.
 
 ### Services
 
-- **Home Assistant**:
-  - Orchestrates automations, device integrations, and provides the main dashboard.
-  - Connects smart devices (lights, sensors, switches, etc.)
-  - Creates automations and routines
-  - Monitors home status and events
-  - Integrates with voice assistants (Google Assistant, Alexa) and third-party services
+- **Template App**: Description of the main application or service
+- **Supporting Services**: Any additional services (databases, caches, etc.)
 
 ## Architecture
 
@@ -23,20 +19,22 @@ Central hub for all home automation tasks using Home Assistant. This stack enabl
 
 ### Features
 
-- Single-container deployment: Runs Home Assistant in a dedicated Docker container on its own isolated Docker network for security and reliability.
+- Container deployment: Runs application(s) in dedicated Docker containers on an isolated Docker network for security and reliability.
 - Configuration templates: Initial configuration is applied from the `_setup` directory on first start.
 - Reverse proxy integration: Designed to work with a reverse proxy (see the reverse-proxy stack) for secure external access and custom domains.
-- Auto-discovery: Home Assistant will auto-discover supported devices on your network and allow you to set up automations via its web UI.
 - Extensible: Add functionality with integrations, add-ons, and custom scripts.
 
 ### File structure
 
 - `apps/`: Contains all apps for this stack.
-  - `home-assistant/`
-- `src/`: Docker Compose file and configuration templates for Home Assistant.
+  - `app-name/`
+- `src/`: Docker Compose file and configuration templates.
   - `docker-compose.yaml`
   - `config/`: Stores environment files and configuration templates.
-- `compose.sh`: main script to start the stack
+- `infra/`: Infrastructure configuration for deployment.
+  - `local.env.default` & `local.env.template`: Local deployment configuration
+  - `proxmox.yml`: Proxmox VM specification for deployment
+- `compose.sh`: Main script to start the stack
 
 ### _setup directory
 
@@ -72,57 +70,66 @@ A setup directory look like this:
 
 ### Environment files
 
+This stack uses a layered environment configuration system with the following priority (later files override earlier ones):
+
+1. `.env.default` - Default values for all variables
+2. `networking.env.default` - Default networking configuration  
+3. `networking.env` - Custom networking overrides (copied from template)
+4. `.env` - Custom application overrides (copied from template)
+
 **networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
 
-| Variable                | Description                                 | Example         |
-|-------------------------|---------------------------------------------|-----------------|
-| HOME_AUTOMATION_HOST_IP | IP of the machine that hosts this stack     | 192.168.1.200   |
+| Variable          | Description                                 | Example         |
+|-------------------|---------------------------------------------|-----------------|
+| APP_HOST_IP       | IP of the machine that hosts this stack     | 192.168.1.100   |
 
 **.env**: Used to override values from `.env.default` if needed (see `.env.template`).
 
-| Variable     | Description                                 | Example |
-|--------------|---------------------------------------------|---------|
-| (none)       | No secrets required for this stack           |         |
+| Variable          | Description                                 | Example         |
+|-------------------|---------------------------------------------|-----------------|
+| APP_VARIABLE      | Application-specific configuration          | example-value   |
 
 You may override any other environment variable as needed in either file.
 
-### Running service
+### Deployment options
 
-Start the stack with:
-
+**Local development:**
 ```bash
 ./compose.sh up -d
 ```
 
-This will launch the Home Assistant container and apply configuration templates from `_setup` on first start.
+**Proxmox deployment:**
+```bash
+./compose.sh --proxmox up -d
+```
+
+The `--proxmox` flag uses the IP configuration from `infra/proxmox.yml` instead of local settings.
+
+This will launch the application containers and apply configuration templates from `_setup` on first start.
 
 ### Accessing service
 
-- **URL:** `http://127.0.0.1:8123` (or `https://ha.l.ab` with reverse proxy setup)
-- **Default port:** `8123`
+- **URL:** `http://127.0.0.1:PORT` (or `https://app.domain.com` with reverse proxy setup)
+- **Default port:** `PORT`
 
 ## Details
 
 ### Services and ports
 
-- Home assistant - `8123`
+- Application - `PORT`
 
 ### Use cases
 
-- Centralized control of smart home devices
-- Automated routines (e.g., lights on at sunset, notifications for motion detection)
-- Energy monitoring and reporting
-- Voice assistant integration (Google Assistant, Alexa)
+- [Describe the main use cases for this application stack]
 
 ### Documentation
 
-- [Home Assistant Main Site](https://www.home-assistant.io/)
-- [Getting Started Guide](https://www.home-assistant.io/getting-started/)
-- [Official Documentation](https://www.home-assistant.io/docs/)
-- [Community Forums](https://community.home-assistant.io/)
+- [Application Main Site](https://example.com/)
+- [Official Documentation](https://docs.example.com/)
 
 ### Troubleshooting
 
 - Check container logs with `docker logs <container_name>`
-- Review configuration files in `src/config/`
+- Review configuration files in `config/`
 - For network issues, verify your reverse proxy and DNS settings
+- For Proxmox deployment issues, check the `infra/proxmox.yml` configuration

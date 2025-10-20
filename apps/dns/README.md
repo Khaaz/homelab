@@ -1,18 +1,15 @@
-# reverse-proxy
+# dns
 
 ## Context
 
 ### Overview
 
-Entry point for the homelab. Provides the public reverse proxy using SWAG (nginx) with Authelia for authentication, plus DNS and certificate utilities. This stack secures and routes external traffic to internal services, manages authentication, and provides DNS and certificate management for the homelab.
+Local DNS resolution service for the homelab infrastructure. This stack provides DNS resolution using Unbound, handling both recursive DNS queries and local zone resolution for internal homelab services.
 
 ### Services
 
-- **SWAG**: Nginx reverse proxy
-- **Authelia**: Authentication gateway
-- **Unbound**: Local DNS resolver
-- **DDNS updater**: Updates public DNS records
-- **Minica**: Generates internal certificates
+- **Unbound**: Local DNS resolver for recursive lookups and local zones
+- **Pre-start setup**: Configuration generator for Unbound
 
 ## Architecture
 
@@ -22,21 +19,23 @@ Entry point for the homelab. Provides the public reverse proxy using SWAG (nginx
 
 ### Features
 
-- Multi-container deployment: All services run in dedicated containers on an isolated Docker network for security and reliability.
-- Configuration templates: Initial configuration is applied from the `_setup` directory on first start.
-- Reverse proxy integration: Designed to work with a reverse proxy for secure external access and custom domains.
-- DNS server: Unbound provides recursive lookups and local zones for internal services.
-- Certificate authority: Minica generates a small internal CA for trusted SSL certificates.
-- Extensible: Add functionality with integrations, add-ons, and custom scripts.
+- DNS server: Unbound provides both recursive DNS lookups and local zone resolution
+- Configuration templates: Initial configuration is applied from the `_setup` directory on first start
+- Local zone support: Resolves homelab services to their local IP addresses
+- Template-driven config: Dynamic configuration generation based on environment variables
+- Extensible: Add functionality with integrations, add-ons, and custom scripts
 
 ### File structure
 
 - `apps/`: Contains all apps for this stack.
-  - `authelia/`, `ca/`, `ddns-updater/`, `swag/`, `unbound/`
-- `src/`: Docker Compose file and configuration templates for reverse-proxy.
+  - `unbound/`
+- `src/`: Docker Compose file and configuration templates.
   - `docker-compose.yaml`
   - `config/`: Stores environment files and configuration templates.
-- `compose.sh`: main script to start the stack
+- `infra/`: Infrastructure configuration for deployment.
+  - `local.env.default` & `local.env.template`: Local deployment configuration
+  - `proxmox.yml`: Proxmox VM specification for deployment
+- `compose.sh`: Main script to start the stack
 
 ### _setup directory
 
@@ -57,26 +56,13 @@ A setup directory look like this:
 
 ### DNS server
 
-`unbound` provides both recursive lookups and local zones. The domain `${INTERNAL_DOMAIN}` resolves to the reverse proxy itself while `*.srv.${INTERNAL_DOMAIN}` maps each service VM to its designated IP as defined in `networking.env`. To use these records set your computer's DNS server to the reverse proxy address:
+`unbound` provides both recursive DNS lookups and local zone resolution. The domain `${INTERNAL_DOMAIN}` resolves to the reverse proxy while other homelab services are mapped to their designated IPs as defined in the environment configuration. To use these DNS records, set your devices' DNS server to this DNS server's IP address:
 
-- **Windows** – Control Panel → Network → Adapter Settings → set the DNS server
-  to the VM IP
+- **Windows** – Control Panel → Network → Adapter Settings → set the DNS server to the DNS VM IP
 - **macOS** – System Settings → Network → DNS
 - **Linux** – edit `/etc/resolv.conf` or your network manager configuration
 
-### Reverse proxy
-
-`swag` (an Nginx bundle) routes incoming requests to the correct internal service. `authelia` enforces authentication using individual user accounts and protects selected services.
-
-### Certificate authority
-
-`minica` generates a small internal certificate authority available at `https://<INTERNAL_DOMAIN>/ca`. Import the root certificate on each device so that the internal services are trusted:
-
-- **Windows** – open the URL, save the `.crt` file then double click it to add it to the "Trusted Root Certification Authorities" store
-- **macOS** – download the certificate and add it to Keychain Access under "System"
-- **Linux** – copy the certificate to `/usr/local/share/ca-certificates/` and run `sudo update-ca-certificates`
-- **Android** – download the certificate and install it via *Settings → Security → Encryption & credentials → Install a certificate*
-- **iOS** – download the certificate, open it and follow the prompts in *Settings*
+The DNS server dynamically generates configuration for all homelab services based on environment variables, providing seamless resolution for the internal domain.
 
 ## Setup
 
@@ -95,102 +81,169 @@ A setup directory look like this:
 
 ### Environment files
 
+This stack uses a layered environment configuration system with the following priority (later files override earlier ones):
+
+1. `.env.default` - Default values for all variables
+2. `networking.env.default` - Default networking configuration  
+3. `networking.env` - Custom networking overrides (copied from template)
+4. `.env` - Custom application overrides (copied from template)
+
 **networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
 
 | Variable               | Description                                 | Example         |
 |------------------------|---------------------------------------------|-----------------|
-| REVERSE_PROXY_HOST_IP  | IP of the machine that hosts this stack     | 192.168.1.105   |
+| DNS_HOST_IP           | IP of the machine that hosts this stack     | 192.168.1.105   |
 
 **.env**: Used to override values from `.env.default` if needed (see `.env.template`).
 
-| Variable                  | Description                                                      | Example                |
-|--------------------------|-------------------------------------------------------------------|------------------------|
-| INTERNAL_DOMAIN          | Internal domain for DNS and certificates                          | l.ab                   |
-| EXTERNAL_DOMAIN          | External domain for public access                                 | example.com            |
-| ROOT_COMMON_NAME         | Common name for root certificate (minica)                         | Homelab                |
-| DNSPLUGIN                | DNS provider for SWAG                                             | cloudflare             |
-| AUTHELIA_JWT_SECRET      | Secret key for Authelia JWT                                       | a_very_important_secret|
-| AUTHELIA_ENCRYPTION_KEY  | Encryption key for Authelia DB (min 20 chars)                     | randomstring           |
-| AUTHELIA_USER_NAME       | Authelia admin username                                           | admin                  |
-| AUTHELIA_USER_EMAIL      | Authelia admin email                                              | admin@gmail.com        |
-| AUTHELIA_USER_PASSWORD   | Authelia admin password hash (see instructions in template)       | $argon2id$...          |
+| Variable             | Description                                                | Example     |
+|----------------------|------------------------------------------------------------|-------------|
+| INTERNAL_DOMAIN      | Internal domain for DNS resolution                         | l.ab        |
+| HOST_LAN_IP          | Host LAN IP address                                        | 192.168.1.1 |
 
-You may override any other environment variable as needed in either file.
+You may override any other environment variable as needed in either file. The DNS stack requires numerous service IP variables to generate proper DNS records for all homelab services.
 
-### Running service
+### Deployment options
 
-Start the stack with:
-
+**Local development:**
 ```bash
 ./compose.sh up -d
 ```
 
-This will launch all containers and apply configuration templates from `_setup` on first start.
+**Proxmox deployment:**
+```bash
+./compose.sh --proxmox up -d
+```
+
+The `--proxmox` flag uses the IP configuration from `infra/proxmox.yml` instead of local settings.
+
+This will launch the Unbound DNS server and apply configuration templates from `_setup` on first start.
 
 ### Accessing service
 
-- **URL:** Depends on your domain and service configuration. See your reverse proxy and DNS settings.
-- **Root certificate:** `https://l.ab/ca`
+- **Service:** DNS resolution on port 53 (TCP/UDP)
+- **Configuration:** Set device DNS to this server's IP
+
+## Infrastructure
+
+### Proxmox VM Configuration
+
+The `infra/proxmox.yml` file defines the VM specifications for Proxmox deployment:
+
+```yaml
+specs:
+  cores: 1                    # CPU cores allocated to VM
+  ram_size: 2048              # RAM in MB
+  disk_size: 10               # Disk size in GB
+  additional_disks: []        # Additional disks (empty for this app)
+  pci_devices: []             # PCI passthrough devices (empty for this app)
+
+order_tier: 1                 # Deployment order (tier 1 = infrastructure layer)
+
+config:
+  docker: true                # Enable Docker installation
+  router: false               # Not a routing VM
+  routes: []                  # No additional routes needed (on gateway network)
+  dns_servers: [1.1.1.1, 8.8.8.8]  # Upstream DNS servers
+
+nics:                         # Network interface configuration
+  - bridge: vmbr1             # Proxmox bridge (gw network)
+    ipv4: 10.10.1.200/24      # Static IP address
+    gateway: 10.10.1.2        # Default gateway (firewall-gw)
+
+nas: null                     # NAS mount configuration (null = not using NAS)
+```
+
+**Key concepts:**
+- **order_tier**: 1 = infrastructure layer (deployed first, before management and apps)
+- **docker**: Enables automatic Docker installation for running Unbound container
+- **routes**: Empty because DNS is on gateway network with direct access everywhere
+- **nas**: Not applicable for DNS service
+
+### Network Architecture
+
+This VM is deployed on the **gateway network** (no VLAN):
+- **Network**: 10.10.1.0/24
+- **VM IP**: 10.10.1.200
+- **Gateway**: 10.10.1.2 (firewall-gw)
+- **Access**: Accessible from all networks (provides DNS for entire homelab)
+
+### Firewall Rules
+
+The `infra/nftable.conf` file defines nftables firewall rules for this VM:
+
+```nftables
+# INPUT chain - incoming traffic to this VM
+chain input {
+    policy drop;                        # Default deny all incoming
+
+    iifname lo accept                   # Allow loopback
+    ct state established,related accept # Allow established connections
+    ct state invalid drop               # Drop invalid packets
+
+    # ICMP
+    ip protocol icmp accept             # Allow ping (IPv4)
+    ip6 nexthdr icmpv6 accept          # Allow ping (IPv6)
+
+    # SSH Access
+    ip saddr 10.10.1.9 tcp dport 22 accept   # Allow SSH from jump server
+
+    # DNS Service
+    tcp dport 53 accept                 # Allow DNS queries (TCP) from anywhere
+    udp dport 53 accept                 # Allow DNS queries (UDP) from anywhere
+}
+
+# FORWARD chain - traffic routed through this VM
+chain forward {
+    policy drop;                        # Default deny forwarding
+    
+    # Docker networking
+    ip saddr 172.17.0.0/12 accept      # Allow Docker container traffic
+    ip daddr 172.17.0.0/12 accept      # Allow traffic to Docker containers
+}
+
+# OUTPUT chain - outgoing traffic from this VM
+chain output {
+    policy accept;                      # Allow all outgoing traffic
+}
+```
+
+**Authorized traffic:**
+- **SSH (port 22)**: Only from jump server (10.10.1.9)
+- **DNS (port 53 TCP/UDP)**: From any source (required for DNS service)
+- **Docker**: Full container networking enabled
+- **Outgoing**: All outgoing connections allowed (for upstream DNS queries)
 
 ## Details
 
 ### Services and ports
 
-- SWAG (Nginx) - `443`/`80`
-- Unbound - `53`
-- Authelia - internal only
-- DDNS updater - internal only
-- Minica - internal only
+- Unbound - `53` (TCP/UDP)
+- Pre-start setup - internal only
 
-### Domains
+### DNS zones resolved
 
-- `authelia.l.ab`, `auth.l.ab` – Authelia portal
-- `ddns-updater.l.ab` – dynamic DNS status
-- `ha.l.ab` – Home Assistant
-- `photos.l.ab`, `immich.l.ab` – Immich
-- `cloud.l.ab`, `nextcloud.l.ab` – Nextcloud
-- `plex.l.ab` – Plex
-- `plex.<DOMAIN>` – Plex external
-- `request.l.ab`, `overseerr.l.ab` – Overseerr
-- `request.<DOMAIN>`, `overseer.<DOMAIN>` – Overseerr external
-- `qbit.l.ab`, `qbittorrent.l.ab` – qBittorrent
-- `prowlarr.l.ab` – Prowlarr
-- `radarr.l.ab` – Radarr
-- `radarr4k.l.ab` – Radarr4K
-- `sonarr.l.ab` – Sonarr
-- `sonarr4k.l.ab` – Sonarr4K
-- `bazarr.l.ab` – Bazarr
-- `homarr.l.ab` – Homarr dashboard
-- `maintainerr.l.ab` – Maintainerr health check
-- `vault.l.ab`, `vaultwarden.l.ab` – Vaultwarden
-- `code.l.ab` – VS Code server
+The DNS server resolves the following zones based on environment configuration:
 
-### Certificate
-
-- For certificate, import the root certificate on each device:
-  - **Windows**: Save `.crt` file and add to Trusted Root Certification Authorities
-  - **macOS**: Add to Keychain Access under System
-  - **Linux**: Copy to `/usr/local/share/ca-certificates/` and run `sudo update-ca-certificates`
-  - **Android**: Install via Settings > Security > Encryption & credentials > Install a certificate
-  - **iOS**: Open and follow prompts in Settings
+- `${INTERNAL_DOMAIN}` - Points to reverse proxy
+- Individual service subdomains - Point to their respective service IPs
 
 ### Use cases
 
-- Secure external access to internal services
-- Centralized authentication
-- Internal DNS and certificate management
+- Local DNS resolution for homelab services
+- Recursive DNS lookups for external domains
+- Internal domain resolution
 
 ### Documentation
 
-- [SWAG Documentation](https://docs.linuxserver.io/images/docker-swag)
-- [Authelia Documentation](https://www.authelia.com/docs/)
 - [Unbound Documentation](https://nlnetlabs.nl/projects/unbound/)
-- [ddns-updater](https://github.com/qdm12/ddns-updater#readme)
-- [minica](https://github.com/jsha/minica)
-- https://en.wikipedia.org/wiki/Comparison_of_DNS_server_software
+- [Unbound Configuration](https://nlnetlabs.nl/documentation/unbound/unbound.conf/)
+- [DNS Server Comparison](https://en.wikipedia.org/wiki/Comparison_of_DNS_server_software)
 
 ### Troubleshooting
 
 - Check container logs with `docker logs <container_name>`
-- Review configuration files in `src/config/`
-- For network issues, verify your reverse proxy and DNS settings
+- Review configuration files in `config/`
+- For DNS resolution issues, verify the `_setup/templates/unbound.conf` file
+- For Proxmox deployment issues, check the `infra/proxmox.yml` configuration
+- Test DNS resolution with `nslookup` or `dig` commands

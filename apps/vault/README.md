@@ -27,10 +27,13 @@ Self-hosted password manager compatible with Bitwarden clients. This stack provi
 
 - `apps/`: Contains all apps for this stack.
   - `vaultwarden/`
-- `src/`: Docker Compose file and configuration templates for Vaultwarden.
+- `src/`: Docker Compose file and configuration templates.
   - `docker-compose.yaml`
   - `config/`: Stores environment files and configuration templates.
-- `compose.sh`: main script to start the stack
+- `infra/`: Infrastructure configuration for deployment.
+  - `local.env.default` & `local.env.template`: Local deployment configuration
+  - `proxmox.yml`: Proxmox VM specification for deployment
+- `compose.sh`: Main script to start the stack
 
 ### _setup directory
 
@@ -66,6 +69,13 @@ A setup directory look like this:
 
 ### Environment files
 
+This stack uses a layered environment configuration system with the following priority (later files override earlier ones):
+
+1. `.env.default` - Default values for all variables
+2. `networking.env.default` - Default networking configuration  
+3. `networking.env` - Custom networking overrides (copied from template)
+4. `.env` - Custom application overrides (copied from template)
+
 **networking.env**: Used to configure network settings for the stack (see `networking.env.template`).
 
 | Variable              | Description                                 | Example         |
@@ -80,13 +90,19 @@ A setup directory look like this:
 
 You may override any other environment variable as needed in either file.
 
-### Running service
+### Deployment options
 
-Start the stack with:
-
+**Local development:**
 ```bash
 ./compose.sh up -d
 ```
+
+**Proxmox deployment:**
+```bash
+./compose.sh --proxmox up -d
+```
+
+The `--proxmox` flag uses the IP configuration from `infra/proxmox.yml` instead of local settings.
 
 This will launch the Vaultwarden container and apply configuration templates from `_setup` on first start.
 
@@ -94,6 +110,48 @@ This will launch the Vaultwarden container and apply configuration templates fro
 
 - **URL:** `http://127.0.0.1:8087` (or your reverse proxy domain)
 - **Default port:** `8087`
+
+## Infrastructure
+
+### Proxmox VM Configuration
+
+```yaml
+specs:
+  cores: 1                    
+  ram_size: 2048              
+  disk_size: 10               
+  additional_disks: []        
+
+order_tier: 3                 
+
+config:
+  docker: true                
+  router: false               
+  routes:                     
+    - network: 10.10.31.0/24  # Route to extern
+      via: 10.10.32.2         # via firewall-srv
+  dns_servers: [1.1.1.1, 8.8.8.8]
+
+nics:                         
+  - bridge: vmbr3             
+    vlan: 32                  # VLAN ID (intern)
+    ipv4: 10.10.32.15/24      
+    gateway: 10.10.32.1       
+
+nas: null
+```
+
+### Network Architecture
+
+- **Network**: 10.10.32.0/24 (intern VLAN 32)
+- **VM IP**: 10.10.32.15
+
+### Firewall Rules
+
+**Authorized traffic:**
+- **SSH (port 22)**: From jump server (10.10.32.9)
+- **All ports**: From reverse-proxy (10.10.32.10) and extern network
+- **Docker**: Full container networking
 
 ## Details
 
@@ -114,5 +172,6 @@ This will launch the Vaultwarden container and apply configuration templates fro
 ### Troubleshooting
 
 - Check container logs with `docker logs <container_name>`
-- Review configuration files in `src/config/`
+- Review configuration files in `config/`
 - For network issues, verify your reverse proxy and DNS settings
+- For Proxmox deployment issues, check the `infra/proxmox.yml` configuration
