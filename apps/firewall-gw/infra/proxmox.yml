@@ -1,7 +1,7 @@
 specs:
   cores: 1
-  ram_size: 1024 # MB
-  disk_size: 8 # GB
+  ram_size: 512 # MB
+  disk_size: 4 # GB
   additional_disks: []
   pci_devices: []
 order_tier: 0

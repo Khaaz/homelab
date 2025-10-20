@@ -1,7 +1,7 @@
 specs:
   cores: 1
-  ram_size: 2048 # MB
-  disk_size: 10 # GB
+  ram_size: 1024 # MB
+  disk_size: 5 # GB
   # Additional disk for NAS storage with passthrough
   # 8TB Seagate ST8000VN002 (serial: ZPV0T1XZ)
   additional_disks: [] # Use PCI passthrough instead

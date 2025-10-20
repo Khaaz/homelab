@@ -1,7 +1,7 @@
 specs:
   cores: 2
   ram_size: 3072 # MB
-  disk_size: 10 # GB
+  disk_size: 15 # GB
   additional_disks: []
   # PCI Passthrough: Intel iGPU for Plex hardware transcoding (Quick Sync)
   # Find your Intel iGPU PCI address with: lspci | grep -i vga
