@@ -25,7 +25,7 @@ awk '/MemTotal/{t=$2}/MemAvailable/{a=$2}END{u=t-a; printf "Used: %.1fG / %.1fG 
 
 echo
 echo "-------------------- DISK --------------------"
-df -h | grep -E '^/dev' | awk '{printf "%-20s %-10s %-10s %-10s %s\n", $1, $2, $3, $5, $6}'
+df -h 2>/dev/null | grep -E '^/dev' | awk '{printf "%-20s %-10s %-10s %-10s %s\n", $1, $2, $3, $5, $6}'
 
 echo
 echo "-------------------- NETWORK --------------------"

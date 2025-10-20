@@ -10,7 +10,7 @@ SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
 usage() {
-	echo "Usage: $0 <target> --command <sys_info|mem_usage|cpu_usage|disk_usage>"
+	echo "Usage: $0 <target> --command <sys_info|ram_usage|cpu_usage|disk_usage>"
 	echo "   or: $0 <target> --raw <linux command>"
 	exit 1
 }
@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
 			;;
 		--command)
 			shift
-			if [ "$1" = "sys_info" ] || [ "$1" = "mem_usage" ] || [ "$1" = "cpu_usage" ] || [ "$1" = "disk_usage" ]; then
+			if [ "$1" = "sys_info" ] || [ "$1" = "ram_usage" ] || [ "$1" = "cpu_usage" ] || [ "$1" = "disk_usage" ]; then
 				PREDEFINED_COMMAND="$1"
 			else
 				usage
@@ -39,7 +39,6 @@ while [ $# -gt 0 ]; do
 			;;
 		*)
 			TARGET="$1"
-			shift
 			;;
 	esac
 	shift
@@ -54,11 +53,11 @@ if [ -z "$PREDEFINED_COMMAND" ] && [ -z "$RAW_COMMAND" ]; then
 fi
 
 ARGS=""
-if [ -n $PREDEFINED_COMMAND ]; then
-	ARGS= "--command $PREDEFINED_COMMAND"
+if [ -n "$PREDEFINED_COMMAND" ]; then
+	ARGS="--command $PREDEFINED_COMMAND"
 else
 	cmd_b64=$(printf "%s" "$RAW_COMMAND" | base64 -w 0 2>/dev/null || printf "%s" "$RAW_COMMAND" | base64)
-	ARGS= "--raw $cmd_b64"
+	ARGS="--raw $cmd_b64"
 fi
 
 

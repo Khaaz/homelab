@@ -11,7 +11,7 @@ ROOT_DIR="$SCRIPT_DIR/../.."
 
 ## Usage
 usage() {
-	echo "Usage: $0 <target> --command <sys_info|mem_usage|cpu_usage|disk_usage>"
+	echo "Usage: $0 <target> --command <sys_info|ram_usage|cpu_usage|disk_usage>"
 	echo "   or: $0 <target> --raw <base64-encoded-command>"
 	exit 1
 }
@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
 			;;
 		--command)
 			shift
-			if [ "$1" = "sys_info" ] || [ "$1" = "mem_usage" ] || [ "$1" = "cpu_usage" ] || [ "$1" = "disk_usage" ]; then
+			if [ "$1" = "sys_info" ] || [ "$1" = "ram_usage" ] || [ "$1" = "cpu_usage" ] || [ "$1" = "disk_usage" ]; then
 				PREDEFINED_COMMAND="$1"
 			else
 				usage
