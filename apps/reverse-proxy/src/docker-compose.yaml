@@ -8,6 +8,7 @@ networks:
         - subnet: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.0/24
           gateway: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.1
 services:
+  # Authelia - Pre-start
   authelia-pre-start:
     image: alpine:3.22
     container_name: authelia-pre-start
@@ -147,6 +148,29 @@ services:
       - DOMAIN=${INTERNAL_DOMAIN}
       - ROOT_CN=${ROOT_CA_COMMON_NAME:?err}
   
+  # DDNS-Updater - Pre-start
+  ddns-updater-pre-start:
+    image: alpine:3.20
+    container_name: ddns-updater-pre-start
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.33
+    command:
+      - /bin/sh
+      - -c
+      - /scripts/parse_file.sh /_setup/templates/config.${DNS_PROVIDER:?err}.json /updater/data/config.json
+    volumes:
+      - ${APPS_FOLDER:?err}/ddns-updater:/updater/data # config
+      - ${APPS_FOLDER:?err}/ddns-updater/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      # setup
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      - DNS_PROVIDER_TOKEN=${DNS_PROVIDER_TOKEN:?err}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+
   # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:
     image: qmcgaw/ddns-updater:2
@@ -155,6 +179,9 @@ services:
     networks:
       reverse-proxy:
         ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.22
+    depends_on:
+      ddns-updater-pre-start:
+        condition: service_completed_successfully
     user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_DDNS_UPDATER:?err}:8000/tcp
@@ -185,16 +212,6 @@ services:
       - LOG_LEVEL=info
       - LOG_CALLER=hidden
       - SHOUTRRR_ADDRESSES=
-      # setup
-      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
-      - DNS_PROVIDER_TOKEN=${DNS_PROVIDER_TOKEN:?err}
-      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID:?err}
-    post_start:
-      - command: /scripts/parse_file.sh /_setup/templates/config.json /updater/data/config.json
-        user: root
-        environment:
-          - PUID=${PUID:?err}
-          - PGID=${PGID:?err}
 
   # Homer - Dashboard
   # generic service name for internal.conf to work out of the box
@@ -211,6 +228,7 @@ services:
       - 8080:8080
     volumes:
       - ${APPS_FOLDER:?err}/homer:/www/assets
+      - ${APPS_FOLDER:?err}/homer/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - INIT_ASSETS=1 # default, requires the config directory to be writable for the container user (see user option)
