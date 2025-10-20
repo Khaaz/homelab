@@ -66,7 +66,7 @@ fi
 #
 ## Core
 #
-HOST_IP=$("$SCRIPT_DIR/src/get_vm_ip.sh" "$HOST_VM")
+HOST_IP=$("$SCRIPT_DIR/get_vm_ip.sh" "$HOST_VM")
 
 TIMEOUT_SECS=5
 
