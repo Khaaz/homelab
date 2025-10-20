@@ -17,8 +17,8 @@ source_ips() {
 	. "$SCRIPT_DIR/source_vms_ip.sh"
 }
 
-$SCRIPT_DIR/src/test_connectivity.sh --for $MEDIA_MANAGEMENT_IP --target $MEDIA_SERVER_IP --on 5000 --should work
-$SCRIPT_DIR/src/test_connectivity.sh --for $MEDIA_SERVER_IP --target $MEDIA_MANAGEMENT_IP --on 5000 --should work
+$SCRIPT_DIR/src/test_connectivity.sh --for media-management --target media-server --with 10.10.31.11 --on 5000 --should work
+$SCRIPT_DIR/src/test_connectivity.sh --for media-server --target media-management --with 10.10.32.10 --on 5000 --should work
 
-$SCRIPT_DIR/src/test_connectivity.sh --for $MEDIA_SERVER_IP --target $MEDIA_MANAGEMENT_IP --on 22 --should fail
-$SCRIPT_DIR/src/test_connectivity.sh --for $MEDIA_MANAGEMENT_IP --target $MEDIA_SERVER_IP --on 22 --should fail
+$SCRIPT_DIR/src/test_connectivity.sh --for media-server --target media-management --with 10.10.31.11 --on 22 --should fail
+$SCRIPT_DIR/src/test_connectivity.sh --for media-management --target media-server --with 10.10.32.10 --on 22 --should fail

@@ -10,7 +10,7 @@ SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
 usage() {
-	echo "Usage: $0 <playbook> [--refresh-config <none|config|full>] [--refresh-ssh <none|new|full|generate|reset>] [--help]"
+	echo "Usage: $0 <playbook> [--refresh-config <none|config|full>] [--refresh-ssh <none|new|full|generate|reset>]"
 	echo
 	echo "Options:"
 	echo "  --refresh-config, -rc  Set config refresh level (default: config)"
