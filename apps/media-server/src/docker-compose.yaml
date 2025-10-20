@@ -43,6 +43,8 @@ services:
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
       - WEBHOOK_OVERSERRR_DISCORD=${WEBHOOK_OVERSERRR_DISCORD} # optional
+    devices:
+      - /dev/dri:/dev/dri
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/settings.json /config/settings.json
         user: root
