@@ -18,6 +18,8 @@ usage() {
 	echo "Usage: $0 [--local]"
 	echo "  --local: Use local IP from apps/<appname>/infra/local.env files"
 	echo "           If not specified, uses get_proxmox_ip.sh to retrieve IP from infra/proxmox.yml"
+	echo "..."
+	echo "Pass a VERBOSE=true environment variable to get verbose output"
 	exit 1
 }
 
@@ -55,9 +57,10 @@ source_app_ip() {
 
 	local ip=$("$ROOT_DIR/src/app-bootstrap/get_app_ip.sh" --for "$1" --on "$2" $LOCAL_ARG)
 	export "$env_var_name"="$ip"
-	echo "$env_var_name=$ip"
+	if [ "$VERBOSE" = "true" ]; then
+		echo "$env_var_name=$ip"
+	fi
 }
-
 
 echo "Sourcing environment variables:"
 source_app_ip media-management vmbr3

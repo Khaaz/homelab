@@ -19,6 +19,8 @@ usage() {
 	echo "Eg: $0 --for firewall-gw --on vmbr1"
 	echo "Eg: $0 --for reverse-proxy --on vmbr3.30"
 	echo "Eg: $0 --for media-server --on vmbr3.31"
+	echo "..."
+	echo "Pass a VERBOSE=true environment variable to get verbose output"
 	exit 1
 }
 
@@ -88,7 +90,9 @@ get_app_ip() {
 			return 1
 		fi
 		
-		echo "Using local IP for $app_name: $ip" >&2
+		if [ "$VERBOSE" = "true" ]; then
+			echo "Using local IP for $app_name: $ip" >&2
+		fi
 		echo "$ip"
 	else
 		# Use get_ip.sh to retrieve IP from proxmox.yml
@@ -98,7 +102,9 @@ get_app_ip() {
 			return 1
 		fi
 		
-		echo "Retrieved IP for $app_name on $network: $ip" >&2
+		if [ "$VERBOSE" = "true" ]; then
+			echo "Retrieved IP for $app_name on $network: $ip" >&2
+		fi
 		echo "$ip"
 	fi
 }
