@@ -120,7 +120,7 @@ services:
       - 1901:1900/udp                        # DLNA
     volumes:
       - ${APPS_FOLDER:?err}/jellyfin/config:/config        # config
-      - ${DATA_FOLDER:?err}/media:/data/media              # medias
+      - ${DATA_FOLDER:?err}/media:/data/media          # medias
       - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup        # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts                    # scripts
     environment:
@@ -128,15 +128,16 @@ services:
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:jellyfin
-      - TP_THEME=${TP_THEME:?err}
+      - JELLYFIN_CONFIG_DIR=/config
+      - JELLYFIN_DATA_DIR=/config/data
+      - JELLYFIN_CACHE_DIR=/config/cache
+      - JELLYFIN_LOG_DIR=/config/log
+      # - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:jellyfin
+      # - TP_THEME=${TP_THEME:?err}
       # setup
       - JELLYFIN_PUBLISHED_SERVER_URL=${EXTERNAL_DOMAIN:?err}
     devices:
       - /dev/dri:/dev/dri   # Accélération matérielle Intel/AMD
     # post_start:
-    #   - command: /scripts/parse_file.sh /_setup/templates/system.xml /config/system.xml
+    #   - command: /scripts/execute_sql.sh /config/data/data/jellyfin.db
     #     user: root
-    #     environment:
-    #       - PUID=${PUID:?err}
-    #       - PGID=${PGID:?err}

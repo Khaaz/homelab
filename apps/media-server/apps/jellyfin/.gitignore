@@ -1,0 +1,19 @@
+# ------------------------------
+# Garder le dossier root des médias
+# ------------------------------
+!/config/data/root/
+!/config/data/root/**
+
+# ------------------------------
+# Garder le dossier _setup pour les scripts d'init
+# ------------------------------
+!/_setup/
+!/_setup/**
+
+# ------------------------------
+# Garder les fichiers de configuration “neutres”
+# ------------------------------
+!/config/encoding.xml
+!/config/logging.default.json
+!/config/system.xml
+!/config/network.xml

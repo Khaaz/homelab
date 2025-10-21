@@ -1,0 +1,53 @@
+-- USER
+DELETE FROM Users;
+
+INSERT INTO Users (
+    Id,
+    AuthenticationProviderId,
+    Username,
+    Password,
+    EnableLocalPassword,
+    MustUpdatePassword,
+    DisplayCollectionsView,
+    DisplayMissingEpisodes,
+    EnableAutoLogin,
+    EnableNextEpisodeAutoPlay,
+    EnableUserPreferenceAccess,
+    HidePlayedInLatest,
+    InternalId,
+    InvalidLoginAttemptCount,
+    MaxActiveSessions,
+    MaxParentalAgeRating,
+    PasswordResetProviderId,
+    PlayDefaultAudioTrack,
+    RememberAudioSelections,
+    RememberSubtitleSelections,
+    SubtitleMode,
+    SyncPlayAccess,
+    RowVersion
+) VALUES (
+    'B9A52FF4-A95F-4DE0-BAF2-EE5A88DEBDF4',
+    'Jellyfin.Server.Implementations.Users.DefaultAuthenticationProvider',
+    'admin',
+    '$PBKDF2-SHA512$iterations=120000$368FC76F3107E0DBD5FE7E65270F9D74$FF4A3C38523B00BA25985D90C5EBD87E947C02DFF1111156D457DBF07EC456A1E8330B389925563131BA78904D8B654F9A99B41EBB4998082FF18D9F5D3844F2',
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    NULL,
+    'Jellyfin.Server.Implementations.Users.DefaultPasswordResetProvider',
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+);
+
