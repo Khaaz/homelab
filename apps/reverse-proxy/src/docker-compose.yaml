@@ -117,6 +117,7 @@ services:
       # - MS
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - PORT_UI_JELLYFIN=${PORT_UI_JELLYFIN:?err}
       # - NC
       - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
       # - VW

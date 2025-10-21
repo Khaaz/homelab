@@ -104,3 +104,39 @@ services:
           - PGID=${PGID:?err}
       - command: /scripts/execute_sql.sh "/config/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
         user: root
+    # Jellyfin - Alternative Media Server
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:10.9.11
+    container_name: jellyfin
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.11
+    # user: ${PUID:?err}:${PGID:?err}
+    ports:
+      - ${PORT_UI_JELLYFIN:?err}:8096        # HTTP WebUI
+      - ${PORT_UI_JELLYFIN_HTTPS:-8920}:8920 # HTTPS (facultatif)
+      - 7359:7359/udp                        # Service Discovery
+      - 1901:1900/udp                        # DLNA
+    volumes:
+      - ${APPS_FOLDER:?err}/jellyfin/config:/config        # config
+      - ${DATA_FOLDER:?err}/media:/data/media              # medias
+      - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup        # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts                    # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:jellyfin
+      - TP_THEME=${TP_THEME:?err}
+      # setup
+      - JELLYFIN_PUBLISHED_SERVER_URL=${EXTERNAL_DOMAIN:?err}
+    devices:
+      - /dev/dri:/dev/dri   # Accélération matérielle Intel/AMD
+    # post_start:
+    #   - command: /scripts/parse_file.sh /_setup/templates/system.xml /config/system.xml
+    #     user: root
+    #     environment:
+    #       - PUID=${PUID:?err}
+    #       - PGID=${PGID:?err}
