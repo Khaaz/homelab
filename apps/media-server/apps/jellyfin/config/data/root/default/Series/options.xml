@@ -13,7 +13,7 @@
       <Path>/data/media/series</Path>
     </MediaPathInfo>
   </PathInfos>
-  <SaveLocalMetadata>true</SaveLocalMetadata>
+  <SaveLocalMetadata>false</SaveLocalMetadata>
   <EnableAutomaticSeriesGrouping>false</EnableAutomaticSeriesGrouping>
   <EnableEmbeddedTitles>true</EnableEmbeddedTitles>
   <EnableEmbeddedExtrasTitles>true</EnableEmbeddedExtrasTitles>
@@ -31,28 +31,47 @@
   </LocalMetadataReaderOrder>
   <DisabledSubtitleFetchers />
   <SubtitleFetcherOrder />
+  <DisabledMediaSegmentProviders />
+  <MediaSegmentProviderOrder>
+    <string>Intro Skipper</string>
+  </MediaSegmentProviderOrder>
   <SkipSubtitlesIfEmbeddedSubtitlesPresent>false</SkipSubtitlesIfEmbeddedSubtitlesPresent>
   <SkipSubtitlesIfAudioTrackMatches>false</SkipSubtitlesIfAudioTrackMatches>
   <SubtitleDownloadLanguages />
   <RequirePerfectSubtitleMatch>true</RequirePerfectSubtitleMatch>
   <SaveSubtitlesWithMedia>true</SaveSubtitlesWithMedia>
+  <DisabledLyricFetchers />
+  <LyricFetcherOrder />
+  <CustomTagDelimiters>
+    <string>/</string>
+    <string>|</string>
+    <string>;</string>
+    <string>\</string>
+  </CustomTagDelimiters>
+  <DelimiterWhitelist />
   <AutomaticallyAddToCollection>false</AutomaticallyAddToCollection>
   <AllowEmbeddedSubtitles>AllowAll</AllowEmbeddedSubtitles>
   <TypeOptions>
     <TypeOptions>
       <Type>Series</Type>
       <MetadataFetchers>
+        <string>TheTVDB</string>
+        <string>Missing Episode Fetcher</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
       </MetadataFetchers>
       <MetadataFetcherOrder>
+        <string>TheTVDB</string>
+        <string>Missing Episode Fetcher</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
       </MetadataFetcherOrder>
       <ImageFetchers>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
       </ImageFetchers>
       <ImageFetcherOrder>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
       </ImageFetcherOrder>
       <ImageOptions />
@@ -60,15 +79,19 @@
     <TypeOptions>
       <Type>Season</Type>
       <MetadataFetchers>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
       </MetadataFetchers>
       <MetadataFetcherOrder>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
       </MetadataFetcherOrder>
       <ImageFetchers>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
       </ImageFetchers>
       <ImageFetcherOrder>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
       </ImageFetcherOrder>
       <ImageOptions />
@@ -76,20 +99,24 @@
     <TypeOptions>
       <Type>Episode</Type>
       <MetadataFetchers>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
       </MetadataFetchers>
       <MetadataFetcherOrder>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
       </MetadataFetcherOrder>
       <ImageFetchers>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
         <string>Embedded Image Extractor</string>
         <string>Screen Grabber</string>
       </ImageFetchers>
       <ImageFetcherOrder>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
         <string>Embedded Image Extractor</string>

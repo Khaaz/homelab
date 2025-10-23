@@ -106,7 +106,7 @@ services:
         user: root
     # Jellyfin - Alternative Media Server
   jellyfin:
-    image: lscr.io/linuxserver/jellyfin:10.9.11
+    image: lscr.io/linuxserver/jellyfin:10.11.0
     container_name: jellyfin
     restart: unless-stopped
     networks:
@@ -120,7 +120,7 @@ services:
       - 1901:1900/udp                        # DLNA
     volumes:
       - ${APPS_FOLDER:?err}/jellyfin/config:/config        # config
-      - ${DATA_FOLDER:?err}/media:/data/media          # medias
+      - ${DATA_FOLDER:?err}/media:/data/media
       - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup        # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts                    # scripts
     environment:
@@ -132,8 +132,6 @@ services:
       - JELLYFIN_DATA_DIR=/config/data
       - JELLYFIN_CACHE_DIR=/config/cache
       - JELLYFIN_LOG_DIR=/config/log
-      # - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:jellyfin
-      # - TP_THEME=${TP_THEME:?err}
       # setup
       - JELLYFIN_PUBLISHED_SERVER_URL=${EXTERNAL_DOMAIN:?err}
     devices:

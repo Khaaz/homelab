@@ -10,12 +10,14 @@
   <ThrottleDelaySeconds>180</ThrottleDelaySeconds>
   <EnableSegmentDeletion>false</EnableSegmentDeletion>
   <SegmentKeepSeconds>720</SegmentKeepSeconds>
+  <HardwareAccelerationType>none</HardwareAccelerationType>
   <EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>
   <VaapiDevice>/dev/dri/renderD128</VaapiDevice>
+  <QsvDevice />
   <EnableTonemapping>false</EnableTonemapping>
   <EnableVppTonemapping>false</EnableVppTonemapping>
   <EnableVideoToolboxTonemapping>false</EnableVideoToolboxTonemapping>
-  <TonemappingAlgorithm>bt2390</TonemappingAlgorithm>
+  <TonemappingAlgorithm>none</TonemappingAlgorithm>
   <TonemappingMode>auto</TonemappingMode>
   <TonemappingRange>auto</TonemappingRange>
   <TonemappingDesat>0</TonemappingDesat>
@@ -25,10 +27,13 @@
   <VppTonemappingContrast>1</VppTonemappingContrast>
   <H264Crf>23</H264Crf>
   <H265Crf>28</H265Crf>
+  <EncoderPreset xsi:nil="true" />
   <DeinterlaceDoubleRate>false</DeinterlaceDoubleRate>
   <DeinterlaceMethod>yadif</DeinterlaceMethod>
   <EnableDecodingColorDepth10Hevc>true</EnableDecodingColorDepth10Hevc>
   <EnableDecodingColorDepth10Vp9>true</EnableDecodingColorDepth10Vp9>
+  <EnableDecodingColorDepth10HevcRext>false</EnableDecodingColorDepth10HevcRext>
+  <EnableDecodingColorDepth12HevcRext>false</EnableDecodingColorDepth12HevcRext>
   <EnableEnhancedNvdecDecoder>true</EnableEnhancedNvdecDecoder>
   <PreferSystemNativeHwDecoder>true</PreferSystemNativeHwDecoder>
   <EnableIntelLowPowerH264HwEncoder>false</EnableIntelLowPowerH264HwEncoder>
@@ -36,7 +41,7 @@
   <EnableHardwareEncoding>true</EnableHardwareEncoding>
   <AllowHevcEncoding>false</AllowHevcEncoding>
   <AllowAv1Encoding>false</AllowAv1Encoding>
-  <EnableSubtitleExtraction>true</EnableSubtitleExtraction>
+  <EnableSubtitleExtraction>false</EnableSubtitleExtraction>
   <HardwareDecodingCodecs>
     <string>h264</string>
     <string>vc1</string>

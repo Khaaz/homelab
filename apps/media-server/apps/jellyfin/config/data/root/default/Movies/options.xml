@@ -22,20 +22,31 @@
   <PreferredMetadataLanguage>en</PreferredMetadataLanguage>
   <MetadataCountryCode>FR</MetadataCountryCode>
   <SeasonZeroDisplayName>Specials</SeasonZeroDisplayName>
-  <MetadataSavers>
-    <string>Nfo</string>
-  </MetadataSavers>
+  <MetadataSavers />
   <DisabledLocalMetadataReaders />
   <LocalMetadataReaderOrder>
     <string>Nfo</string>
   </LocalMetadataReaderOrder>
   <DisabledSubtitleFetchers />
   <SubtitleFetcherOrder />
+  <DisabledMediaSegmentProviders />
+  <MediaSegmentProviderOrder>
+    <string>Intro Skipper</string>
+  </MediaSegmentProviderOrder>
   <SkipSubtitlesIfEmbeddedSubtitlesPresent>false</SkipSubtitlesIfEmbeddedSubtitlesPresent>
   <SkipSubtitlesIfAudioTrackMatches>false</SkipSubtitlesIfAudioTrackMatches>
   <SubtitleDownloadLanguages />
   <RequirePerfectSubtitleMatch>true</RequirePerfectSubtitleMatch>
   <SaveSubtitlesWithMedia>true</SaveSubtitlesWithMedia>
+  <DisabledLyricFetchers />
+  <LyricFetcherOrder />
+  <CustomTagDelimiters>
+    <string>/</string>
+    <string>|</string>
+    <string>;</string>
+    <string>\</string>
+  </CustomTagDelimiters>
+  <DelimiterWhitelist />
   <AutomaticallyAddToCollection>true</AutomaticallyAddToCollection>
   <AllowEmbeddedSubtitles>AllowAll</AllowEmbeddedSubtitles>
   <TypeOptions>
@@ -46,6 +57,7 @@
         <string>The Open Movie Database</string>
       </MetadataFetchers>
       <MetadataFetcherOrder>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
       </MetadataFetcherOrder>
@@ -56,6 +68,7 @@
         <string>Screen Grabber</string>
       </ImageFetchers>
       <ImageFetcherOrder>
+        <string>TheTVDB</string>
         <string>TheMovieDb</string>
         <string>The Open Movie Database</string>
         <string>Embedded Image Extractor</string>
