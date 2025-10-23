@@ -136,6 +136,6 @@ services:
       - JELLYFIN_PUBLISHED_SERVER_URL=${EXTERNAL_DOMAIN:?err}
     devices:
       - /dev/dri:/dev/dri   # Accélération matérielle Intel/AMD
-    # post_start:
-    #   - command: /scripts/execute_sql.sh /config/data/data/jellyfin.db
-    #     user: root
+    post_start:
+      - command: /_setup/bash/add-repo.sh
+        user: root

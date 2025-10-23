@@ -9,6 +9,7 @@
       "Jellyfin.Plugin.HomeScreenSections/2.4.0.0": {
         "dependencies": {
           "Jellyfin.Controller": "10.11.0",
+          "Jellyfin.Extensions": "10.11.0",
           "Jellyfin.Model": "10.11.0",
           "Lib.Harmony": "2.4.0",
           "Newtonsoft.Json": "13.0.1"
