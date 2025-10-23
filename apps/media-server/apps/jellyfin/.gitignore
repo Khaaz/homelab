@@ -3,6 +3,7 @@
 # ------------------------------
 !/config/data/root/
 !/config/data/root/**
+!/config/data/plugins/**
 
 # ------------------------------
 # Garder le dossier _setup pour les scripts d'init
@@ -17,3 +18,4 @@
 !/config/logging.default.json
 !/config/system.xml
 !/config/network.xml
+!/config/branding.xml
