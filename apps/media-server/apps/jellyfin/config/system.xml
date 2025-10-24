@@ -43,105 +43,105 @@
   <MetadataOptions>
     <MetadataOptions>
       <ItemType>Book</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
-      <DisabledMetadataFetchers/>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>Movie</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
-      <DisabledMetadataFetchers/>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>MusicVideo</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
       <DisabledMetadataFetchers>
         <string>The Open Movie Database</string>
       </DisabledMetadataFetchers>
-      <MetadataFetcherOrder/>
+      <MetadataFetcherOrder />
       <DisabledImageFetchers>
         <string>The Open Movie Database</string>
       </DisabledImageFetchers>
-      <ImageFetcherOrder/>
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>Series</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
-      <DisabledMetadataFetchers/>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>MusicAlbum</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
       <DisabledMetadataFetchers>
         <string>TheAudioDB</string>
       </DisabledMetadataFetchers>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>MusicArtist</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
       <DisabledMetadataFetchers>
         <string>TheAudioDB</string>
       </DisabledMetadataFetchers>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>BoxSet</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
-      <DisabledMetadataFetchers/>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>Season</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
-      <DisabledMetadataFetchers/>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
     <MetadataOptions>
       <ItemType>Episode</ItemType>
-      <DisabledMetadataSavers/>
-      <LocalMetadataReaderOrder/>
-      <DisabledMetadataFetchers/>
-      <MetadataFetcherOrder/>
-      <DisabledImageFetchers/>
-      <ImageFetcherOrder/>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
     </MetadataOptions>
   </MetadataOptions>
   <SkipDeserializationForBasicTypes>true</SkipDeserializationForBasicTypes>
   <ServerName>Media Server</ServerName>
   <UICulture>en-US</UICulture>
   <SaveMetadataHidden>false</SaveMetadataHidden>
-  <ContentTypes/>
+  <ContentTypes />
   <RemoteClientBitrateLimit>0</RemoteClientBitrateLimit>
   <EnableFolderView>false</EnableFolderView>
   <EnableGroupingMoviesIntoCollections>false</EnableGroupingMoviesIntoCollections>
   <EnableGroupingShowsIntoCollections>false</EnableGroupingShowsIntoCollections>
   <DisplaySpecialsWithinSeasons>true</DisplaySpecialsWithinSeasons>
-  <CodecsUsed/>
+  <CodecsUsed />
   <PluginRepositories>
     <RepositoryInfo>
       <Name>Jellyfin Stable</Name>
@@ -176,7 +176,7 @@
   </PluginRepositories>
   <EnableExternalContentInSuggestions>true</EnableExternalContentInSuggestions>
   <ImageExtractionTimeoutMs>0</ImageExtractionTimeoutMs>
-  <PathSubstitutions/>
+  <PathSubstitutions />
   <EnableSlowResponseWarning>true</EnableSlowResponseWarning>
   <SlowResponseThresholdMs>500</SlowResponseThresholdMs>
   <CorsHosts>
@@ -200,9 +200,9 @@
     </CastReceiverApplication>
   </CastReceiverApplications>
   <TrickplayOptions>
-    <EnableHwAcceleration>false</EnableHwAcceleration>
-    <EnableHwEncoding>false</EnableHwEncoding>
-    <EnableKeyFrameOnlyExtraction>false</EnableKeyFrameOnlyExtraction>
+    <EnableHwAcceleration>true</EnableHwAcceleration>
+    <EnableHwEncoding>true</EnableHwEncoding>
+    <EnableKeyFrameOnlyExtraction>true</EnableKeyFrameOnlyExtraction>
     <ScanBehavior>NonBlocking</ScanBehavior>
     <ProcessPriority>BelowNormal</ProcessPriority>
     <Interval>10000</Interval>

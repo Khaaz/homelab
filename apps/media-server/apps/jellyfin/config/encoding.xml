@@ -13,7 +13,7 @@
   <HardwareAccelerationType>none</HardwareAccelerationType>
   <EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>
   <VaapiDevice>/dev/dri/renderD128</VaapiDevice>
-  <QsvDevice />
+  <QsvDevice>/dev/dri/renderD128</QsvDevice>
   <EnableTonemapping>false</EnableTonemapping>
   <EnableVppTonemapping>false</EnableVppTonemapping>
   <EnableVideoToolboxTonemapping>false</EnableVideoToolboxTonemapping>
@@ -32,8 +32,8 @@
   <DeinterlaceMethod>yadif</DeinterlaceMethod>
   <EnableDecodingColorDepth10Hevc>true</EnableDecodingColorDepth10Hevc>
   <EnableDecodingColorDepth10Vp9>true</EnableDecodingColorDepth10Vp9>
-  <EnableDecodingColorDepth10HevcRext>false</EnableDecodingColorDepth10HevcRext>
-  <EnableDecodingColorDepth12HevcRext>false</EnableDecodingColorDepth12HevcRext>
+  <EnableDecodingColorDepth10HevcRext>true</EnableDecodingColorDepth10HevcRext>
+  <EnableDecodingColorDepth12HevcRext>true</EnableDecodingColorDepth12HevcRext>
   <EnableEnhancedNvdecDecoder>true</EnableEnhancedNvdecDecoder>
   <PreferSystemNativeHwDecoder>true</PreferSystemNativeHwDecoder>
   <EnableIntelLowPowerH264HwEncoder>false</EnableIntelLowPowerH264HwEncoder>
@@ -44,7 +44,13 @@
   <EnableSubtitleExtraction>false</EnableSubtitleExtraction>
   <HardwareDecodingCodecs>
     <string>h264</string>
+    <string>hevc</string>
+    <string>mpeg2video</string>
+    <string>vp8</string>
+    <string>vp9</string>
+    <string>av1</string>
     <string>vc1</string>
+    <string>mpeg4</string>
   </HardwareDecodingCodecs>
   <AllowOnDemandMetadataBasedKeyframeExtractionForExtensions>
     <string>mkv</string>
