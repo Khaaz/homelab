@@ -194,3 +194,5 @@ This will launch all containers and apply configuration templates from `_setup` 
 - Check container logs with `docker logs <container_name>`
 - Review configuration files in `src/config/`
 - For network issues, verify your reverse proxy and DNS settings
+- If authelia is not starting for clock problems `One or more providers had fatal failures performing startup checks, for more details check the error level logs`
+	`sudo ntpd -q -p pool.ntp.org`
