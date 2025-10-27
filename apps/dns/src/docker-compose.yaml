@@ -30,12 +30,13 @@ services:
       - HOST_LAN_IP=${HOST_LAN_IP:?err}
       - CLD_IP=${CLOUD_IP:?err}
       - DNS_IP=${DNS_IP:?err}
-      - GW_IP=${FIREWALL_GW_IP:?err}
-      - MGMT_IP=${FIREWALL_MGMT_IP:?err}
-      - SRV_IP=${FIREWALL_SRV_IP:?err}
+      - FW_GW_IP=${FIREWALL_GW_IP:?err}
+      - FW_MGMT_IP=${FIREWALL_MGMT_IP:?err}
+      - FW_SRV_IP=${FIREWALL_SRV_IP:?err}
       - HA_IP=${HOME_AUTOMATION_IP:?err}
       - IM_IP=${IMMICH_IP:?err}
       - JMP_IP=${JUMP_IP:?err}
+      - MGMT_IP=${MANAGEMENT_IP:?err}
       - MM_IP=${MEDIA_MANAGEMENT_IP:?err}
       - MS_IP=${MEDIA_SERVER_IP:?err}
       - NAS_IP=${NAS_IP:?err}
@@ -63,3 +64,17 @@ services:
       - 53:53/udp
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
+
+  # Portainer Agent - for remote portainer management
+  portainer_agent:
+    image: portainer/agent:latest
+    container_name: portainer_agent
+    restart: unless-stopped
+    ports:
+      - "9501:9001"  # Expose agent on a higher port to avoid conflicts
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    environment:
+      - AGENT_CLUSTER_ADDR=tasks.portainer_agent
+      - CAP_HOST_MANAGEMENT=1

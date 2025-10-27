@@ -1,0 +1,82 @@
+{
+	"endpoints": [
+	  {
+		"Name": "Cloud",
+		"URL": "tcp://${CLOUD_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "DNS",
+		"URL": "tcp://${DNS_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Home Automation",
+		"URL": "tcp://${HOME_AUTOMATION_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Immich",
+		"URL": "tcp://${IMMICH_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Media Management",
+		"URL": "tcp://${MEDIA_MANAGEMENT_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Media Server",
+		"URL": "tcp://${MEDIA_SERVER_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Notes",
+		"URL": "tcp://${NOTES_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Reverse Proxy",
+		"URL": "tcp://${REVERSE_PROXY_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Sandbox",
+		"URL": "tcp://${SANDBOX_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Vault",
+		"URL": "tcp://${VAULT_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "VPN",
+		"URL": "tcp://${VPN_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "VSCode Server",
+		"URL": "tcp://${VSCODE_SERVER_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  },
+	  {
+		"Name": "Whiteboard",
+		"URL": "tcp://${WHITEBOARD_IP}:19001",
+		"TLS": false,
+		"Group": "Docker-Hosts"
+	  }
+	]
+  }

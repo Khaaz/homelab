@@ -1,0 +1,25 @@
+specs:
+  cores: 1
+  ram_size: 2048 # MB
+  disk_size: 10 # GB
+  additional_disks: []
+  pci_devices: []
+order_tier: 1
+config:
+  docker: true
+  router: false
+  routes: 
+    - network: 10.10.1.0/24 # gw
+      via: 10.10.2.2 # firewall-mgmt
+    - network: 10.10.30.0/24 # dmz
+      via: 10.10.2.2 # firewall-mgmt
+    - network: 10.10.31.0/24 # extern
+      via: 10.10.2.2 # firewall-mgmt
+    - network: 10.10.32.0/24 # intern
+      via: 10.10.2.2 # firewall-mgmt
+  dns_servers: [1.1.1.1, 8.8.8.8]
+nics:
+  - bridge: vmbr2 # mgmt
+    ipv4: 10.10.2.11/24
+    gateway: 10.10.2.1
+nas: null

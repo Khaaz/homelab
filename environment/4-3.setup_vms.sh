@@ -120,6 +120,7 @@ echo "Checking global-config.toml for enabled VMs..."
 setup_vm_if_enabled "dns"
 setup_vm_if_enabled "reverse-proxy"
 # setup_vm_if_enabled "nas" # no need to setup NAS vm: simple nfs server for now
+setup_vm_if_enabled "management"
 setup_vm_if_enabled "vpn"
 
 # Application VMs
