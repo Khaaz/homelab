@@ -142,9 +142,6 @@
 [sandbox]
 	enabled=false
 
-[todo]
-	enabled=false
-
 [vault] # apps/vault
 	enabled=false
 

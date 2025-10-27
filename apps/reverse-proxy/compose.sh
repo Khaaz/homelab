@@ -77,8 +77,6 @@ MS_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.e
 
 NOTES_NETWORKING_ENV_FILE="$SCRIPT_DIR/../notes/config/networking.env.default"
 NOTES_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../notes/config/networking.env"
-TODO_NETWORKING_ENV_FILE="$SCRIPT_DIR/../todo/config/networking.env.default"
-TODO_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../todo/config/networking.env"
 
 VAULT_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vault/config/networking.env.default"
 VAULT_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vault/config/networking.env"

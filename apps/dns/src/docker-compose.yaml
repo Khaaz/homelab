@@ -42,7 +42,6 @@ services:
       - NTS_IP=${NOTES_IP:?err}
       - RP_IP=${REVERSE_PROXY_IP:?err}
       - SBX_IP=${SANDBOX_IP:?err}
-      - TDO_IP=${TODO_IP:?err}
       - VLT_IP=${VAULT_IP:?err}
       - VPN_IP=${VPN_IP:?err}
       - VSC_IP=${VSCODE_SERVER_IP:?err}
