@@ -34,7 +34,7 @@ iface vmbr0 inet static
 	post-up   iptables -A INPUT -p icmp -j ACCEPT
 	post-up   iptables -A INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22   -j ACCEPT
 	post-up   iptables -A INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
-	post-up   iptables -A INPUT -p tcp -s 10.10.1.2 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
+	post-up   iptables -A INPUT -p tcp -s 10.10.1.2      -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
 	post-up   iptables -A INPUT -j DROP
 
 	# PREROUTING DNAT
@@ -44,9 +44,12 @@ iface vmbr0 inet static
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 443  -j DNAT --to-destination 10.10.1.2:443
     post-up   iptables -t nat -A PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
     # == Additional ports / app specifics ==
-	# Allow plex ports from LAN (local network discovery)
+	# Allow Plex ports from LAN (local network discovery)
     post-up   iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32400       -j DNAT --to-destination 10.10.1.2:32400
     post-up   iptables -t nat -A PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32410:32414 -j DNAT --to-destination 10.10.1.2
+	# Allow Jellyfin ports from LAN (local network discovery)
+    post-up   iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8096        -j DNAT --to-destination 10.10.1.2:8096
+    post-up   iptables -t nat -A PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 7359        -j DNAT --to-destination 10.10.1.2:7359
 	# Allow NAS ports from LAN (nfs / samba)
     post-up   iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 2049        -j DNAT --to-destination 10.10.1.2:2049
     post-up   iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 445         -j DNAT --to-destination 10.10.1.2:445
@@ -63,9 +66,12 @@ iface vmbr0 inet static
     # Plex ports forwarding (local network discovery)
     post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 32400       -j ACCEPT
     post-up   iptables -A FORWARD -p udp -d 10.10.1.2 --dport 32410:32414 -j ACCEPT
+    # Jellyfin ports forwarding (local network discovery)
+    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 8096        -j ACCEPT
+    post-up   iptables -A FORWARD -p udp -d 10.10.1.2 --dport 7359        -j ACCEPT
 	# NAS ports forwarding (nfs / samba)
-    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 2049 -j ACCEPT
-    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 445 -j ACCEPT
+    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 2049        -j ACCEPT
+    post-up   iptables -A FORWARD -p tcp -d 10.10.1.2 --dport 445         -j ACCEPT
 	# == Additional ports / app specifics==
 
 	## DOWN
@@ -74,7 +80,7 @@ iface vmbr0 inet static
     post-down iptables -D INPUT -j DROP
     post-down iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
     post-down iptables -D INPUT -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 22   -j ACCEPT
-    post-down iptables -D INPUT -p tcp -s 10.10.1.2 -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
+    post-down iptables -D INPUT -p tcp -s 10.10.1.2      -d {{ ansible_default_ipv4.address }} --dport 8006 -j ACCEPT
     post-down iptables -D INPUT -p icmp -j ACCEPT
     post-down iptables -D INPUT -i lo -j ACCEPT
     post-down iptables -D INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
@@ -86,11 +92,14 @@ iface vmbr0 inet static
     post-down iptables -t nat -D PREROUTING -p tcp -d {{ ansible_default_ipv4.address }} --dport 2222 -j DNAT --to-destination 10.10.1.2:2222
     # == Additional ports / app specifics==
 	# Plex ports cleanup
-    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32400 -j DNAT --to-destination 10.10.1.2:32400
+    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32400       -j DNAT --to-destination 10.10.1.2:32400
     post-down iptables -t nat -D PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 32410:32414 -j DNAT --to-destination 10.10.1.2
+	# Jellyfin ports cleanup
+    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 8096        -j DNAT --to-destination 10.10.1.2:8096
+    post-down iptables -t nat -D PREROUTING -p udp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 7359        -j DNAT --to-destination 10.10.1.2:7359
 	# NAS ports cleanup (nfs / samba)
-    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 2049 -j DNAT --to-destination 10.10.1.2:2049
-    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 445  -j DNAT --to-destination 10.10.1.2:445
+    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 2049        -j DNAT --to-destination 10.10.1.2:2049
+    post-down iptables -t nat -D PREROUTING -p tcp -s 192.168.1.0/24 -d {{ ansible_default_ipv4.address }} --dport 445         -j DNAT --to-destination 10.10.1.2:445
 	# == Additional ports / app specifics==
 	
 	# FORWARD
@@ -103,9 +112,12 @@ iface vmbr0 inet static
 	# Plex ports cleanup
 	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 32400       -j ACCEPT
 	post-down iptables -D FORWARD -p udp -d 10.10.1.2 --dport 32410:32414 -j ACCEPT
+	# Jellyfin ports cleanup
+	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 8096        -j ACCEPT
+	post-down iptables -D FORWARD -p udp -d 10.10.1.2 --dport 7359        -j ACCEPT
 	# NAS ports cleanup (nfs / samba)
-	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 2049 -j ACCEPT
-    post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 445  -j ACCEPT
+	post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 2049        -j ACCEPT
+    post-down iptables -D FORWARD -p tcp -d 10.10.1.2 --dport 445         -j ACCEPT
 	# == Additional ports / app specifics==
 
 # vmbr1 = LAN GW (10.10.1.0/24) - internal L2 bridge [gateway]
