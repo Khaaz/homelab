@@ -10,9 +10,9 @@
   <RemoveAllMissingEpisodesOnRefresh>false</RemoveAllMissingEpisodesOnRefresh>
   <IncludeOriginalCountryInTags>false</IncludeOriginalCountryInTags>
   <MetadataUpdateInHours>2</MetadataUpdateInHours>
-  <UpdateSeriesScheduledTask>false</UpdateSeriesScheduledTask>
-  <UpdateSeasonScheduledTask>false</UpdateSeasonScheduledTask>
-  <UpdateEpisodeScheduledTask>false</UpdateEpisodeScheduledTask>
-  <UpdateMovieScheduledTask>false</UpdateMovieScheduledTask>
-  <UpdatePersonScheduledTask>false</UpdatePersonScheduledTask>
+  <UpdateSeriesScheduledTask>true</UpdateSeriesScheduledTask>
+  <UpdateSeasonScheduledTask>true</UpdateSeasonScheduledTask>
+  <UpdateEpisodeScheduledTask>true</UpdateEpisodeScheduledTask>
+  <UpdateMovieScheduledTask>true</UpdateMovieScheduledTask>
+  <UpdatePersonScheduledTask>true</UpdatePersonScheduledTask>
 </PluginConfiguration>

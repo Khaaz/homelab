@@ -30,7 +30,9 @@
     <string>Nfo</string>
   </LocalMetadataReaderOrder>
   <DisabledSubtitleFetchers />
-  <SubtitleFetcherOrder />
+  <SubtitleFetcherOrder>
+    <string>Open Subtitles</string>
+  </SubtitleFetcherOrder>
   <DisabledMediaSegmentProviders />
   <MediaSegmentProviderOrder>
     <string>Chapter Segments Provider</string>
@@ -40,7 +42,7 @@
   <SkipSubtitlesIfAudioTrackMatches>false</SkipSubtitlesIfAudioTrackMatches>
   <SubtitleDownloadLanguages />
   <RequirePerfectSubtitleMatch>true</RequirePerfectSubtitleMatch>
-  <SaveSubtitlesWithMedia>true</SaveSubtitlesWithMedia>
+  <SaveSubtitlesWithMedia>false</SaveSubtitlesWithMedia>
   <DisabledLyricFetchers />
   <LyricFetcherOrder />
   <CustomTagDelimiters>

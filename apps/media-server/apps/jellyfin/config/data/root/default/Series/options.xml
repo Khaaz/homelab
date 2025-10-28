@@ -42,7 +42,7 @@
   <SkipSubtitlesIfAudioTrackMatches>false</SkipSubtitlesIfAudioTrackMatches>
   <SubtitleDownloadLanguages />
   <RequirePerfectSubtitleMatch>true</RequirePerfectSubtitleMatch>
-  <SaveSubtitlesWithMedia>true</SaveSubtitlesWithMedia>
+  <SaveSubtitlesWithMedia>false</SaveSubtitlesWithMedia>
   <DisabledLyricFetchers />
   <LyricFetcherOrder />
   <CustomTagDelimiters>
