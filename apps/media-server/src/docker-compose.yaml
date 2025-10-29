@@ -105,6 +105,37 @@ services:
       - command: /scripts/execute_sql.sh "/config/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
         user: root
 
+  # Yamtrack - Media tracker / watchlist
+  yamtrack:
+    container_name: yamtrack
+    image: ghcr.io/fuzzygrim/yamtrack:0.24
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.21
+    ports:
+      - ${PORT_UI_YAMTRACK:?err}:8000
+    depends_on:
+      - yamtrack-redis
+    volumes:
+      - ${APPS_FOLDER:?err}/yamtrack/db:/yamtrack/db
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - TZ=${TIMEZONE:?err}
+      - SECRET=longstring
+      - REDIS_URL=redis://yamtrack-redis:6379
+
+  yamtrack-redis:
+    container_name: yamtrack-redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.31
+    volumes:
+      - ${APPS_FOLDER:?err}/yamtrack/redis:/data
+
   # Portainer Agent - for remote portainer management
   portainer-agent:
     image: portainer/agent:2.35.0-alpine
