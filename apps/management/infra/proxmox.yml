@@ -4,7 +4,7 @@ specs:
   disk_size: 10 # GB
   additional_disks: []
   pci_devices: []
-order_tier: 1
+order_tier: 2
 config:
   docker: true
   router: false
