@@ -88,7 +88,7 @@ source "proxmox-iso" "template-alpine" {
   # 4) run setup-alpine (Packer types your ssh_password twice)
   # 5) reboot
   boot_command = [
-    "<enter><wait60>", # boot default menu entry
+    "<enter><wait20>", # boot default menu entry
     "root<enter><wait>",
     # setup network
     "ifconfig eth0 up || ip link set eth0 up || ip link set ens18 up<enter><wait>",
