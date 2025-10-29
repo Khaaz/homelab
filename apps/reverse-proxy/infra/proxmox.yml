@@ -8,7 +8,9 @@ order_tier: 2
 config:
   docker: true
   router: false
-  routes: []
+  routes: 
+    - network: 10.10.2.0/24 # mgmt
+      via: 10.10.30.9 # firewall-mgmt
   dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv

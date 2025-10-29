@@ -67,6 +67,9 @@ HA_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../home-automation/config/networkin
 IM_NETWORKING_ENV_FILE="$SCRIPT_DIR/../immich/config/networking.env.default"
 IM_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../immich/config/networking.env"
 
+MGMT_NETWORKING_ENV_FILE="$SCRIPT_DIR/../management/config/networking.env.default"
+MGMT_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../management/config/networking.env"
+
 MM_NETWORKING_ENV_FILE="$SCRIPT_DIR/../media-management/config/networking.env.default"
 MM_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-management/config/networking.env"
 MS_NETWORKING_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.env.default"
@@ -116,6 +119,7 @@ docker compose -f $COMPOSE_FILE \
 	--env-file $CLOUD_NETWORKING_ENV_FILE $(add_env_file "$CLOUD_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $HA_NETWORKING_ENV_FILE $(add_env_file "$HA_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $IM_NETWORKING_ENV_FILE $(add_env_file "$IM_NETWORKING_OVERRIDE_ENV_FILE") \
+	--env-file $MGMT_NETWORKING_ENV_FILE $(add_env_file "$MGMT_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $MM_NETWORKING_ENV_FILE $(add_env_file "$MM_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $MS_NETWORKING_ENV_FILE $(add_env_file "$MS_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $NOTES_NETWORKING_ENV_FILE $(add_env_file "$NOTES_NETWORKING_OVERRIDE_ENV_FILE") \
