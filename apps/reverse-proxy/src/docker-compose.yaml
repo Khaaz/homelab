@@ -104,6 +104,8 @@ services:
       - PORT_UI_HOME_ASSISTANT=${PORT_UI_HOME_ASSISTANT:?err}
       # - IM
       - PORT_UI_IMMICH=${PORT_UI_IMMICH:?err}
+        # - M
+      - PORT_UI_PORTAINER=${PORT_UI_PORTAINER:?err}
       # - MM
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
