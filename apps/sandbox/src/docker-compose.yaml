@@ -32,7 +32,7 @@ services:
     restart: unless-stopped
     networks:
       sandbox:
-        ipv4_address: ${SANDBOX_DOCKER_SUBNET:?err}.09
+        ipv4_address: ${SANDBOX_DOCKER_SUBNET:?err}.9
     ports:
       - "19001:9001"
     volumes:

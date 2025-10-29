@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
     networks:
       vault:
-        ipv4_address: ${VAULT_DOCKER_SUBNET:?err}.09
+        ipv4_address: ${VAULT_DOCKER_SUBNET:?err}.9
     ports:
       - "19001:9001"
     volumes:

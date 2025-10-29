@@ -52,7 +52,7 @@ services:
     restart: unless-stopped
     networks:
       vscode-server:
-        ipv4_address: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.09
+        ipv4_address: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.9
     ports:
       - "19001:9001"
     volumes:

@@ -59,6 +59,9 @@
 [jump]
 	enabled=true
 
+[management]
+	enabled=true
+
 [media-management] # apps/media-management
 	enabled=true
 
