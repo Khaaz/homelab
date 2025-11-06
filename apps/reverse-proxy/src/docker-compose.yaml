@@ -104,8 +104,9 @@ services:
       - PORT_UI_HOME_ASSISTANT=${PORT_UI_HOME_ASSISTANT:?err}
       # - IM
       - PORT_UI_IMMICH=${PORT_UI_IMMICH:?err}
-        # - M
+      # MGMT
       - PORT_UI_PORTAINER=${PORT_UI_PORTAINER:?err}
+      - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
       # - MM
       - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
       - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
@@ -114,7 +115,6 @@ services:
       - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
       - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
-      - PORT_UI_HOMARR=${PORT_UI_HOMARR:?err}
       - PORT_UI_MAINTAINERR=${PORT_UI_MAINTAINERR:?err}
       # - MS
       - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
