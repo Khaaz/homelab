@@ -69,6 +69,7 @@ source_app_ip firewall-srv vmbr3.31
 source_app_ip home-automation vmbr3
 source_app_ip immich vmbr3
 source_app_ip jump vmbr2
+source_app_ip management vmbr2
 source_app_ip media-management vmbr3
 source_app_ip media-server vmbr3
 source_app_ip nas vmbr3
