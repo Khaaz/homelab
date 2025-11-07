@@ -1,0 +1,53 @@
+services:
+  # Plex - Media Server
+  plex:
+    image: lscr.io/linuxserver/plex:1.42.2
+    container_name: plex
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.10
+        # Add Configurations for GPU Hardware Rendering Here:
+        #    devices:
+        #      - /dev/dri/renderD128:/dev/dri/renderD128
+        #      - /dev/dri/card0:/dev/dri/card0
+        #      - /dev/dri:/dev/dri
+        # Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
+    user: ${PUID:?err}:${PGID:?err}
+    ports:
+      - ${PORT_UI_PLEX:?err}:32400
+      - 1900:1900/udp
+      - 5353:5353/udp
+      - 8324:8324
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+      - 32469:32469
+    volumes:
+      - ${APPS_FOLDER:?err}/plex:/config # config
+      - ${DATA_FOLDER:?err}/media:/data/media # data
+      - ${APPS_FOLDER:?err}/plex/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - VERSION=docker
+      # setup
+      - LAN_IP=${HOST_LAN_IP:?err}
+      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      - PLEX_CLAIM=${PLEX_CLAIM:?err}
+      - PLEX_USERNAME=${PLEX_USERNAME:?err}
+      - PLEX_EMAIL=${PLEX_EMAIL:?err}
+      - PLEX_MACHINE_IDENTIFIER=${PLEX_MACHINE_IDENTIFIER:?err}
+      - PLEX_FRIENDLY_NAME=${PLEX_FRIENDLY_NAME:?err}
+    post_start:
+      - command: /scripts/parse_file.sh /_setup/templates/Preferences.xml "/config/Library/Application Support/Plex Media Server/Preferences.xml"
+        user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
+      - command: /scripts/execute_sql.sh "/config/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
+        user: root

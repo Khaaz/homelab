@@ -56,13 +56,13 @@ NETWORKING_ENV_FILE="$SCRIPT_DIR/config/networking.env.default"
 NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/networking.env"
 
 # source
-COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
+COMPOSE_FILE="$(printf -- '-f %s ' $SCRIPT_DIR/src/docker-compose.yaml"
 
 # Set the default environment file path
 export ROOT_PATH=$SCRIPT_DIR
 echo "Root: $SCRIPT_DIR"
 
-docker compose -f $COMPOSE_FILE \
+docker compose $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \

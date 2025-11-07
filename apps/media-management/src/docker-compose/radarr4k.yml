@@ -1,0 +1,44 @@
+services:
+  # Radarr - Movie library (4k)
+  radarr4k:
+    image: lscr.io/linuxserver/radarr:5.27.5
+    container_name: radarr4k
+    restart: unless-stopped
+    networks:
+      media-management:
+        ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.23
+    user: ${PUID:?err}:${PGID:?err}
+    depends_on:
+      prowlarr:
+        condition: service_started
+        restart: false
+      qbittorrent:
+        condition: service_started
+        restart: false
+    ports:
+      - ${PORT_UI_RADARR4K:?err}:7878
+    dns:
+      - 1.1.1.1
+    volumes:
+      - ${APPS_FOLDER:?err}/radarr4k:/config # config
+      - ${DATA_FOLDER:?err}:/data # data
+      - ${APPS_FOLDER:?err}/radarr4k/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - TZ=${TIMEZONE:?err}
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
+      - TP_THEME=${TP_THEME:?err}
+      # setup
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+    post_start:
+      - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
+        user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}
+      - command: /scripts/execute_sql.sh /config/radarr.db
+        user: root

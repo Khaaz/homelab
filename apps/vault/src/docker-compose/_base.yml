@@ -8,32 +8,16 @@ networks:
         - subnet: ${VAULT_DOCKER_SUBNET:?err}.0/24
           gateway: ${VAULT_DOCKER_SUBNET:?err}.1
 services:
-  # Vaultwarden - Password Management
-  vaultwarden:
-    image: vaultwarden/server:1.33.2
-    container_name: vaultwarden
-    restart: always
-    networks:
-      vault:
-        ipv4_address: ${VAULT_DOCKER_SUBNET:?err}.10
-    ports:
-      - ${PORT_UI_VAULTWARDEN:?err}:80
-    volumes:
-      - ${APPS_FOLDER:?err}/vaultwarden:/data # config
-    environment:
-      - SIGNUPS_ALLOWED=false
-      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
-
   # Portainer Agent - for remote portainer management
   portainer-agent:
     image: portainer/agent:2.35.0-alpine
-    container_name: portainer-agent
+    container_name: vlt-portainer-agent
     restart: unless-stopped
     networks:
       vault:
         ipv4_address: ${VAULT_DOCKER_SUBNET:?err}.9
     ports:
-      - "19001:9001"
+      - "${PORTAINER_AGENT_PORT:-19001}:9001"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes

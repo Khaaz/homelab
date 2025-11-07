@@ -1,0 +1,48 @@
+services:
+  # Gluetun - VPN Client
+  gluetun:
+    image: qmcgaw/gluetun:v3.40.0
+    container_name: gluetun
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    networks:
+      media-management-vpn:
+      media-management:
+        ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.10
+    ports:
+      - 8888:8888/tcp # Gluetun Local Network HTTP proxy
+      - 8388:8388/tcp # Gluetun Local Network Shadowsocks
+      - 8388:8388/udp # Gluetun Local Network Shadowsocks
+      - ${PORT_SERVICE_GLUETUN:?err}:${PORT_SERVICE_GLUETUN:?err} # Gluetun Status Port
+      - ${PORT_UI_QBITTORRENT:?err}:${PORT_UI_QBITTORRENT:?err} # WebUI Portal: qBittorrent
+      - ${PORT_SERVICE_QBITTORRENT:?err}:6881 # Transmission Torrent Port
+      # - "${WEBUI_PORT_UI_SABNZBD:?err}:8080"       # WebUI Portal: SABnzbd
+    volumes:
+      - ${APPS_FOLDER:?err}/gluetun:/gluetun # config
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER:?err}
+      - OPENVPN_USER=${VPN_USERNAME:?err}
+      - OPENVPN_PASSWORD=${VPN_PASSWORD:?err}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+      - SERVER_REGIONS=${SERVER_REGIONS}
+      - SERVER_CITIES=${SERVER_CITIES}
+      - SERVER_HOSTNAMES=${SERVER_HOSTNAMES}
+      - SERVER_CATEGORIES=${SERVER_CATEGORIES}
+      - FIREWALL_OUTBOUND_SUBNETS=${LOCAL_SUBNET:?err}
+      - HTTP_CONTROL_SERVER_ADDRESS=:${PORT_SERVICE_GLUETUN:?err}
+      - VPN_TYPE=${VPN_TYPE}
+      - OPENVPN_ENDPOINT_IP=${OPENVPN_ENDPOINT_IP}
+      - OPENVPN_ENDPOINT_PORT=${OPENVPN_ENDPOINT_PORT}
+      - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - HTTPPROXY=on
+      - SHADOWSOCKS=on

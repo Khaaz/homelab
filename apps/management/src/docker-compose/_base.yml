@@ -1,0 +1,9 @@
+networks:
+  management:
+    name: management
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${MANAGEMENT_DOCKER_SUBNET:?err}.0/24
+          gateway: ${MANAGEMENT_DOCKER_SUBNET:?err}.1

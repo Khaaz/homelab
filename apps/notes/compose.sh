@@ -59,7 +59,7 @@ NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/networking.env"
 PROXMOX_ENV_FILE="$SCRIPT_DIR/config/proxmox.env"
 
 # source
-COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
+COMPOSE_FILE="$(printf -- '-f %s ' $SCRIPT_DIR/src/docker-compose/*.yml)"
 
 # Set the default environment file path
 export ROOT_PATH=$SCRIPT_DIR

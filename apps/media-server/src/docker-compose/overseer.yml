@@ -1,0 +1,42 @@
+services:
+  # Overseer - Media Management
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:1.34.0
+    container_name: overseerr
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.20
+    user: ${PUID:?err}:${PGID:?err}
+    ports:
+      - ${PORT_UI_OVERSEERR:?err}:5055
+    volumes:
+      - ${APPS_FOLDER:?err}/overseerr/config:/config # config
+      - ${APPS_FOLDER:?err}/overseerr/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - LOG_LEVEL=debug
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
+      - TP_THEME=${TP_THEME:?err}
+      # setup
+      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+      - DOCKER_SUBNET=${MEDIA_SERVER_DOCKER_SUBNET:?err}
+      - MM_HOST_IP=${MEDIA_MANAGEMENT_IP:?err}
+      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - WEBHOOK_OVERSERRR_DISCORD=${WEBHOOK_OVERSERRR_DISCORD} # optional
+    post_start:
+      - command: /scripts/parse_file.sh /_setup/templates/settings.json /config/settings.json
+        user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}

@@ -1,0 +1,26 @@
+networks:
+  vscode-server:
+    name: vscode-server
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.0/24
+          gateway: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.1
+services:
+  # Portainer Agent - for remote portainer management
+  portainer-agent:
+    image: portainer/agent:2.35.0-alpine
+    container_name: vsc-portainer-agent
+    restart: unless-stopped
+    networks:
+      vscode-server:
+        ipv4_address: ${VSCODE_SERVER_DOCKER_SUBNET:?err}.9
+    ports:
+      - "${PORTAINER_AGENT_PORT:-19001}:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    environment:
+      - AGENT_CLUSTER_ADDR=tasks.portainer-agent
+      - CAP_HOST_MANAGEMENT=1

@@ -1,0 +1,20 @@
+services:
+  # Qbittorrent - Torrent client
+  # default user/password: admin/admin!
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:5.1.2
+    container_name: qbittorrent
+    restart: unless-stopped
+    user: ${PUID:?err}:${PGID:?err}
+    network_mode: service:gluetun
+    depends_on:
+      gluetun:
+        condition: service_started
+        restart: false
+    volumes:
+      - ${APPS_FOLDER:?err}/qbittorrent:/config # config
+      - ${DATA_FOLDER:?err}/torrents:/data # data
+    environment:
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - WEBUI_PORT=${PORT_UI_QBITTORRENT:?err}

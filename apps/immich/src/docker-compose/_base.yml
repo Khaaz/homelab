@@ -1,0 +1,26 @@
+networks:
+  immich:
+    name: immich
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${IMMICH_DOCKER_SUBNET:?err}.0/24
+          gateway: ${IMMICH_DOCKER_SUBNET:?err}.1
+services:
+  # Portainer Agent - for remote portainer management
+  portainer-agent:
+    image: portainer/agent:2.35.0-alpine
+    container_name: im-portainer-agent
+    restart: unless-stopped
+    networks:
+      immich:
+        ipv4_address: ${IMMICH_DOCKER_SUBNET:?err}.9
+    ports:
+      - "${PORTAINER_AGENT_PORT:-19001}:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    environment:
+      - AGENT_CLUSTER_ADDR=tasks.portainer-agent
+      - CAP_HOST_MANAGEMENT=1

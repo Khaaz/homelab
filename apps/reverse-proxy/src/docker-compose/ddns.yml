@@ -1,0 +1,65 @@
+services:
+  # DDNS-Updater - Pre-start
+  ddns-updater-pre-start:
+    image: alpine:3.20
+    container_name: ddns-updater-pre-start
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.33
+    command:
+      - /bin/sh
+      - -c
+      - /scripts/parse_file.sh /_setup/templates/config.${DNS_PROVIDER:?err}.json /updater/data/config.json
+    volumes:
+      - ${APPS_FOLDER:?err}/ddns-updater:/updater/data # config
+      - ${APPS_FOLDER:?err}/ddns-updater/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      # setup
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      - DNS_PROVIDER_TOKEN=${DNS_PROVIDER_TOKEN:?err}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+
+  # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
+  ddns-updater:
+    image: qmcgaw/ddns-updater:2
+    container_name: ddns-updater
+    restart: unless-stopped
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.22
+    depends_on:
+      ddns-updater-pre-start:
+        condition: service_completed_successfully
+    user: ${PUID:?err}:${PGID:?err}
+    ports:
+      - ${PORT_UI_DDNS_UPDATER:?err}:8000/tcp
+    volumes:
+      - ${APPS_FOLDER:?err}/ddns-updater:/updater/data # config
+      - ${APPS_FOLDER:?err}/ddns-updater/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - CONFIG=
+      - PERIOD=5m
+      - UPDATE_COOLDOWN_PERIOD=5m
+      - PUBLICIP_FETCHERS=all
+      - PUBLICIP_HTTP_PROVIDERS=all
+      - PUBLICIPV4_HTTP_PROVIDERS=all
+      - PUBLICIPV6_HTTP_PROVIDERS=all
+      - PUBLICIP_DNS_PROVIDERS=all
+      - PUBLICIP_DNS_TIMEOUT=3s
+      - HTTP_TIMEOUT=10s
+      # Web UI
+      - LISTENING_ADDRESS=:8000
+      - ROOT_URL=/
+      # Backup
+      - BACKUP_PERIOD=0 # 0 to disable
+      - BACKUP_DIRECTORY=/updater/data
+      # Other
+      - LOG_LEVEL=info
+      - LOG_CALLER=hidden
+      - SHOUTRRR_ADDRESSES=

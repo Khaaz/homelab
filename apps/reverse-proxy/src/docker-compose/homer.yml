@@ -1,0 +1,27 @@
+services:
+  # Homer - Dashboard
+  # generic service name for internal.conf to work out of the box
+  # generic port 8080 for internal.conf to work out of the box
+  dashboard:
+    image: b4bz/homer:v25.10.1
+    container_name: homer
+    restart: unless-stopped
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.21
+    user: ${PUID:?err}:${PGID:?err}
+    ports:
+      - 8080:8080
+    volumes:
+      - ${APPS_FOLDER:?err}/homer:/www/assets
+      - ${APPS_FOLDER:?err}/homer/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - INIT_ASSETS=1 # default, requires the config directory to be writable for the container user (see user option)
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+    post_start:
+      - command: /scripts/parse_file.sh /_setup/templates/config.yml /www/assets/config.yml
+        user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}

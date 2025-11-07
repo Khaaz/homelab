@@ -1,0 +1,46 @@
+services:
+  # Homarr - Application Dashboard
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:v1.41.0
+    container_name: homarr
+    restart: unless-stopped
+    networks:
+      management:
+        ipv4_address: ${MANAGEMENT_DOCKER_SUBNET:?err}.11
+    ports:
+      - ${PORT_UI_HOMARR:?err}:7575
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${APPS_FOLDER:?err}/homarr/configs:/app/data/configs # config
+      - ${APPS_FOLDER:?err}/homarr/data:/data # data
+      - ${APPS_FOLDER:?err}/homarr/_setup:/_setup # setup
+      - ${APPS_FOLDER:?err}/homarr/icons:/app/public/icons
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      # setup
+      - DOCKER_SUBNET=${MANAGEMENT_DOCKER_SUBNET:?err}
+      - DOMAIN=${INTERNAL_DOMAIN:?err}
+      - MS_HOST_IP=${MEDIA_SERVER_IP:?err}
+      - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
+      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+      - API_KEY_RADARR=${API_KEY_RADARR:?err}
+      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+      - API_KEY_SONARR=${API_KEY_SONARR:?err}
+      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+    post_start:
+      - command: /scripts/parse_file.sh /_setup/templates/default.json /app/data/configs/default.json
+        user: root
+        environment:
+          - PUID=${PUID:?err}
+          - PGID=${PGID:?err}

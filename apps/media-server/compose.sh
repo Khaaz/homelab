@@ -71,7 +71,7 @@ MM_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-management/config/networki
 PROXMOX_ENV_FILE="$SCRIPT_DIR/config/proxmox.env"
 
 # source
-COMPOSE_FILE="$SCRIPT_DIR/src/docker-compose.yaml"
+COMPOSE_FILE="$(printf -- '-f %s ' $SCRIPT_DIR/src/docker-compose/*.yml)"
 
 # Set the default environment file path
 export ROOT_PATH=$SCRIPT_DIR
@@ -89,7 +89,7 @@ if [ "$LOCAL_FLAG" = "false" ]; then
 	PROXMOX_ENV_ARG=$(add_env_file "$PROXMOX_ENV_FILE")
 fi
 
-docker compose -f $COMPOSE_FILE \
+docker compose $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $MM_NETWORKING_ENV_FILE $(add_env_file "$MM_NETWORKING_OVERRIDE_ENV_FILE") \

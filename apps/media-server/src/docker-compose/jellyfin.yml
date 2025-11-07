@@ -1,0 +1,35 @@
+services:
+  # Jellyfin - Alternative Media Server
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:10.11.0
+    container_name: jellyfin
+    restart: unless-stopped
+    networks:
+      media-server:
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.11
+    # user: ${PUID:?err}:${PGID:?err}
+    devices:
+      - /dev/dri:/dev/dri   # Accélération matérielle Intel/AMD
+    ports:
+      - ${PORT_UI_JELLYFIN:?err}:8096        # HTTP WebUI
+      - 7359:7359/udp                        # Service Discovery
+    volumes:
+      - ${APPS_FOLDER:?err}/jellyfin/config:/config
+      - ${DATA_FOLDER:?err}/media:/data/media
+      - ${DATA_FOLDER:?err}/transcode:/transcode
+      - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup        
+      - ${SCRIPTS_FOLDER:?err}:/scripts                    
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - JELLYFIN_CONFIG_DIR=/config
+      - JELLYFIN_DATA_DIR=/config/data
+      - JELLYFIN_CACHE_DIR=/config/cache
+      - JELLYFIN_LOG_DIR=/config/log
+      # setup
+      - JELLYFIN_PUBLISHED_SERVER_URL=${EXTERNAL_DOMAIN:?err}
+    post_start:
+      - command: /_setup/bash/add-repo.sh
+        user: root
