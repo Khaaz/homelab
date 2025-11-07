@@ -20,7 +20,8 @@ services:
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
       # setup
-      - DOMAIN=${INTERNAL_DOMAIN:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
       - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET:?err}
       - AUTHELIA_ENCRYPTION_KEY=${AUTHELIA_ENCRYPTION_KEY:?err}
       - USER_NAME=${AUTHELIA_USER_NAME:?err}
