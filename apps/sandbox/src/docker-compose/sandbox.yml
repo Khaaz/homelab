@@ -1,0 +1,31 @@
+services:
+  sandbox1:
+    image: nginx:alpine
+    container_name: sandbox1
+    networks:
+      sandbox:
+        ipv4_address: ${SANDBOX_DOCKER_SUBNET:?err}.21
+    labels:
+      - "traefik.enable=true"
+      # Common service definition
+      - "traefik.http.services.sandbox1.loadbalancer.server.port=80"
+      # Public domain
+      - "traefik.http.routers.sandbox1-public.rule=Host(`sandbox1.sandbox.${EXTERNAL_DOMAIN:?err}`)"
+      - "traefik.http.routers.sandbox1-public.service=sandbox1"
+      # Internal domain
+      - "traefik.http.routers.sandbox1-internal.rule=Host(`sandbox1.sandbox.${INTERNAL_DOMAIN:?err}`)"
+      - "traefik.http.routers.sandbox1-internal.service=sandbox1"
+
+  sandbox2:
+    image: nginx:alpine
+    container_name: sandbox2
+    networks:
+      sandbox:
+        ipv4_address: ${SANDBOX_DOCKER_SUBNET:?err}.22
+    labels:
+      - "traefik.enable=true"
+      # Common service definition
+      - "traefik.http.services.sandbox2.loadbalancer.server.port=80"
+      # Internal only
+      - "traefik.http.routers.sandbox2-internal.rule=Host(`sandbox2.sandbox.${INTERNAL_DOMAIN:?err}`)"
+      - "traefik.http.routers.sandbox2-internal.service=sandbox2"

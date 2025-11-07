@@ -9,12 +9,12 @@ config:
   docker: true
   router: false
   routes:
-    - network: 10.10.31.0/24 # extern
-      via: 10.10.32.2 # firewall-srv
+    - network: 10.10.32.0/24 # extern
+      via: 10.10.31.2 # firewall-srv
   dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr3 # srv
-    vlan: 32 # intern
-    ipv4: 10.10.32.14/24
-    gateway: 10.10.32.1
+    vlan: 31 # extern
+    ipv4: 10.10.31.14/24
+    gateway: 10.10.31.1
 nas: null
