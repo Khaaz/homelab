@@ -63,8 +63,10 @@ NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/networking.env"
 MS_NETWORKING_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.env.default"
 MS_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.env"
 
-# proxmox env
+# Environment specific env files
 PROXMOX_ENV_FILE="$SCRIPT_DIR/config/proxmox.env"
+LOCAL_ENV_FILE="$SCRIPT_DIR/config/local.env.default"
+LOCAL_ENV_OVERRIDE_FILE="$SCRIPT_DIR/config/local.env"
 
 # source
 COMPOSE_FILE="$(printf -- '-f %s ' $SCRIPT_DIR/src/docker-compose/*.yml)"
@@ -79,10 +81,13 @@ fi
 echo "Sourcing IPs"
 source_ips $LOCAL_ARG
 
-# If running with proxmox flag, include proxmox.env if present
+# If present, includes proxmox.env or local.env depending on the environment
 PROXMOX_ENV_ARG=""
+LOCAL_ENV_ARG=""
 if [ "$LOCAL_FLAG" = "false" ]; then
 	PROXMOX_ENV_ARG=$(add_env_file "$PROXMOX_ENV_FILE")
+else
+	LOCAL_ENV_ARG="$(add_env_file "$LOCAL_ENV_FILE") $(add_env_file "$LOCAL_ENV_OVERRIDE_FILE")"
 fi
 
 docker compose $COMPOSE_FILE \
@@ -91,4 +96,5 @@ docker compose $COMPOSE_FILE \
 	--env-file $MS_NETWORKING_ENV_FILE $(add_env_file "$MS_NETWORKING_OVERRIDE_ENV_FILE") \
 	$PROXMOX_ENV_ARG \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
+	$LOCAL_ENV_ARG \
 	$COMMAND

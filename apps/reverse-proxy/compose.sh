@@ -60,39 +60,36 @@ OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/.env"
 NETWORKING_ENV_FILE="$SCRIPT_DIR/config/networking.env.default"
 NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/networking.env"
 
+# apps
 CLOUD_NETWORKING_ENV_FILE="$SCRIPT_DIR/../cloud/config/networking.env.default"
 CLOUD_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../cloud/config/networking.env"
 HA_NETWORKING_ENV_FILE="$SCRIPT_DIR/../home-automation/config/networking.env.default"
 HA_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../home-automation/config/networking.env"
 IM_NETWORKING_ENV_FILE="$SCRIPT_DIR/../immich/config/networking.env.default"
 IM_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../immich/config/networking.env"
-
 MGMT_NETWORKING_ENV_FILE="$SCRIPT_DIR/../management/config/networking.env.default"
 MGMT_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../management/config/networking.env"
-
 MM_NETWORKING_ENV_FILE="$SCRIPT_DIR/../media-management/config/networking.env.default"
 MM_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-management/config/networking.env"
 MS_NETWORKING_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.env.default"
 MS_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../media-server/config/networking.env"
-
 # NAS_NETWORKING_ENV_FILE="$SCRIPT_DIR/../nas/config/networking.env.default"
 # NAS_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../nas/config/networking.env"
-
 NOTES_NETWORKING_ENV_FILE="$SCRIPT_DIR/../notes/config/networking.env.default"
 NOTES_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../notes/config/networking.env"
-
 VAULT_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vault/config/networking.env.default"
 VAULT_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vault/config/networking.env"
 VPN_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vpn/config/networking.env.default"
 VPN_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vpn/config/networking.env"
 VSC_NETWORKING_ENV_FILE="$SCRIPT_DIR/../vscode-server/config/networking.env.default"
 VSC_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../vscode-server/config/networking.env"
-
 WB_NETWORKING_ENV_FILE="$SCRIPT_DIR/../whiteboard/config/networking.env.default"
 WB_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../whiteboard/config/networking.env"
 
-# proxmox env
+# Environment specific env files
 PROXMOX_ENV_FILE="$SCRIPT_DIR/config/proxmox.env"
+LOCAL_ENV_FILE="$SCRIPT_DIR/config/local.env.default"
+LOCAL_ENV_OVERRIDE_FILE="$SCRIPT_DIR/config/local.env"
 
 # source
 COMPOSE_FILE="$(printf -- '-f %s ' $SCRIPT_DIR/src/docker-compose/*.yml)"
@@ -107,10 +104,14 @@ fi
 echo "Sourcing IPs"
 source_ips $LOCAL_ARG
 
-# If running with proxmox flag, include proxmox.env if present
+# If present, includes proxmox.env or local.env depending on the environment
 PROXMOX_ENV_ARG=""
+LOCAL_ENV_ARG=""
 if [ "$LOCAL_FLAG" = "false" ]; then
 	PROXMOX_ENV_ARG=$(add_env_file "$PROXMOX_ENV_FILE")
+else
+	echo $LOCAL_ENV_OVERRIDE_FILE
+	LOCAL_ENV_ARG="$(add_env_file "$LOCAL_ENV_FILE") $(add_env_file "$LOCAL_ENV_OVERRIDE_FILE")"
 fi
 
 docker compose $COMPOSE_FILE \
@@ -129,4 +130,5 @@ docker compose $COMPOSE_FILE \
 	--env-file $WB_NETWORKING_ENV_FILE $(add_env_file "$WB_NETWORKING_OVERRIDE_ENV_FILE") \
 	$PROXMOX_ENV_ARG \
 	$(add_env_file "$GENERATED_ENV_FILE") $(add_env_file "$OVERRIDE_ENV_FILE") \
+	$LOCAL_ENV_ARG \
 	$COMMAND
