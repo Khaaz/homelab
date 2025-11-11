@@ -21,6 +21,12 @@ APPS_PATH="${SCRIPT_DIR}/../../../apps"
 
 declare -A global_config
 
+## Input verification
+if [ ! -f "$GLOBAL_CONFIG_FILE" ]; then
+	echo "ERROR: global-config.toml not found at $GLOBAL_CONFIG_FILE"
+	exit 1
+fi
+
 #
 ## Core
 #
@@ -79,6 +85,15 @@ for app_path in $APPS_PATH/*; do
 done
 
 # --- 4: Generate config/.env.generated for IAC and preseed  ---
+ENVIRONMENT_PATH="${SCRIPT_DIR}/../../../environment"
+
+echo "LOG: Generating config/.env.generated for environment"
+
+echo "INFO: ==> Processing environment conf: $ENVIRONMENT_PATH <=="
+process_app_template "environment" "$ENVIRONMENT_PATH/$CONFIG_INPUT_FILE" "$ENVIRONMENT_PATH/$CONFIG_OUTPUT_FILE" global_config
+echo "INFO: Generated config/.env for environment"
+
+# --- 5: Generate config/.env.generated for IAC and preseed  ---
 PRESEED_PATH="${SCRIPT_DIR}/../../../preseed"
 IAC_PATH="${SCRIPT_DIR}/../../../iac"
 
