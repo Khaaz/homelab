@@ -11,6 +11,9 @@ build {
   provisioner "ansible" {
     playbook_file = "./ansible/setup.playbook.yml"
     use_proxy     = false
+    env = {
+      KEYBOARD_LAYOUT = "${var.keyboard_layout}"
+    }
   }
 
   # Reset root password completely

@@ -8,9 +8,11 @@
 - name: Final configuration (keymaps...)
   hosts: all
   gather_facts: yes
+  vars:
+    keyboard_layout: "{{ lookup('env', 'KEYBOARD_LAYOUT') | default('fr fr', true) }}"
   tasks:
     - name: Set FR keymap
-      ansible.builtin.command: setup-keymap fr fr
+      ansible.builtin.command: setup-keymap {{ keyboard_layout }}
       register: setup_keymap
       changed_when: "'Setting keymap' in setup_keymap.stdout"
       failed_when: setup_keymap.rc != 0

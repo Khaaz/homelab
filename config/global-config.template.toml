@@ -21,7 +21,10 @@
 	IP_NAMESERVER="192.168.1.254"
 
 [iac] # iac
-	KEYBOARD_LAYOUT="fr"
+	# vm keyboard layout 
+	# french/azerty: "fr fr" (default)
+	# us/qwerty: "us us"
+	KEYBOARD_LAYOUT="fr fr"
 	# Proxmox setup
 	PROXMOX_ADMIN_PASSWORD="long_password1!" # Must be longer than 8 char
 	PROXMOX_PACKER_PASSWORD="long_packer_password1!"  # Must be longer than 8 char
@@ -31,8 +34,9 @@
 [preseed] # preseed
 	# /dev/sda for SSD ; /dev/nvme0n1 for NVME
 	DISK="/dev/sda"
-	# "us": for us/qwerty
-	# "fr(azery)": for french/azerty, not a typo
+	# proxmox host keyboard layout
+	# french/azerty: "fr(azery)" (default) (not a typo)
+	# us/qwerty: "us"
 	KEYBOARD_LAYOUT="fr(azery)"
 	
 [cloud] # apps/cloud

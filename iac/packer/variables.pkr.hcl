@@ -54,6 +54,12 @@ variable "root_password" {
   default     = env("SSH_ROOT_PASSWORD")
   description = "Root password for the VM template during preseed installation"
 }
+# Customise keyboard layout
+variable "keyboard_layout" {
+  type        = string
+  default     = env("KEYBOARD_LAYOUT")
+  description = "Keyboard layout for the VM template during preseed installation"
+}
 
 variable "dev_mode" {
   type        = bool
