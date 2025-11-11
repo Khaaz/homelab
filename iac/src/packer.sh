@@ -13,16 +13,24 @@ PACKER_FOLDER="$IAC_FOLDER/packer"
 
 ## Usage
 usage() {
-	echo "Usage: $0 [--dev]"
+	echo "Usage: $0 [--kernel <virt|standard>] [--dev]"
 	exit 1
 }
 
 ## Input verification
 DEV=false
+KERNEL=virt
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--dev)
 			DEV=true
+			;;
+		--kernel)
+			if [ "$2" != "virt" ] && [ "$2" != "standard" ]; then
+				usage
+			fi
+			KERNEL="$2" # virt|standard
+			shift
 			;;
 		--help)
 			usage
@@ -77,6 +85,17 @@ export PROXMOX_PACKER_TOKEN_ID=$PACKER_TOKEN_ID
 export PROXMOX_PACKER_TOKEN_SECRET=$PACKER_TOKEN_SECRET
 if [ "$DEV" = true ]; then
 	export DEV_MODE="true"
+fi
+
+# map template kernel type
+if [ "$KERNEL" = "standard" ]; then
+	export PROXMOX_VM_TEMPLATE_TYPE="standard"
+	export PROXMOX_VM_TEMPLATE_NAME=$PROXMOX_VM_TEMPLATE_STANDARD_NAME
+	export PROXMOX_VM_TEMPLATE_ID=$PROXMOX_VM_TEMPLATE_STANDARD_ID
+else
+	export PROXMOX_VM_TEMPLATE_TYPE="virt"
+	export PROXMOX_VM_TEMPLATE_NAME=$PROXMOX_VM_TEMPLATE_VIRT_NAME
+	export PROXMOX_VM_TEMPLATE_ID=$PROXMOX_VM_TEMPLATE_VIRT_ID
 fi
 
 cd $PACKER_FOLDER

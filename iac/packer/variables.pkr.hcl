@@ -39,6 +39,11 @@ variable "proxmox_vm_template_id" {
   default     = env("PROXMOX_VM_TEMPLATE_ID")
   description = "ID for the VM template created by Packer"
 }
+variable "proxmox_vm_template_type" {
+  type        = string
+  default     = env("PROXMOX_VM_TEMPLATE_TYPE")
+  description = "Type for the VM template created by Packer (virt, standard)"
+}
 
 ## Preseed additional config
 # Setup machine IP (to fetch answer and root.pub)

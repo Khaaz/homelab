@@ -51,4 +51,11 @@ fi
 # --auto is intentionally a no-op in this script to keep behavior unchanged
 
 # Execute the command
-$ROOT_DIR/iac/2.create_proxmox_vm_template.sh "$DEV_ARGS" "$@"
+if [ "$AUTO" = true ]; then
+	# Execute with predefined arguments for automated mode
+	$ROOT_DIR/iac/2.create_proxmox_vm_template.sh --kernel virt "$DEV_ARGS"
+	$ROOT_DIR/iac/2.create_proxmox_vm_template.sh --kernel standard "$DEV_ARGS"
+else
+	# Pass through all parameters plus any additional flags
+	$ROOT_DIR/iac/2.create_proxmox_vm_template.sh "$DEV_ARGS" "$@"
+fi

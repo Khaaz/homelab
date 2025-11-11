@@ -9,15 +9,13 @@ source "proxmox-iso" "template-alpine" {
   node                 = var.proxmox_node
   vm_id                = var.proxmox_vm_template_id
   vm_name              = var.proxmox_vm_template_name
-  template_description = "Alpine virt with Cloud-Init + Docker"
+  template_description = "Alpine ${var.proxmox_vm_template_type} with Cloud-Init + Docker"
 
   qemu_agent  = true
   disable_kvm = false # Disable only for VM
 
   # Let terraform provide it later on
   cloud_init              = false 
-#   cloud_init_storage_pool = var.proxmox_datastore_id
-#   cloud_init_disk_type    = "ide"
 
   # SSH
   communicator         = "ssh"
@@ -74,11 +72,8 @@ source "proxmox-iso" "template-alpine" {
   boot_wait = "10s"
   boot_iso {
     type     = "ide"
-    iso_file = "local:iso/alpine-virt-3.22.1-x86_64.iso"
+    iso_file = "local:iso/alpine-${var.proxmox_vm_template_type}-3.22.2-x86_64.iso"
     unmount  = true
-    # iso_url = "https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-virt-3.22.1-x86_64.iso"
-    # iso_checksum = "sha256:42918974513750a6923393f3074c3bb226badfce4a0d0f35f90377fd789fda1f"
-    # iso_storage_pool= "local"
   }
 
   # Conditional boot commands depending on method

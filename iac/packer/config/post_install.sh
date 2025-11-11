@@ -14,8 +14,6 @@ echo "Install QEMU Guest Agent and Cloud init"
 echo "- Mount base system"
 # Mount root and boot
 mount /dev/sda3 /mnt
-# mkdir -p /mnt/boot/efi
-# mount -t vfat /dev/sda1 /mnt/boot/efi
 
 # Bind-mount runtime filesystems
 mount -t proc /proc /mnt/proc
@@ -58,7 +56,6 @@ echo "- Unmount base system"
 umount -l /mnt/dev
 umount -l /mnt/sys
 umount -l /mnt/proc
-# umount -l /mnt/boot/efi
 umount -l /mnt
 
 echo "Installed QEMU Guest Agent and Cloud init"
