@@ -31,10 +31,10 @@
 [preseed] # preseed
 	# /dev/sda for SSD ; /dev/nvme0n1 for NVME
 	DISK="/dev/sda"
-	# "us": for us/qwerty
-	# "fr(azery)": for french/azerty, not a typo
+	# "us": for qwery
+	# "fr(azery)": for french, not a typo
 	KEYBOARD_LAYOUT="fr(azery)"
-	
+
 [cloud] # apps/cloud
 	enabled=false
 
