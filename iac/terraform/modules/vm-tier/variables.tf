@@ -9,13 +9,19 @@ variable "proxmox_datastore_id" {
   description = "Proxmox datastore ID for VM storage"
 }
 
-variable "proxmox_vm_template_id" {
+variable "proxmox_vm_template_virt_id" {
   type        = number
-  description = "Proxmox VM template ID to use for VM creation"
+  description = "Proxmox VM template ID to use for VM creation (virt)"
+}
+
+variable "proxmox_vm_template_standard_id" {
+  type        = number
+  description = "Proxmox VM template ID to use for VM creation (standard)"
 }
 
 variable "tier_vms" {
   type = map(object({
+    kernel = optional(string, "virt") # virt or standard
     specs = object({
       cores     = number
       ram_size  = number

@@ -51,9 +51,10 @@ module "vm_tier0" {
   vms_to_vmid = local.vms_to_vmid
   
   ## proxmox conf
-  proxmox_node           = var.proxmox_node
-  proxmox_vm_template_id = var.proxmox_vm_template_id
-  proxmox_datastore_id   = var.proxmox_datastore_id
+  proxmox_node                    = var.proxmox_node
+  proxmox_vm_template_virt_id     = var.proxmox_vm_template_virt_id
+  proxmox_vm_template_standard_id = var.proxmox_vm_template_standard_id
+  proxmox_datastore_id            = var.proxmox_datastore_id
 }
 
 module "vm_tier1" {
@@ -63,9 +64,10 @@ module "vm_tier1" {
   vms_to_vmid = local.vms_to_vmid
 
   ## proxmox conf
-  proxmox_node           = var.proxmox_node
-  proxmox_vm_template_id = var.proxmox_vm_template_id
-  proxmox_datastore_id   = var.proxmox_datastore_id
+  proxmox_node                    = var.proxmox_node
+  proxmox_vm_template_virt_id     = var.proxmox_vm_template_virt_id
+  proxmox_vm_template_standard_id = var.proxmox_vm_template_standard_id
+  proxmox_datastore_id            = var.proxmox_datastore_id
   
   depends_on = [ module.vm_tier0 ]
 }
@@ -77,9 +79,10 @@ module "vm_tier2" {
   vms_to_vmid = local.vms_to_vmid
   
   ## proxmox conf
-  proxmox_node           = var.proxmox_node
-  proxmox_vm_template_id = var.proxmox_vm_template_id
-  proxmox_datastore_id   = var.proxmox_datastore_id
+  proxmox_node                    = var.proxmox_node
+  proxmox_vm_template_virt_id     = var.proxmox_vm_template_virt_id
+  proxmox_vm_template_standard_id = var.proxmox_vm_template_standard_id
+  proxmox_datastore_id            = var.proxmox_datastore_id
   
   depends_on = [ module.vm_tier1 ]
 }
@@ -91,9 +94,10 @@ module "vm_tier3" {
   vms_to_vmid = local.vms_to_vmid
   
   ## proxmox conf
-  proxmox_node           = var.proxmox_node
-  proxmox_vm_template_id = var.proxmox_vm_template_id
-  proxmox_datastore_id   = var.proxmox_datastore_id
+  proxmox_node                    = var.proxmox_node
+  proxmox_vm_template_virt_id     = var.proxmox_vm_template_virt_id
+  proxmox_vm_template_standard_id = var.proxmox_vm_template_standard_id
+  proxmox_datastore_id            = var.proxmox_datastore_id
   
   depends_on = [ module.vm_tier2 ]
 }

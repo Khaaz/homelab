@@ -23,6 +23,7 @@ variable "vm_name" {
 # Per-VM config parsed from YAML
 variable "vm_cfg" {
   type = object({
+    kernel = optional(string, "virt") # virt or standard
     specs = object({
       cores     = number
       ram_size  = number

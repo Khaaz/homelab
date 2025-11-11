@@ -1,3 +1,4 @@
+kernel: virt
 specs:
   cores: 1
   ram_size: 2048 # MB

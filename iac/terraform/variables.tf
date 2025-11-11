@@ -20,16 +20,16 @@ variable "proxmox_datastore_id" {
   description = "Proxmox datastore ID for VM storage"
 }
 
-variable "proxmox_vm_template_name" {
-  type        = string
-  default     = "vm-alpine-template"
-  description = "Name of the Proxmox VM template to use for VM creation"
-}
-
-variable "proxmox_vm_template_id" {
+variable "proxmox_vm_template_virt_id" {
   type        = number
   default     = 9000
-  description = "ID of the Proxmox VM template to use for VM creation"
+  description = "ID of the Proxmox VM template to use for VM creation (virt)"
+}
+
+variable "proxmox_vm_template_standard_id" {
+  type        = number
+  default     = 9001
+  description = "ID of the Proxmox VM template to use for VM creation (standard)"
 }
 
 variable "dev_mode" {

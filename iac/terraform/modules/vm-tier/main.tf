@@ -10,7 +10,7 @@ module "vm_tier" {
 
   ## proxmox conf
   proxmox_node           = var.proxmox_node
-  proxmox_vm_template_id = var.proxmox_vm_template_id
+  proxmox_vm_template_id = each.value.kernel == "virt" ? var.proxmox_vm_template_virt_id : var.proxmox_vm_template_standard_id
   proxmox_datastore_id   = var.proxmox_datastore_id
 
   ## Cloud init
