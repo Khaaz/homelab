@@ -36,6 +36,11 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
+echo "================================================"
+echo "WARN: This script necessits the port 8098 to be open"
+echo "WARN: Use --packer when booting the environment to automatically bind the port"
+echo "================================================"
+
 if [ "$AUTO" = true ]; then
 	echo "INFO: Executing in AUTO mode (infra ready)"
 fi
@@ -47,8 +52,6 @@ DEV_ARGS=""
 if [ "$DEV" = true ]; then
 	DEV_ARGS="--dev"
 fi
-
-# --auto is intentionally a no-op in this script to keep behavior unchanged
 
 # Execute the command
 if [ "$AUTO" = true ]; then
