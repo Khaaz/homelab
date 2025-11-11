@@ -62,6 +62,14 @@ replace_password_functions() {
 
 		local hashed_password_escaped="${hashed_password//\//\\/}"
 		current_line="$(echo "$current_line" | sed "s|password_argon($password_value)|$hashed_password_escaped|")"
+	# password_bcrypt()
+	elif [[ "$current_line" =~ password_bcrypt\(\$?\{?([^\)]*)\}?\) ]]; then
+		local password_value="${BASH_REMATCH[1]}"
+
+		local hashed_password=$("$SCRIPT_DIR/../../utils/encrypt_bcrypt.sh" "$password_value")
+
+		local hashed_password_escaped="${hashed_password//\//\\/}"
+		current_line="$(echo "$current_line" | sed "s|password_bcrypt($password_value)|$hashed_password_escaped|")"
 	fi
 }
 
