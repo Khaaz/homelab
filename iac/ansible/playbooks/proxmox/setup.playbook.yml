@@ -9,7 +9,9 @@
 - import_playbook: ./2.setup-networking.playbook.yml
 # Hardening debian/proxmox users
 - import_playbook: ./3.hardening.playbook.yml
+# Resource mapping (for passthrough)
+- import_playbook: ./4.prepare-resource-mapping.playbook.yml
 # Additional configuration and setup
-- import_playbook: ./4.additional-setup.playbook.yml
+- import_playbook: ./5.additional-setup.playbook.yml
 # User management
-- import_playbook: ./5.setup-user.playbook.yml
+- import_playbook: ./6.setup-user.playbook.yml

@@ -1,0 +1,51 @@
+---
+- name: Setup additional prerequesites configuration for proxmox
+  hosts: homelab
+  become: true
+  tasks:
+    # Cleanup enterprise specifics
+    - name: Remove enterprise repositories
+      ansible.builtin.apt_repository:
+        repo: '{{ item }}'
+        update_cache: false
+        state: absent
+      loop:
+        - deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
+        - deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
+    - name: Disable proxmox subscription popup
+      ansible.builtin.replace:
+        path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+        regexp: ^(.*)Ext\.Msg\.show\(\{(.*)$\n^(.*)No valid subscription(.*)$
+        replace: \1void({\2\n\3No valid subscription\4
+
+- name: Download base ISOs for template VMs (Debian, Alpine)
+  hosts: homelab
+  become: true
+  tasks:
+    # Install debian image to create template VMs if needed
+    - name: Ensure ISO directory exists
+      ansible.builtin.file:
+        path: /var/lib/vz/template/iso
+        state: directory
+        mode: "0755"
+    - name: Download Debian 12.9 netinst ISO
+      ansible.builtin.get_url:
+        url: https://cdimage.debian.org/cdimage/archive/12.9.0/amd64/iso-cd/debian-12.9.0-amd64-netinst.iso
+        dest: /var/lib/vz/template/iso/debian-12.9.0-amd64-netinst.iso
+        mode: "0644"
+        force: yes
+        checksum: sha512:9ebe405c3404a005ce926e483bc6c6841b405c4d85e0c8a7b1707a7fe4957c617ae44bd807a57ec3e5c2d3e99f2101dfb26ef36b3720896906bdc3aaeec4cd80
+    - name: Download Alpine ISO (virt)
+      ansible.builtin.get_url:
+        url: https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-virt-3.22.2-x86_64.iso
+        dest: /var/lib/vz/template/iso/alpine-virt-3.22.2-x86_64.iso
+        mode: "0644"
+        force: yes
+        checksum: sha256:b6c45d69829b1b0416ada798353805099d57b8bef9093b85a8319fe5373595d5
+    - name: Download Alpine ISO (standard)
+      ansible.builtin.get_url:
+        url: https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-standard-3.22.2-x86_64.iso
+        dest: /var/lib/vz/template/iso/alpine-standard-3.22.2-x86_64.iso
+        mode: "0644"
+        force: yes
+        checksum: sha256:f6a265f0696d328c8f87814a0d6bfa362d1434e500cb80a48796b1c9d204cee0
