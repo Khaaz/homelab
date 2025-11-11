@@ -8,8 +8,6 @@ get_script_dir() {
 }
 SCRIPT_DIR=$(get_script_dir)
 
-ENVIRONMENT_CONFIG_FOLDER="$SCRIPT_DIR/config"
-
 ## Usage
 usage() {
 	echo "Usage: $0 <target> --command <sys_info|ram_usage|cpu_usage|disk_usage>"
@@ -61,9 +59,10 @@ fi
 # config/.env (standard env file)
 # config/.env.generated (generated env file)
 # config/.env.default (default env file)
-ENV_FILE="$ENVIRONMENT_CONFIG_FOLDER/config/.env"
-GENERATED_ENV_FILE="$ENVIRONMENT_CONFIG_FOLDER/config/.env.generated"
-DEFAULT_ENV_FILE="$ENVIRONMENT_CONFIG_FOLDER/config/.env.default"
+ENVIRONMENT_CONFIG_FOLDER="$SCRIPT_DIR/config"
+ENV_FILE="$ENVIRONMENT_CONFIG_FOLDER/.env"
+GENERATED_ENV_FILE="$ENVIRONMENT_CONFIG_FOLDER/.env.generated"
+DEFAULT_ENV_FILE="$ENVIRONMENT_CONFIG_FOLDER/.env.default"
 
 if [ -f "$DEFAULT_ENV_FILE" ]; then
 	set -a
