@@ -624,13 +624,13 @@ session:
       ## me checkbox this overrides the expiration option and disables the inactivity option.
       remember_me: '1 month'
 
-	- name: 'authelia_session'
-	  domain: '${EXTERNAL_DOMAIN}'
-	  authelia_url: 'https://auth.${EXTERNAL_DOMAIN}/'
-	  default_redirection_url: 'https://${EXTERNAL_DOMAIN}/'
-	  inactivity: '5 minutes'
-	  expiration: '1 hour'
-	  remember_me: '1 month'
+    - name: 'authelia_session'
+      domain: '${EXTERNAL_DOMAIN}'
+      authelia_url: 'https://auth.${EXTERNAL_DOMAIN}/'
+      default_redirection_url: 'https://${EXTERNAL_DOMAIN}/'
+      inactivity: '5 minutes'
+      expiration: '1 hour'
+      remember_me: '1 month'
 
   ## Cookie Session Domain default 'name' value.
   name: 'authelia_session'
