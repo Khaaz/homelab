@@ -13,3 +13,4 @@ unzip
 jq
 argon2
 apache2-utils
+sqlite3
