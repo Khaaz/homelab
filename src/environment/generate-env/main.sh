@@ -15,11 +15,15 @@ SCRIPT_DIR=$(get_script_dir)
 # Import subfunctions
 . "$SCRIPT_DIR/config_parser.sh"
 . "$SCRIPT_DIR/template_parser.sh"
+. "$SCRIPT_DIR/user_parser.sh"
 
 GLOBAL_CONFIG_FILE="${SCRIPT_DIR}/../../../config/global-config.toml"
+USERS_CONFIG_FILE="${SCRIPT_DIR}/../../../config/users-config.toml"
 APPS_PATH="${SCRIPT_DIR}/../../../apps"
 
 declare -A global_config
+declare users_admin_password=""
+declare users_entries=""
 
 ## Input verification
 if [ ! -f "$GLOBAL_CONFIG_FILE" ]; then
@@ -30,10 +34,30 @@ fi
 #
 ## Core
 #
+# --- 0: Parse users-config.toml if present ---
+if [ -f "$USERS_CONFIG_FILE" ]; then
+	echo "LOG: Load users-config.toml: $USERS_CONFIG_FILE"
+	parse_users_config "$USERS_CONFIG_FILE" users_admin_password users_entries
+	echo "LOG: Loaded users-config.toml"
+else
+	echo "LOG: users-config.toml not found, skipping users override"
+fi
+
 # --- 1: Parse global config ---
 echo "LOG: Load config-global.toml: $GLOBAL_CONFIG_FILE"
 parse_global_config "$GLOBAL_CONFIG_FILE" global_config
 echo "LOG: Loaded config-global.toml"
+
+# --- 1b: Override users section from users-config.toml if present ---
+if [ -n "$users_admin_password" ] || [ -n "$users_entries" ]; then
+	echo "LOG: Overriding [users] section from users-config.toml"
+	if [ -n "$users_admin_password" ]; then
+		global_config["users.ADMIN_PASSWORD"]="$users_admin_password"
+	fi
+	if [ -n "$users_entries" ]; then
+		global_config["users.USERS"]="$users_entries"
+	fi
+fi
 
 echo "DEBUG: global_config >"
 for k in "${!global_config[@]}"; do

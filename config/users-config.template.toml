@@ -1,0 +1,27 @@
+# Mandatory
+[admin]
+	ADMIN_PASSWORD="admin_password"
+
+# List additional users
+## Family
+[family_user]
+	PASSWORD="family_password"
+	GROUP="family"
+
+[family_user2]
+	PASSWORD="family_password"
+	GROUP="family"
+
+## User
+[other_user]
+	PASSWORD="other_user"
+	GROUP="user"
+
+[other_user2]
+	PASSWORD="other_user"
+	GROUP="user"
+
+## Guest
+[guest]
+	PASSWORD="family_password"
+	GROUP="guest"

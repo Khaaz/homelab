@@ -20,6 +20,13 @@
 	IP_GATEWAY="192.168.1.254"
 	IP_NAMESERVER="192.168.1.254"
 
+[users]
+	# Is overriden by the users-config.toml file if defined
+	# Mandatory
+	ADMIN_PASSWORD="admin_password"
+	# Optional
+	USERS=""
+	
 [iac] # iac
 	# vm keyboard layout 
 	# french/azerty: "fr fr" (default)

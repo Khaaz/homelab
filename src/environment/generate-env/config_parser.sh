@@ -23,7 +23,7 @@ parse_global_config() {
 		if [[ $line =~ ^([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*\"?([^\"]+)\"?$ ]]; then
 			local key="${BASH_REMATCH[1]}"
 			local val="${BASH_REMATCH[2]}"
-			echo "DEBUG: key: $key, $val"
+			echo "DEBUG: key: $key => val: $val"
 			local full_key="${current_section}.${key}"
 			config_values["$full_key"]="$val"
 		fi
