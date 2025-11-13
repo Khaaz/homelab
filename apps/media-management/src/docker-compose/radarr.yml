@@ -28,17 +28,19 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:radarr
       - TP_THEME=${TP_THEME:?err}
-      # setup
-      - API_KEY_RADARR=${API_KEY_RADARR:?err}
-      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
-      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
-      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
-      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
         environment:
           - PUID=${PUID:?err}
           - PGID=${PGID:?err}
+          # setup
+          - API_KEY_RADARR=${API_KEY_RADARR:?err}
       - command: /scripts/execute_sql.sh /config/radarr.db
         user: root
+        environment:
+          # setup
+          - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+          - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
+          - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+          - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}

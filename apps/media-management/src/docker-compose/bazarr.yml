@@ -19,20 +19,20 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:bazarr
       - TP_THEME=${TP_THEME:?err}
-      # setup
-      - API_KEY_BAZARR=${API_KEY_BAZARR:?err}
-      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
-      - API_KEY_SONARR=${API_KEY_SONARR:?err}
-      - API_KEY_RADARR=${API_KEY_RADARR:?err}
-      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
-      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
-      - OPENSUBTITLE_PASSWORD=${OPENSUBTITLE_PASSWORD}
-      - OPENSUBTITLE_USERNAME=${OPENSUBTITLE_USERNAME}
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.yaml /config/config/config.yaml
         user: root
         environment:
           - PUID=${PUID:?err}
           - PGID=${PGID:?err}
+          # setup
+          - API_KEY_BAZARR=${API_KEY_BAZARR:?err}
+          - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+          - API_KEY_SONARR=${API_KEY_SONARR:?err}
+          - API_KEY_RADARR=${API_KEY_RADARR:?err}
+          - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+          - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+          - OPENSUBTITLE_PASSWORD=${OPENSUBTITLE_PASSWORD}
+          - OPENSUBTITLE_USERNAME=${OPENSUBTITLE_USERNAME}
       - command: /scripts/execute_sql.sh /config/db/bazarr.db
         user: root

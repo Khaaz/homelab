@@ -24,29 +24,31 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:prowlarr
       - TP_THEME=${TP_THEME:?err}
-      # setup
-      - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
-      - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
-      - API_KEY_RADARR=${API_KEY_RADARR:?err}
-      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
-      - API_KEY_SONARR=${API_KEY_SONARR:?err}
-      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
-      - PORT_SERVICE_FLARESOLVERR=${PORT_SERVICE_FLARESOLVERR:?err}
-      - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
-      - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
-      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
-      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
-      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
-      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
-      - SHAREWOOD_PASSKEY=${SHAREWOOD_PASSKEY:?err}
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/config.xml /config/config.xml
         user: root
         environment:
           - PUID=${PUID:?err}
           - PGID=${PGID:?err}
+          # setup
+          - API_KEY_PROWLARR=${API_KEY_PROWLARR:?err}
       - command: /scripts/execute_sql.sh /config/prowlarr.db
         user: root
+        environment:
+          # setup
+          - DOCKER_SUBNET=${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}
+          - API_KEY_RADARR=${API_KEY_RADARR:?err}
+          - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+          - API_KEY_SONARR=${API_KEY_SONARR:?err}
+          - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+          - PORT_SERVICE_FLARESOLVERR=${PORT_SERVICE_FLARESOLVERR:?err}
+          - PORT_UI_PROWLARR=${PORT_UI_PROWLARR:?err}
+          - PORT_UI_QBITTORRENT=${PORT_UI_QBITTORRENT:?err}
+          - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+          - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+          - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+          - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+          - SHAREWOOD_PASSKEY=${SHAREWOOD_PASSKEY:?err}
 
   # Flaresolverr - Cloudflare Proxy Server 
   flaresolverr:
