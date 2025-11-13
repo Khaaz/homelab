@@ -19,17 +19,15 @@ if [ "$#" -lt 1 ]; then
 	usage
 fi
 
-#
-## Core
-#
 DOMAIN="$1"
 
-OUT_FOLDER="/usr/local/share/ca-certificates"
+OUT_FILE="$DOMAIN.crt"
+
+DEFAULT_OUT_FOLDER="/usr/local/share/ca-certificates"
+OUT_FOLDER=""
 if [ -n "$2" ]; then
 	OUT_FOLDER="$2"
 fi
-
-OUT_FILE="$OUT_FOLDER/$DOMAIN.crt"
 
 #
 ## Core
@@ -45,8 +43,15 @@ else
 fi
 
 # Accept untrusted (self-signed) TLS with -k
-curl -k -fsSL "$URL" -o "$OUT_FILE"
+curl -k -fsSL "$URL" -o "$DEFAULT_OUT_FOLDER/$OUT_FILE"
+
+if [ -n "$OUT_FOLDER" ]; then
+	curl -k -fsSL "$URL" -o "$OUT_FOLDER/$OUT_FILE"
+fi
 
 update-ca-certificates
 
-echo "TRUST_CERTIFICATE: Wrote root certificate to $OUT_FILE"
+echo "TRUST_CERTIFICATE: Wrote root certificate to $DEFAULT_OUT_FOLDER/$OUT_FILE"
+if [ -n "$OUT_FOLDER" ]; then
+	echo "TRUST_CERTIFICATE: Wrote root certificate to $OUT_FOLDER/$OUT_FILE"
+fi
