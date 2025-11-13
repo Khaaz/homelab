@@ -2,16 +2,16 @@ services:
   environment:
     container_name: environment
     build: ../docker
-    network_mode: bridge
-    volumes:
-      - ../../:/workspace
-    working_dir: /workspace/environment
-    tty: true
-    ports:
-      - 8098:8098 # Packer http server port: published via [--packer] 
     cap_add:
       - SYS_ADMIN
     devices:
       - /dev/loop0:/dev/loop0
       - /dev/loop1:/dev/loop1
       - /dev/loop2:/dev/loop2
+    network_mode: bridge
+    working_dir: /workspace/environment
+    tty: true
+    ports:
+      - 8098:8098 # Packer http server port: published via [--packer] 
+    volumes:
+      - ../../:/workspace
