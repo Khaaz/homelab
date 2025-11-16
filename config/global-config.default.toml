@@ -86,6 +86,12 @@
 [management] # apps/management
 	enabled=true
 
+	## Portainer
+	PORTAINER_OIDC_CLIENT_SECRET="generate_token(64)"
+	
+	## Homarr
+	HOMARR_OIDC_CLIENT_SECRET="generate_token(64)"
+
 [media-management] # apps/media-management
 	enabled=true
 
