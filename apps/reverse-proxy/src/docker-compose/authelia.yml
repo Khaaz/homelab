@@ -22,12 +22,17 @@ services:
       # setup
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      # config
       - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET:?err}
       - AUTHELIA_ENCRYPTION_KEY=${AUTHELIA_ENCRYPTION_KEY:?err}
-      - USER_NAME=${AUTHELIA_USER_NAME:?err}
-      - USER_PASSWORD=${AUTHELIA_USER_PASSWORD:?err}
-      - USER_EMAIL=${AUTHELIA_USER_EMAIL:?err}
-      - AUTHELIA_USER_FAMILY_PASSWORD=${AUTHELIA_USER_FAMILY_PASSWORD:?err}
+      - AUTHELIA_OIDC_HMAC_SECRET=${AUTHELIA_OIDC_HMAC_SECRET:?err}
+      - AUTHELIA_OIDC_JWKS_KEY=${AUTHELIA_OIDC_JWKS_KEY:?err}
+      # clients
+      - HOMARR_OIDC_CLIENT_SECRET=${HOMARR_OIDC_CLIENT_SECRET:?err}
+      - PORTAINER_OIDC_CLIENT_SECRET=${PORTAINER_OIDC_CLIENT_SECRET:?err}
+      # users
+      - AUTHELIA_ADMIN_PASSWORD=${AUTHELIA_ADMIN_PASSWORD:?err}
+      - USERS=${AUTHELIA_USERS:?err}
   
   # Authelia - Multi-factor authentication portal
   authelia:
@@ -45,6 +50,7 @@ services:
     volumes:
       - ${APPS_FOLDER:?err}/authelia:/config # config
     environment:
+      - X_AUTHELIA_CONFIG_FILTERS=template
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}

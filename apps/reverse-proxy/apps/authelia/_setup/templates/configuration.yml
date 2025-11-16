@@ -12,7 +12,7 @@ server:
 ## Log Configuration
 ##
 log:
-  level: 'debug'
+  level: 'trace'
   format: 'json'
   file_path: '/config/logs/authelia.log'
   keep_stdout: true
@@ -106,6 +106,7 @@ access_control:
     # "user" only have access to a set of external apps
     - domain:
         # - '*.${EXTERNAL_DOMAIN}'
+        - auth.${EXTERNAL_DOMAIN}
         - request.${EXTERNAL_DOMAIN}
         - media.${EXTERNAL_DOMAIN}
       subject:
@@ -169,69 +170,16 @@ notifier:
 ##
 identity_providers:
   oidc:
-    hmac_secret: 'this_is_a_secret_abc123abc123abc'
+    hmac_secret: '${AUTHELIA_OIDC_HMAC_SECRET}'
     jwks:
       - algorithm: 'RS256'
         use: 'sig'
-        # ssh-keygen -t rsa -b 4096 -N "" -C "" -m PEM
-        key: |
-          -----BEGIN RSA PRIVATE KEY-----
-          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
-          -----END RSA PRIVATE KEY-----
+        key: {{ "${AUTHELIA_OIDC_JWKS_KEY}" | b64dec | mindent 10 "|" | msquote }}
 
     clients:
       - client_id: 'homarr'
         client_name: 'homarr'
-        # The digest of 'insecure_secret'.
-        client_secret: '$pbkdf2-sha512$310000$c8p78n7pUMln0jzvd4aK4Q$JNRBzwAo0ek5qKn50cFzzvE9RXV88h1wJn5KGiHrD0YKtZaR/nCb2CJPOsKaPK0hjf.9yHxzQGZziziccp6Yng'  
+        client_secret: '${HOMARR_OIDC_CLIENT_SECRET}'  
         redirect_uris:
           - 'https://homarr.${INTERNAL_DOMAIN}/api/auth/callback/oidc'
         scopes:
@@ -241,4 +189,24 @@ identity_providers:
           - 'profile'
         authorization_policy: 'one_factor'
         userinfo_signed_response_alg: 'none'
+        consent_mode: implicit
+
+      - client_id: 'portainer'
+        client_name: 'portainer'
+        # The digest of 'insecure_secret'.
+        client_secret: '${PORTAINER_OIDC_CLIENT_SECRET}'
+        redirect_uris:
+          - 'https://portainer.${INTERNAL_DOMAIN}'
+        scopes:
+          - 'openid'
+          - 'email'
+          - 'groups'
+          - 'profile'
+        response_types:
+          - 'code'
+        grant_types:
+          - 'authorization_code'
+        authorization_policy: 'one_factor'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_post'
         consent_mode: implicit
