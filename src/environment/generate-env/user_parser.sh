@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Parses users-config.toml and outputs:
+# Parses users-config.toml to extract users config (for SSO Provider and admin auth). 
+# Outputs:
 # - admin password
 # - USERS as JSON array of objects in declaration order:
 #   [{"name":"user","password":"password","group":"family"}, ...]
 
-# --- Helpers ---
-_strip_surrounding_quotes() {
+strip_surrounding_quotes() {
 	local val="$1"
 	val="$(echo "$val" | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')"
 	if [[ ${#val} -ge 2 ]]; then
@@ -19,7 +19,7 @@ _strip_surrounding_quotes() {
 	echo "$val"
 }
 
-_push_unique_section() {
+push_unique_section() {
 	local -n order_ref=$1
 	local name="$2"
 	local exists=0
@@ -34,7 +34,7 @@ _push_unique_section() {
 	fi
 }
 
-_json_escape() {
+json_escape() {
 	local s="$1"
 	s="${s//\\/\\\\}"
 	s="${s//\"/\\\"}"
@@ -43,7 +43,8 @@ _json_escape() {
 	echo "$s"
 }
 
-_build_users_json() {
+# Build JSON
+build_users_json() {
 	local -n order_ref=$1
 	local -n group_ref=$2
 	local -n pass_ref=$3
@@ -58,9 +59,9 @@ _build_users_json() {
 			echo "WARN: Skipping user '$user' due to missing GROUP or PASSWORD"
 			continue
 		fi
-		local name_esc="$(_json_escape "$user")"
-		local group_esc="$(_json_escape "$group")"
-		local password_esc="$(_json_escape "$password")"
+		local name_esc="$(json_escape "$user")"
+		local group_esc="$(json_escape "$group")"
+		local password_esc="$(json_escape "$password")"
 		if [[ $first -eq 1 ]]; then
 			first=0
 		else
@@ -72,6 +73,11 @@ _build_users_json() {
 	out_ref="$json"
 }
 
+# Main
+# Parse users-config.toml and output admin password and USERS as JSON object
+# - admin password
+# - USERS as JSON array of objects in declaration order:
+#   [{"name":"user","password":"password","group":"family"}, ...]
 parse_users_config() {
 	local config_file="$1"
 	local -n admin_password_out=$2
@@ -105,7 +111,7 @@ parse_users_config() {
 		if [[ $line =~ ^([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*(.+)$ ]]; then
 			local key="${BASH_REMATCH[1]}"
 			local val="${BASH_REMATCH[2]}"
-			val="$(_strip_surrounding_quotes "$val")"
+			val="$(strip_surrounding_quotes "$val")"
 
 			# admin section
 			if [[ "$current_section" == "admin" && "$key" == "ADMIN_PASSWORD" ]]; then
@@ -115,7 +121,7 @@ parse_users_config() {
 
 			# user sections
 			if [[ -n "$current_section" && "$current_section" != "admin" ]]; then
-				_push_unique_section section_order "$current_section"
+				push_unique_section section_order "$current_section"
 				if [[ "$key" == "GROUP" ]]; then
 					section_group["$current_section"]="$val"
 				elif [[ "$key" == "PASSWORD" ]]; then
@@ -126,7 +132,7 @@ parse_users_config() {
 	done < "$config_file"
 
 	# Build USERS JSON array
-	_build_users_json section_order section_group section_password users_out
+	build_users_json section_order section_group section_password users_out
 }
 
 

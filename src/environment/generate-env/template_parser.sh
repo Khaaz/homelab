@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Processes app config templates into .env.generated files using config_values
 
 ## Prerequesites
@@ -22,8 +23,6 @@ replace_placeholders() {
 		local placeholder="${BASH_REMATCH[1]}"
 		local key="${BASH_REMATCH[2]}"
 
-		echo "DEBUG: key: $key"
-
 		local value=""
 		# Extract the value for this $key from the config_values map
 		if [[ -n "${config_values[$key]}" ]]; then
@@ -42,8 +41,8 @@ replace_placeholders() {
 	done
 }
 
-# Detect and replace password() calls in the line
-replace_password_functions() {
+# Detect and replace function() calls in the line (password_sha512(), password_argon(), password_bcrypt())
+replace_functions() {
 	local -n current_line="$1"
 
 	# password_sha512()
@@ -73,7 +72,8 @@ replace_password_functions() {
 	fi
 }
 
-# Main function: process a single app template file
+# Main 
+# Process a single app template file as .env.generated
 process_app_template() {
 	local app="$1"
 
@@ -102,8 +102,8 @@ process_app_template() {
 		# Replace placeholders
 		replace_placeholders "$app" line global_config_values
 
-		# Replace password() functions
-		replace_password_functions line
+		# Replace function() (password_*())
+		replace_functions line
 
 		echo "$line" >> "$output_file"
 	done < "$input_template_file"

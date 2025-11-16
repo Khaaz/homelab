@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# Loads config values from toml into an associative array
+# Loads config values from toml into a dynamic config object
+# config[section.key] = value
+
+# Main
+# Parse global config and output config values as a double array
+# config[section.key] = value
 parse_global_config() {
 	local config_file="$1"
 	local -n config_values=$2
@@ -23,9 +28,14 @@ parse_global_config() {
 		if [[ $line =~ ^([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*\"?([^\"]+)\"?$ ]]; then
 			local key="${BASH_REMATCH[1]}"
 			local val="${BASH_REMATCH[2]}"
-			echo "DEBUG: key: $key => val: $val"
+			if [ -n "$DEBUG" ]; then
+				echo "DEBUG: key: $key => val: $val"
+			fi
 			local full_key="${current_section}.${key}"
-			config_values["$full_key"]="$val"
+			# Only assign when the parsed value is non-empty
+			if [[ -n "$val" ]]; then
+				config_values["$full_key"]="$val"
+			fi
 		fi
 	done < "$config_file"
 }

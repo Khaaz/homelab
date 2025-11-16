@@ -5,45 +5,44 @@
 	EXTERNAL_DOMAIN="example.com"
 
 [infra]
+	## Users
 	# Passwords will automatically be hashed with sha512
 	# Root user
 	ROOT_PASSWORD="long_root_password1!"
 	# Admin user (homelab)
 	USER_HOMELAB_PASSWORD="long_password1!"
 
+	## Networking
 	# IP of local PC that runs IAC
 	IP_CONTROL_NODE="192.168.1.165"
-	
 	# Server IPs
 	IP_SERVER="192.168.1.200"
-
 	IP_GATEWAY="192.168.1.254"
 	IP_NAMESERVER="192.168.1.254"
 
 [users]
 	# Is overriden by the users-config.toml file if defined
-	# Mandatory
-	ADMIN_PASSWORD="admin_password"
-	# Optional
-	USERS=""
+	
+	# Mandatory "admin" user password used accross apps and SSO Provider
+	ADMIN_PASSWORD="Admin_password123!"
 	
 [iac] # iac
-	# vm keyboard layout 
-	# french/azerty: "fr fr" (default)
-	# us/qwerty: "us us"
+	## Proxmox setup
+	# Admin user in proxmox UI (for Proxmox VE Auth server)
+	PROXMOX_ADMIN_PASSWORD="not_implemented()" # Must be longer than 8 char
+
+	## VM keyboard layout 
+	# - french/azerty: "fr fr" (default)
+	# - us/qwerty: "us us"
 	KEYBOARD_LAYOUT="fr fr"
-	# Proxmox setup
-	PROXMOX_ADMIN_PASSWORD="long_password1!" # Must be longer than 8 char
-	PROXMOX_PACKER_PASSWORD="long_packer_password1!"  # Must be longer than 8 char
-	PROXMOX_TERRAFORM_PASSWORD="long_terraform_password1!"  # Must be longer than 8 char
-	PROXMOX_TEMPLATE_ROOT_PASSWORD="long_template_password1!"
 
 [preseed] # preseed
 	# /dev/sda for SSD ; /dev/nvme0n1 for NVME
 	DISK="/dev/sda"
-	# proxmox host keyboard layout
-	# french/azerty: "fr(azery)" (default) (not a typo)
-	# us/qwerty: "us"
+	
+	# Proxmox host keyboard layout
+	# - french/azerty: "fr(azery)" (default) (not a typo)
+	# - us/qwerty: "us"
 	KEYBOARD_LAYOUT="fr(azery)"
 	
 [cloud] # apps/cloud
@@ -80,38 +79,31 @@
 [management] # apps/management
 	enabled=true
 
-	PORTAINER_ADMIN_PASSWORD="admin_password"
-
 [media-management] # apps/media-management
 	enabled=true
 
+	## Gluetun (vpn)
 	# VPN provider credentials. Example: nordvpn, protonvpn
 	# https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers
 	VPN_SERVICE_PROVIDER="protonvpn"
 	VPN_USERNAME=""
 	VPN_PASSWORD=""
 
-	# Provide any value you want that will be used as API key
-	# Generator:  https://it-tools.tech/token-generator
-	API_KEY_PROWLARR=""
-	API_KEY_BAZARR=""
-	API_KEY_RADARR=""
-	API_KEY_RADARR4K=""
-	API_KEY_SONARR=""
-	API_KEY_SONARR4K=""
-	API_KEY_MAINTAINERR=""
-
-	# For automatic subtitles with Bazarr
+	## Bazarr
+	# Optional: For automatic subtitles with Bazarr
 	# Create an account here: https://www.opensubtitles.com/
 	OPENSUBTITLE_USERNAME=""
 	OPENSUBTITLE_PASSWORD=""
 
-	# Sharewood indexer passkey
+	## Prowlarr
+	# Private providers
+	# Optional: Sharewood indexer passkey
 	SHAREWOOD_PASSKEY=""
 
 [media-server] # apps/media-server
 	enabled=true
 
+	## Plex
 	# Token for the Plex server. It is generated the first time, when the server is claimed.
 	PLEX_CLAIM=""
 	# Id of the machine for your Plex server. It is generated the first time, when the server is claimed.
@@ -120,10 +112,6 @@
 	PLEX_USERNAME=""
 	PLEX_EMAIL=""
 	PLEX_FRIENDLY_NAME="media-server"
-
-	# Provide any value you want that will be used as API key
-	# Generator: https://it-tools.tech/token-generator
-	API_KEY_OVERSEERR=""
 
 [nas] # apps/nas
 	enabled=true
@@ -134,6 +122,7 @@
 [reverse-proxy] # apps/reverse-proxy
 	enabled=true
 
+	## Swag
 	# Which DNS provider you are using
 	# Depending on the DNS provider, you need to add support for the correct .ini file in apps/reverse-proxy/apps/swag/dns-conf
 	# Already handled automatically: cloudflare, duckdns
@@ -144,21 +133,8 @@
     # DNS Propagation time (in second)
 	DNS_PROPAGATION_TIME=30
 
-	# The secret key used to sign and verify the JWT.
-	# Any token you want.
-	AUTHELIA_JWT_SECRET="a_very_important_secret"
-	# The encryption key that is used to encrypt sensitive information in the database. 
-	# Any token you want. Min length: 20
-	AUTHELIA_ENCRYPTION_KEY="you_must_generate_a_random_string_of_more_than_twenty_chars"
-	# The user used to authenticate to Authelia
-	AUTHELIA_USER_NAME="admin"
-	AUTHELIA_USER_EMAIL="admin@gmail.com"
-	# Password will automatically be hashed with argon2
-	AUTHELIA_USER_PASSWORD="long_password1!"
-	AUTHELIA_USER_FAMILY_PASSWORD="long_password2!"
-
-	# DDNS
-	# For cloudflare only
+	## DDNS
+	# Optional: For cloudflare only
 	# On the homepage, on the account home, on the domain line, click "copy zone ID" (clickable dots at the right of the line)
 	CLOUDFLARE_ZONE_ID=""
 
