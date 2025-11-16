@@ -168,7 +168,12 @@
 	# The secret key used to sign and verify the JWT.
 	AUTHELIA_JWT_SECRET="generate_token(64)"
 	# The encryption key that is used to encrypt sensitive information in the database. 
-	AUTHELIA_ENCRYPTION_KEY="generate_token(64)" # Min length: 20
+	AUTHELIA_ENCRYPTION_KEY="generate_token(32)" # Min length: 20
+	# OIDC secret
+	AUTHELIA_OIDC_HMAC_SECRET="generate_token(32)"
+	# OIDC JWKS key (RSA PEM)
+	# ssh-keygen -t rsa -b 4096 -N "" -C "" -m PEM
+	AUTHELIA_OIDC_JWKS_KEY="generate_rsa()"
 
 	## DDNS
 	# Optional: For cloudflare only
