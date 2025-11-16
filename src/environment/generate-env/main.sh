@@ -13,7 +13,7 @@ SCRIPT_DIR=$(get_script_dir)
 . "$SCRIPT_DIR/../lib/strip_comment.sh"
 
 # Import subfunctions
-. "$SCRIPT_DIR/fields_generator.sh"
+. "$SCRIPT_DIR/prepare_config.sh"
 . "$SCRIPT_DIR/user_parser.sh"
 . "$SCRIPT_DIR/config_parser.sh"
 . "$SCRIPT_DIR/template_parser.sh"
@@ -40,7 +40,7 @@ fi
 
 # --- 0: Generate global-config.generated.toml ---
 echo "LOG: Generating global-config.generated.toml from global-config.default.toml"
-generate_fields "$GLOBAL_CONFIG_DEFAULT_FILE" "$GLOBAL_CONFIG_GENERATED_FILE"
+generate_global_config_generated "$GLOBAL_CONFIG_DEFAULT_FILE" "$GLOBAL_CONFIG_GENERATED_FILE"
 echo "LOG: Generated global-config.generated.toml"
 
 # --- 1a: Parse global-config.generated ---
@@ -74,18 +74,20 @@ fi
 
 echo "LOG: Ensure global_config is valid >>>"
 not_implemented_found="false"
-for k in "${!global_config[@]}"; do
-	section="${k%%.*}"
-	enabled_value="${global_config[${section}.enabled]}"
-	current_value="${global_config[$k]}"
+for key in "${!global_config[@]}"; do
+	section="${key%%.*}"
+	section_enabled_key="${section}.enabled"
+	
+	section_enabled="${global_config[$section_enabled_key]}"
+	current_value="${global_config[$key]}"
 	
 	if [ -n "$DEBUG" ]; then
-		echo "DEBUG: $k = $current_value"
+		echo "DEBUG (main): $key = $current_value"
 	fi
 	
-	# Verification: flag not_implemented() for enabled sections
-	if [[ "$current_value" == "not_implemented()" && "${enabled_value,,}" == "true" ]]; then
-		echo "ERROR: Not implemented value for enabled section: $k"
+	# Verification: flag not_implemented() when the section is not explicitly disabled
+	if [[ "$current_value" == "not_implemented()" && "${section_enabled,,}" != "false" ]]; then
+		echo "ERROR: Not implemented value for enabled section: $key"
 		not_implemented_found="true"
 	fi
 done

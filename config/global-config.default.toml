@@ -35,8 +35,8 @@
 	
 	# For automation
 	PROXMOX_PACKER_PASSWORD="generate_password(12)"  # Must be longer than 8 char
-	PROXMOX_TERRAFORM_PASSWORD="generate_password(12)!"  # Must be longer than 8 char
-	PROXMOX_TEMPLATE_ROOT_PASSWORD="generate_password(12)!"
+	PROXMOX_TERRAFORM_PASSWORD="generate_password(12)"  # Must be longer than 8 char
+	PROXMOX_TEMPLATE_ROOT_PASSWORD="generate_password(12)"
 
 	# VM keyboard layout 
 	# - french/azerty: "fr fr" (default)

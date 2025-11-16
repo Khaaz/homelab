@@ -1,3 +1,8 @@
-global-config.toml
+# generated files
 global-config.generated.toml
+# generated tmp files
+global-config.generated.toml.tmp
+global-config.generated.toml.swap
+#config files
+global-config.toml
 users-config.toml
