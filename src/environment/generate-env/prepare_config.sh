@@ -40,11 +40,29 @@ key_from_line() {
 	fi
 }
 
-replace_functions_in_line() {
+replace_generate_functions() {
 	local line="$1"
-	# Replace all occurrences of known functions without altering surrounding spaces/quotes
-	line="$(echo "$line" | sed -E 's/generate_token\([0-9]+\)/computed_token/g')"
-	line="$(echo "$line" | sed -E 's/generate_password\([0-9]+\)/computed_password/g')"
+	# Replace generate_password(N) with a random password of length N
+	if [[ "$line" =~ generate_password\(([0-9]+)\) ]]; then
+		local match="${BASH_REMATCH[0]}"
+		local length="${BASH_REMATCH[1]}"
+		local generated
+		generated="$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9!@#$%^&*()_+=-{}[]<>?' | head -c "$length")"
+		line="${line/"$match"/$generated}"
+	# Replace generate_token(N) with an alphanumeric token of length N
+	elif [[ "$line" =~ generate_token\(([0-9]+)\) ]]; then
+		local match="${BASH_REMATCH[0]}"
+		local length="${BASH_REMATCH[1]}"
+		local generated
+		generated="$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c "$length")"
+		line="${line/"$match"/$generated}"
+	# Replace generate_rsa() with a PEM-encoded RSA private key (multi-line)
+	elif [[ "$line" =~ generate_rsa\(\) ]]; then
+		local match="${BASH_REMATCH[0]}"
+		local pem_content
+		pem_content="$(openssl genrsa -traditional 4096 2>/dev/null | base64 -w0)"
+		line="${line/"$match"/$pem_content}"
+	fi
 	echo "$line"
 }
 
@@ -57,7 +75,7 @@ build_new_from_input() {
 		raw_line="${raw_line%$'\r'}"
 		# Preserve line exactly, only replace function occurrences
 		local replaced_line
-		replaced_line="$(replace_functions_in_line "$raw_line")"
+		replaced_line="$(replace_generate_functions "$raw_line")"
 		printf "%s\n" "$replaced_line" >> "$file_generated_base"
 	done < "$input_file"
 }

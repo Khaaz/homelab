@@ -26,6 +26,8 @@
 	# Mandatory "admin" user password used accross apps and SSO Provider
 	ADMIN_PASSWORD="not_implemented()"
 	# Optional
+	# JSON array of user objects:
+	#   [{"name":"user","password":"password","group":"family"}, ...]
 	USERS="[]"
 
 [iac] # iac
@@ -34,9 +36,9 @@
 	PROXMOX_ADMIN_PASSWORD="not_implemented()" # Must be longer than 8 char
 	
 	# For automation
-	PROXMOX_PACKER_PASSWORD="generate_password(12)"  # Must be longer than 8 char
-	PROXMOX_TERRAFORM_PASSWORD="generate_password(12)"  # Must be longer than 8 char
-	PROXMOX_TEMPLATE_ROOT_PASSWORD="generate_password(12)"
+	PROXMOX_PACKER_PASSWORD="generate_password(20)"  # Must be longer than 8 char
+	PROXMOX_TERRAFORM_PASSWORD="generate_password(20)"  # Must be longer than 8 char
+	PROXMOX_TEMPLATE_ROOT_PASSWORD="generate_password(20)"
 
 	# VM keyboard layout 
 	# - french/azerty: "fr fr" (default)
@@ -172,7 +174,8 @@
 	# OIDC secret
 	AUTHELIA_OIDC_HMAC_SECRET="generate_token(32)"
 	# OIDC JWKS key (RSA PEM)
-	# ssh-keygen -t rsa -b 4096 -N "" -C "" -m PEM
+	# Base64 encoded RSA private key
+	# openssl genrsa -traditional 4096 2>/dev/null | base64 -w0
 	AUTHELIA_OIDC_JWKS_KEY="generate_rsa()"
 
 	## DDNS

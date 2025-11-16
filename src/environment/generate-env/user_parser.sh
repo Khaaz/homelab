@@ -3,7 +3,7 @@
 # Parses users-config.toml to extract users config (for SSO Provider and admin auth). 
 # Outputs:
 # - admin password
-# - USERS as JSON array of objects in declaration order:
+# - USERS as JSON array of user objects:
 #   [{"name":"user","password":"password","group":"family"}, ...]
 
 strip_surrounding_quotes() {
@@ -76,7 +76,7 @@ build_users_json() {
 # Main
 # Parse users-config.toml and output admin password and USERS as JSON object
 # - admin password
-# - USERS as JSON array of objects in declaration order:
+# - USERS as JSON array of user objects:
 #   [{"name":"user","password":"password","group":"family"}, ...]
 parse_users_config() {
 	local config_file="$1"

@@ -42,7 +42,7 @@ replace_placeholders() {
 }
 
 # Detect and replace function() calls in the line (password_sha512(), password_argon(), password_bcrypt())
-replace_functions() {
+replace_password_functions() {
 	local -n current_line="$1"
 
 	# password_sha512()
@@ -103,7 +103,7 @@ process_app_template() {
 		replace_placeholders "$app" line global_config_values
 
 		# Replace function() (password_*())
-		replace_functions line
+		replace_password_functions line
 
 		echo "$line" >> "$output_file"
 	done < "$input_template_file"
