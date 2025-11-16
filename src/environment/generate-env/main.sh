@@ -13,10 +13,10 @@ SCRIPT_DIR=$(get_script_dir)
 . "$SCRIPT_DIR/../lib/strip_comment.sh"
 
 # Import subfunctions
-. "$SCRIPT_DIR/prepare_config.sh"
-. "$SCRIPT_DIR/user_parser.sh"
+. "$SCRIPT_DIR/process_global_config.sh"
 . "$SCRIPT_DIR/config_parser.sh"
-. "$SCRIPT_DIR/template_parser.sh"
+. "$SCRIPT_DIR/user_parser.sh"
+. "$SCRIPT_DIR/process_app_template.sh"
 
 GLOBAL_CONFIG_FILE="${SCRIPT_DIR}/../../../config/global-config.toml"
 GLOBAL_CONFIG_DEFAULT_FILE="${SCRIPT_DIR}/../../../config/global-config.default.toml"
@@ -40,7 +40,7 @@ fi
 
 # --- 0: Generate global-config.generated.toml ---
 echo "LOG: Generating global-config.generated.toml from global-config.default.toml"
-generate_global_config_generated "$GLOBAL_CONFIG_DEFAULT_FILE" "$GLOBAL_CONFIG_GENERATED_FILE"
+process_global_config "$GLOBAL_CONFIG_DEFAULT_FILE" "$GLOBAL_CONFIG_GENERATED_FILE"
 echo "LOG: Generated global-config.generated.toml"
 
 # --- 1a: Parse global-config.generated ---

@@ -130,7 +130,7 @@ merge_new_with_old() {
 	done < "$file_generated_base"
 }
 
-generate_global_config_generated() {
+process_global_config() {
 	local input_file="$1"
 	local output_file="$2"
 

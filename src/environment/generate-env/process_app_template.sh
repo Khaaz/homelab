@@ -42,7 +42,7 @@ replace_placeholders() {
 }
 
 # Detect and replace function() calls in the line (password_sha512(), password_argon(), password_bcrypt())
-replace_password_functions() {
+replace_encoding_functions() {
 	local -n current_line="$1"
 
 	# password_sha512()
@@ -69,6 +69,13 @@ replace_password_functions() {
 
 		local hashed_password_escaped="${hashed_password//\//\\/}"
 		current_line="$(echo "$current_line" | sed "s|password_bcrypt($password_value)|$hashed_password_escaped|")"
+	elif [[ "$current_line" =~ hash_argon\(\$?\{?([^\)]*)\}?\) ]]; then
+		local value="${BASH_REMATCH[1]}"
+
+		local hashed=$("$SCRIPT_DIR/../../utils/hash_argon.sh" "$value")
+
+		local hashed_escaped="${hashed//\//\\/}"
+		current_line="$(echo "$current_line" | sed "s|hash_argon($value)|$hashed_escaped|")"
 	fi
 }
 
@@ -103,7 +110,7 @@ process_app_template() {
 		replace_placeholders "$app" line global_config_values
 
 		# Replace function() (password_*())
-		replace_password_functions line
+		replace_encoding_functions line
 
 		echo "$line" >> "$output_file"
 	done < "$input_template_file"
