@@ -43,6 +43,7 @@ authentication_backend:
 
   file:
     path: '/config/users_database.yml'
+    watch: true
     password:
       algorithm: 'argon2'
       argon2:

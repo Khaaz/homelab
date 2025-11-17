@@ -1,8 +1,8 @@
 services:
-  # Authelia - Pre-start
-  authelia-pre-start:
+  # Authelia - Pre-start [config]
+  authelia-pre-start-config:
     image: alpine:3.22
-    container_name: authelia-pre-start
+    container_name: authelia-pre-start-config
     networks:
       reverse-proxy:
         ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.32
@@ -17,8 +17,6 @@ services:
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
-      - UMASK=${UMASK:?err}
-      - TZ=${TIMEZONE:?err}
       # setup
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
@@ -32,6 +30,29 @@ services:
       - PORTAINER_OIDC_CLIENT_SECRET=${PORTAINER_OIDC_CLIENT_SECRET:?err}
       # users
       - AUTHELIA_ADMIN_PASSWORD=${AUTHELIA_ADMIN_PASSWORD:?err}
+
+  # Authelia - Pre-start [users]
+  authelia-pre-start-users:
+    image: alpine:3.22
+    container_name: authelia-pre-start-users
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.33
+    depends_on:
+      authelia-pre-start-config:
+        condition: service_completed_successfully
+    command:
+      - /bin/sh
+      - -c
+      - /_setup/bash/init_users.sh
+    volumes:
+      - ${APPS_FOLDER:?err}/authelia:/config # config
+      - ${APPS_FOLDER:?err}/authelia/_setup:/_setup # setup
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      # setup
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - USERS=${AUTHELIA_USERS:?err}
   
   # Authelia - Multi-factor authentication portal
@@ -43,15 +64,24 @@ services:
       reverse-proxy:
         ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.12
     depends_on:
-      authelia-pre-start:
+      authelia-pre-start-config:
+        condition: service_completed_successfully
+      authelia-pre-start-users:
         condition: service_completed_successfully
     ports:
       - ${PORT_UI_AUTHELIA:?err}:9091
     volumes:
       - ${APPS_FOLDER:?err}/authelia:/config # config
+      - ${APPS_FOLDER:?err}/authelia/_setup:/_setup # setup
     environment:
       - X_AUTHELIA_CONFIG_FILTERS=template
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
+    post_start:
+      - command: /_setup/bash/init_users.sh
+        user: root
+        environment:
+          - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+          - USERS=${AUTHELIA_USERS:?err}

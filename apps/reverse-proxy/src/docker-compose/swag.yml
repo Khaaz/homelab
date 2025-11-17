@@ -4,14 +4,14 @@ services:
     image: lscr.io/linuxserver/swag:5.1.0
     container_name: swag
     restart: unless-stopped
+    networks:
+      reverse-proxy:
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.11
     depends_on:
       minica:
         condition: service_completed_successfully
     cap_add:
       - NET_ADMIN
-    networks:
-      reverse-proxy:
-        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.11
     dns:
       - ${DNS_IP:?err} # Custom DNS server (DNS VM (Unbound))
       - 1.1.1.1 # Backup DNS (Cloudflare)

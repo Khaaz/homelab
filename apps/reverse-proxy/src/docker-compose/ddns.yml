@@ -5,7 +5,7 @@ services:
     container_name: ddns-updater-pre-start
     networks:
       reverse-proxy:
-        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.33
+        ipv4_address: ${REVERSE_PROXY_DOCKER_SUBNET:?err}.34
     command:
       - /bin/sh
       - -c
