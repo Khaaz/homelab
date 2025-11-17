@@ -22,6 +22,8 @@
       run_once: true
     
     ## Global config
+    # => refresh_config: config/full <=
+    # Copy the global-config.toml
     - name: Check if controller config/global-config.toml exists
       ansible.builtin.stat:
         path: "{{ controller_repo_root }}/config/global-config.toml"
@@ -29,8 +31,6 @@
       run_once: true
       register: st_controller_global_toml
     
-    # => refresh_config: config/full <=
-    # Copy the global-config.toml
     - name: Copy controller config/global-config.toml -> target/config/global-config.toml
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/global-config.toml"
@@ -42,6 +42,48 @@
       when:
         - refresh_config in ['config','full']
         - st_controller_global_toml.stat.exists
+
+    # => refresh_config: config/full <=
+    # Copy the global-config.generated.toml
+    - name: Check if controller config/global-config.generated.toml exists
+      ansible.builtin.stat:
+        path: "{{ controller_repo_root }}/config/global-config.generated.toml"
+      delegate_to: localhost
+      run_once: true
+      register: st_controller_global_generated_toml
+    
+    - name: Copy controller config/global-config.generated.toml -> target/config/global-config.generated.toml
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/config/global-config.generated.toml"
+        dest: "{{ work_dir }}/config/global-config.generated.toml"
+        owner: admin
+        group: admin
+        mode: "0644"
+        force: yes
+      when: 
+        - refresh_config in ['config','full']
+        - st_controller_global_generated_toml.stat.exists
+    
+    # => refresh_config: config/full <=
+    # Copy the users-config.toml
+    - name: Check if controller config/users-config.toml exists
+      ansible.builtin.stat:
+        path: "{{ controller_repo_root }}/config/users-config.toml"
+      delegate_to: localhost
+      run_once: true
+      register: st_controller_users_toml
+    
+    - name: Copy controller config/users-config.toml -> target/config/users-config.toml
+      ansible.builtin.copy:
+        src: "{{ controller_repo_root }}/config/users-config.toml"
+        dest: "{{ work_dir }}/config/users-config.toml"
+        owner: admin
+        group: admin
+        mode: "0644"
+        force: yes
+      when: 
+        - refresh_config in ['config','full']
+        - st_controller_users_toml.stat.exists
 
     # Generate .env.generated (generate_env script)
     - name: Check for generate_env.sh script in target
