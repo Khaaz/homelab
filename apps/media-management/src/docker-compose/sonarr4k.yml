@@ -7,7 +7,6 @@ services:
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.25
-    user: ${PUID:?err}:${PGID:?err}
     depends_on:
       prowlarr:
         condition: service_started
@@ -15,6 +14,7 @@ services:
       qbittorrent:
         condition: service_started
         restart: false
+    user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_SONARR4K:?err}:8989
     dns:

@@ -5,12 +5,12 @@ services:
     image: lscr.io/linuxserver/qbittorrent:5.1.2
     container_name: qbittorrent
     restart: unless-stopped
-    user: ${PUID:?err}:${PGID:?err}
     network_mode: service:gluetun
     depends_on:
       gluetun:
         condition: service_started
         restart: false
+    user: ${PUID:?err}:${PGID:?err}
     volumes:
       - ${APPS_FOLDER:?err}/qbittorrent:/config # config
       - ${DATA_FOLDER:?err}/torrents:/data # data

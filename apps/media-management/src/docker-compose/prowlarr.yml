@@ -7,11 +7,11 @@ services:
     networks:
       media-management:
         ipv4_address: ${MEDIA_MANAGEMENT_DOCKER_SUBNET:?err}.15
-    user: ${PUID:?err}:${PGID:?err}
     depends_on:
       flaresolverr:
         condition: service_started
         restart: false
+    user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_PROWLARR:?err}:9696
     dns:
