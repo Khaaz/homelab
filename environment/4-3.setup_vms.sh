@@ -56,6 +56,7 @@ CONFIG_CONTENT=$(cat "$CONFIG_FILE")
 # Initialize summary lists
 INSTALLED_VMS=""
 SKIPPED_VMS=""
+FAILED_VMS=""
 
 ## Check if VM is enabled in global config
 is_vm_enabled() {
@@ -94,17 +95,36 @@ is_vm_enabled() {
 ## Setup VM if enabled
 setup_vm_if_enabled() {
 	local vm_name="$1"
+	local setup_status=0
 	if is_vm_enabled "$vm_name"; then
 		echo "Setting up $vm_name (enabled in config)..."
 		$SCRIPT_DIR/4-2.setup_vm.sh --auto --skip-jump "$vm_name"
-		# Add to installed list
-		if [ -z "$INSTALLED_VMS" ]; then
-			INSTALLED_VMS="$vm_name"
+		setup_status=$?
+		if [ "$setup_status" -eq 0 ]; then
+			echo "=====SETUP====="
+			echo "INFO: Successfully set up \"$vm_name\"."
+			echo "=====SETUP====="
+			# Add to installed list
+			if [ -z "$INSTALLED_VMS" ]; then
+				INSTALLED_VMS="$vm_name"
+			else
+				INSTALLED_VMS="$INSTALLED_VMS, $vm_name"
+			fi
 		else
-			INSTALLED_VMS="$INSTALLED_VMS, $vm_name"
+			echo "=====SETUP====="
+			echo "INFO: Failed to set up \"$vm_name\"."
+			echo "=====SETUP====="
+			# Add to failed list
+			if [ -z "$FAILED_VMS" ]; then
+				FAILED_VMS="$vm_name"
+			else
+				FAILED_VMS="$FAILED_VMS, $vm_name"
+			fi
 		fi
 	else
-		echo "Skipping $vm_name (disabled in config)..."
+		echo "=====SETUP====="
+		echo "INFO: Skipping \"$vm_name\" (disabled in config)..."
+		echo "=====SETUP====="
 		# Add to skipped list
 		if [ -z "$SKIPPED_VMS" ]; then
 			SKIPPED_VMS="$vm_name"
@@ -114,7 +134,7 @@ setup_vm_if_enabled() {
 	fi
 }
 
-echo "Checking global-config.toml for enabled VMs..."
+echo "LOG: Checking global-config.toml for enabled VMs..."
 
 # Core infrastructure VMs (besides firewalls / routers) (must be set up first)
 setup_vm_if_enabled "dns"
@@ -143,13 +163,19 @@ echo "VMs setup complete!"
 echo ""
 echo "=== VM Setup Summary ==="
 if [ -n "$INSTALLED_VMS" ]; then
-	echo "Installed VMs: $INSTALLED_VMS"
+	echo "LOG: Installed VMs: $INSTALLED_VMS"
 else
-	echo "Installed VMs: none"
+	echo "LOG: Installed VMs: none"
+fi
+
+if [ -n "$FAILED_VMS" ]; then
+	echo "LOG: Failed VMs: $FAILED_VMS"
+else
+	echo "LOG: Failed VMs: none"
 fi
 
 if [ -n "$SKIPPED_VMS" ]; then
-	echo "Skipped VMs: $SKIPPED_VMS"
+	echo "LOG: Skipped VMs: $SKIPPED_VMS"
 else
-	echo "Skipped VMs: none"
+	echo "LOG: Skipped VMs: none"
 fi

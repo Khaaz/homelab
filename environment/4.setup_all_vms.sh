@@ -43,12 +43,12 @@ fi
 #
 ## Core
 #
-echo "Setting up jump VM"
+echo "LOG: Setting up jump VM"
 AUTO_ARGS=""
 if [ "$AUTO" = true ]; then
 	AUTO_ARGS="--auto"
 fi
 $SCRIPT_DIR/4-1.setup_vm_jump.sh $AUTO_ARGS
 
-echo "Setting up all other VMs"
+echo "LOG: Setting up all other VMs"
 $SCRIPT_DIR/4-3.setup_vms.sh $AUTO_ARGS
