@@ -53,7 +53,7 @@ if [ -f "$ENV_FILE" ]; then
 	set +a
 	ENV_LOADED=true
 fi
-if [ "$ENV_LOADED" = false ]; then
+if [ "$ENV_LOADED" = false ] && [ "$PLAYBOOK_NAME" != "jump/pull-config" ]; then
 	echo "Warning: No env file found: $GENERATED_ENV_FILE or $ENV_FILE"
 	exit 1
 fi

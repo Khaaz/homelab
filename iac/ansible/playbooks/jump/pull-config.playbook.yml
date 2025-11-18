@@ -23,7 +23,6 @@
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/users-config.toml"
         dest: "{{ controller_repo_root }}/config/users-config.toml.old"
-        remote_src: true
         mode: "0644"
         force: true
       delegate_to: localhost
@@ -52,7 +51,6 @@
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/global-config.toml"
         dest: "{{ controller_repo_root }}/config/global-config.toml.old"
-        remote_src: true
         mode: "0644"
         force: true
       delegate_to: localhost
@@ -81,7 +79,6 @@
       ansible.builtin.copy:
         src: "{{ controller_repo_root }}/config/global-config.generated.toml"
         dest: "{{ controller_repo_root }}/config/global-config.generated.toml.old"
-        remote_src: true
         mode: "0644"
         force: true
       delegate_to: localhost
@@ -99,41 +96,42 @@
         - pull_config_mode == 'reset' or not st_local_global_generated.stat.exists
 
     # ssh directory
-    - name: Pull ssh directory (reset / overwrite)
-      ansible.posix.synchronize:
-        src: "{{ work_dir }}/config/ssh/"
-        dest: "{{ controller_repo_root }}/config/ssh/"
-        mode: pull
-      when: pull_config_mode == 'reset'
-
-    - name: List remote ssh subdirectories
-      ansible.builtin.command:
-        cmd: "find {{ work_dir }}/config/ssh -mindepth 1 -maxdepth 1 -type d -printf '%f\n'"
-      register: remote_ssh_dirs_cmd
-      changed_when: false
-      when: pull_config_mode == 'safe'
-
-    - name: Set remote ssh subdirectories fact
-      ansible.builtin.set_fact:
-        remote_ssh_subdirs: "{{ remote_ssh_dirs_cmd.stdout_lines | reject('equalto', '') | list }}"
-      when: pull_config_mode == 'safe'
-
-    - name: Check local ssh subdirectories
+    - name: Check if target config/ssh exists
       ansible.builtin.stat:
-        path: "{{ controller_repo_root }}/config/ssh/{{ item }}"
-      delegate_to: localhost
-      loop: "{{ remote_ssh_subdirs | default([]) }}"
-      register: local_ssh_subdir_stats
-      when:
-        - pull_config_mode == 'safe'
-        - remote_ssh_subdirs | default([]) | length > 0
+        path: "{{ work_dir }}/config/ssh"
+      register: st_target_ssh
 
-    - name: Pull missing ssh subdirectories (safe)
-      ansible.posix.synchronize:
-        src: "{{ work_dir }}/config/ssh/{{ item.item }}/"
-        dest: "{{ controller_repo_root }}/config/ssh/{{ item.item }}/"
-        mode: pull
-      loop: "{{ local_ssh_subdir_stats.results | default([]) }}"
-      when:
-        - pull_config_mode == 'safe'
-        - not item.stat.exists
+    - name: Create archive of remote SSH directory
+      ansible.builtin.archive:
+        path: "{{ work_dir }}/config/ssh"
+        dest: "/tmp/ssh.tar.gz"
+      when: st_target_ssh.stat.isdir
+
+    - name: Fetch archive to controller
+      ansible.builtin.fetch:
+        src: "/tmp/ssh.tar.gz"
+        dest: "{{ controller_repo_root }}/config/ssh.tar.gz"
+        flat: yes
+      when: st_target_ssh.stat.isdir
+
+    - name: Unarchive on controller
+      ansible.builtin.unarchive:
+        src: "{{ controller_repo_root }}/config/ssh.tar.gz"
+        dest: "{{ controller_repo_root }}/config/"
+      delegate_to: localhost
+      run_once: true
+      when: st_target_ssh.stat.isdir
+
+    - name: Cleanup archive on controller
+      ansible.builtin.file:
+        path: "{{ controller_repo_root }}/config/ssh.tar.gz"
+        state: absent
+      delegate_to: localhost
+      run_once: true
+      when: st_target_ssh.stat.isdir
+
+    - name: Cleanup archive on remote
+      ansible.builtin.file:
+        path: "/tmp/ssh.tar.gz"
+        state: absent
+      when: st_target_ssh.stat.isdir
