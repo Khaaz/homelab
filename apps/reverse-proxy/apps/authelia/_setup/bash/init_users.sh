@@ -2,7 +2,6 @@
 
 set -e
 
-
 # Check if USERS environment variable is set and not empty
 if [ -z "$USERS" ] || [ "$USERS" = "[]" ]; then
 	echo "USERS environment variable is not set or empty. No users to add."
