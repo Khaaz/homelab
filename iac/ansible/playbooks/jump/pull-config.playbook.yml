@@ -8,7 +8,7 @@
     # opt - pull copy mode:
     # - option 1 "safe": copy only when the file does not exist locally
     # - option 2 "reset": always overwrite local files
-    pull_copy_mode: "{{ lookup('env','PULL_COPY_MODE') | default('reset', true) }}" # safe|reset
+    pull_config_mode: "{{ lookup('env','pull_config_mode') | default('safe', true) }}" # safe|reset
 
   tasks:
     # users-config.toml
@@ -29,7 +29,7 @@
       delegate_to: localhost
       run_once: true
       when:
-        - pull_copy_mode == 'reset'
+        - pull_config_mode == 'reset'
         - st_local_users_config.stat.exists
 
     - name: Pull users-config.toml
@@ -38,7 +38,7 @@
         dest: "{{ controller_repo_root }}/config/"
         flat: true
       when:
-        - pull_copy_mode == 'reset' or not st_local_users_config.stat.exists
+        - pull_config_mode == 'reset' or not st_local_users_config.stat.exists
 
     # global-config.toml
     - name: Check if controller config/global-config.toml exists
@@ -58,7 +58,7 @@
       delegate_to: localhost
       run_once: true
       when:
-        - pull_copy_mode == 'reset'
+        - pull_config_mode == 'reset'
         - st_local_global_config.stat.exists
 
     - name: Pull global-config.toml
@@ -67,7 +67,7 @@
         dest: "{{ controller_repo_root }}/config/"
         flat: true
       when:
-        - pull_copy_mode == 'reset' or not st_local_global_config.stat.exists
+        - pull_config_mode == 'reset' or not st_local_global_config.stat.exists
 
     # global-config.generated.toml
     - name: Check if controller config/global-config.generated.toml exists
@@ -87,7 +87,7 @@
       delegate_to: localhost
       run_once: true
       when:
-        - pull_copy_mode == 'reset'
+        - pull_config_mode == 'reset'
         - st_local_global_generated.stat.exists
 
     - name: Pull global-config.generated.toml
@@ -96,7 +96,7 @@
         dest: "{{ controller_repo_root }}/config/"
         flat: true
       when:
-        - pull_copy_mode == 'reset' or not st_local_global_generated.stat.exists
+        - pull_config_mode == 'reset' or not st_local_global_generated.stat.exists
 
     # ssh directory
     - name: Pull ssh directory (reset / overwrite)
@@ -104,19 +104,19 @@
         src: "{{ work_dir }}/config/ssh/"
         dest: "{{ controller_repo_root }}/config/ssh/"
         mode: pull
-      when: pull_copy_mode == 'reset'
+      when: pull_config_mode == 'reset'
 
     - name: List remote ssh subdirectories
       ansible.builtin.command:
         cmd: "find {{ work_dir }}/config/ssh -mindepth 1 -maxdepth 1 -type d -printf '%f\n'"
       register: remote_ssh_dirs_cmd
       changed_when: false
-      when: pull_copy_mode == 'safe'
+      when: pull_config_mode == 'safe'
 
     - name: Set remote ssh subdirectories fact
       ansible.builtin.set_fact:
         remote_ssh_subdirs: "{{ remote_ssh_dirs_cmd.stdout_lines | reject('equalto', '') | list }}"
-      when: pull_copy_mode == 'safe'
+      when: pull_config_mode == 'safe'
 
     - name: Check local ssh subdirectories
       ansible.builtin.stat:
@@ -125,7 +125,7 @@
       loop: "{{ remote_ssh_subdirs | default([]) }}"
       register: local_ssh_subdir_stats
       when:
-        - pull_copy_mode == 'safe'
+        - pull_config_mode == 'safe'
         - remote_ssh_subdirs | default([]) | length > 0
 
     - name: Pull missing ssh subdirectories (safe)
@@ -135,5 +135,5 @@
         mode: pull
       loop: "{{ local_ssh_subdir_stats.results | default([]) }}"
       when:
-        - pull_copy_mode == 'safe'
+        - pull_config_mode == 'safe'
         - not item.stat.exists
