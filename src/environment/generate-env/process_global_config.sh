@@ -48,7 +48,7 @@ replace_generate_functions() {
 		local length="${BASH_REMATCH[1]}"
 		local generated
 		# Strictly generate an any char password of exactly $length characters
-		generated="$(tr -dc 'A-Za-z0-9!@#$%^&*()_+=-{}[]<>?' </dev/urandom | head -c "$length")"
+		generated="$("$SCRIPT_DIR/../../utils/generate_password.sh" "$length")"
 		line="${line/"$match"/$generated}"
 	# Replace generate_token(N) with an alphanumeric token of length N
 	elif [[ "$line" =~ generate_token\(([0-9]+)\) ]]; then
@@ -56,7 +56,7 @@ replace_generate_functions() {
 		local length="${BASH_REMATCH[1]}"
 		local generated
 		# Strictly generate an alphanumeric token of exactly $length characters
-		generated="$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c "$length")"
+		generated="$("$SCRIPT_DIR/../../utils/generate_token.sh" "$length")"
 		line="${line/"$match"/$generated}"
 	elif [[ "$line" =~ generate_hex\(([0-9]+)\) ]]; then
 		local match="${BASH_REMATCH[0]}"
