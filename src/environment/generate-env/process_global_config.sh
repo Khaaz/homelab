@@ -47,14 +47,23 @@ replace_generate_functions() {
 		local match="${BASH_REMATCH[0]}"
 		local length="${BASH_REMATCH[1]}"
 		local generated
-		generated="$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9!@#$%^&*()_+=-{}[]<>?' | head -c "$length")"
+		# Strictly generate an any char password of exactly $length characters
+		generated="$(tr -dc 'A-Za-z0-9!@#$%^&*()_+=-{}[]<>?' </dev/urandom | head -c "$length")"
 		line="${line/"$match"/$generated}"
 	# Replace generate_token(N) with an alphanumeric token of length N
 	elif [[ "$line" =~ generate_token\(([0-9]+)\) ]]; then
 		local match="${BASH_REMATCH[0]}"
 		local length="${BASH_REMATCH[1]}"
 		local generated
-		generated="$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c "$length")"
+		# Strictly generate an alphanumeric token of exactly $length characters
+		generated="$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c "$length")"
+		line="${line/"$match"/$generated}"
+	elif [[ "$line" =~ generate_hex\(([0-9]+)\) ]]; then
+		local match="${BASH_REMATCH[0]}"
+		local length="${BASH_REMATCH[1]}"
+		local generated
+		# Strictly generate an hexadecimal token of exactly $length characters
+		generated="$(tr -dc 'a-f0-9' </dev/urandom | head -c "$length")"
 		line="${line/"$match"/$generated}"
 	# Replace generate_rsa() with a PEM-encoded RSA private key (multi-line)
 	elif [[ "$line" =~ generate_rsa\(\) ]]; then
