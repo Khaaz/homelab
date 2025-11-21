@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Install Intel media drivers for transcoding
+apk add linux-firmware-intel intel-media-driver libva-utils
+
+# Add users to video group for transcoding
+gpasswd --add admin video
+gpasswd --add app video
+
 # Create dl directories
 mkdir -p /mnt/data/media/anime
 mkdir -p /mnt/data/media/movies
