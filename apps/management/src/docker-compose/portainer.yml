@@ -7,6 +7,7 @@ services:
     networks:
       management:
         ipv4_address: ${MANAGEMENT_DOCKER_SUBNET:?err}.10
+    user: ${PUID:?err}:${PGID:?err}
     command:
       - "--admin-password"
       - "${PORTAINER_ADMIN_PASSWORD_ENCRYPTED:?err}"
