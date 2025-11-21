@@ -35,11 +35,12 @@ fi
 sh "$SCRIPT_DIR/lib/install_dependencies.sh" curl ca-certificates
 
 # Build URL: use as-is if scheme present, otherwise default to https://
+# Use 5000 port for internal traffic as it is allowed and allow to fetch CA
 base="${DOMAIN%/}"
 if [[ "$base" == *"://"* ]]; then
-  URL="${base}/ca"
+  URL="${base}:5000/ca"
 else
-  URL="https://${base}/ca"
+  URL="https://${base}:5000/ca"
 fi
 
 # Accept untrusted (self-signed) TLS with -k

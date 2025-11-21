@@ -51,9 +51,9 @@ update_settings_oauth() {
 	| jq \
 		--arg cid "portainer" \
 		--arg csec "${PORTAINER_OIDC_CLIENT_SECRET:?err}" \
-		--arg auth "https://auth.${INTERNAL_DOMAIN:?err}/api/oidc/authorization" \
-		--arg token "https://auth.${INTERNAL_DOMAIN:?err}/api/oidc/token" \
-		--arg userinfo "https://auth.${INTERNAL_DOMAIN:?err}/api/oidc/userinfo" \
+		--arg auth "https://auth.${INTERNAL_DOMAIN:?err}:5000/api/oidc/authorization" \
+		--arg token "https://auth.${INTERNAL_DOMAIN:?err}:5000/api/oidc/token" \
+		--arg userinfo "https://auth.${INTERNAL_DOMAIN:?err}:5000/api/oidc/userinfo" \
 		--arg redirect "https://portainer.${INTERNAL_DOMAIN:?err}" \
 		--arg uid "preferred_username" \
 		--arg scopes "openid email groups profile" \

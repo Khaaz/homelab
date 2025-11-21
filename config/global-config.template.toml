@@ -24,7 +24,7 @@
 	# Is overriden by the users-config.toml file if defined
 	
 	# Mandatory "admin" user password used accross apps and SSO Provider
-	ADMIN_PASSWORD="Admin_password123!"
+	ADMIN_PASSWORD="not_implemented()"
 	
 [iac] # iac
 	## Proxmox setup
