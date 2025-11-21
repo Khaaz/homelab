@@ -15,4 +15,3 @@ apk add curl jq
 
 "${SCRIPT_DIR}/setup_settings.sh"
 "${SCRIPT_DIR}/create_environment.sh"
-
