@@ -134,3 +134,20 @@ This will launch Plex and Overseerr containers and apply configuration templates
 - Check container logs with `docker logs <container_name>`
 - Review configuration files in `src/config/`
 - For network issues, verify your reverse proxy and DNS settings
+
+Notes:
+
+For transcoding (testing everything works)
+
+```
+ls -la /dev/dri
+sudo apk add eudev
+sudo udevadm info --query=all --name=/dev/dri/renderD128
+sudo udevadm info --query=all --name=/dev/dri/renderD128
+lspci -k | grep -A3 -E 'VGA|3D'
+
+cd /tmp
+wget https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4 -O test720p.mp4
+
+ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD129 -i test720p.mp4 -vf 'format=nv12,hwupload' -c:v h264_vaapi -b:v 1M -c:a aac test720p_transcoded.mp4
+```
