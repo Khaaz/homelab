@@ -30,11 +30,12 @@ services:
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
       - URL=${EXTERNAL_DOMAIN:?err}
-      - SUBDOMAINS=${SUBDOMAINS}
-      - VALIDATION=${VALIDATION:?err}
-      - PROPAGATION=${DNS_PROPAGATION_TIME:?err}
       - DNSPLUGIN=${DNS_PROVIDER}
+      - VALIDATION=${VALIDATION:?err}
+      - SUBDOMAINS=${SUBDOMAINS}
+      - EXTRA_DOMAINS=${EXTRA_DOMAINS}
       - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
+      - PROPAGATION=${DNS_PROPAGATION_TIME:?err}
     post_start:
       - command: /scripts/parse_folder.sh /_setup/templates /config
         user: root
