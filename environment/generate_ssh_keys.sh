@@ -52,7 +52,7 @@ fi
 # Execute the command
 if [ "$AUTO" = true ]; then
 	# Execute with predefined arguments for automated mode
-	$ROOT_DIR/src/environment/generate_ssh_keys.sh proxmox --root $RESET_ARGS "$@"
+	$ROOT_DIR/src/environment/generate_ssh_keys.sh proxmox --root "$@"
 	$ROOT_DIR/src/environment/generate_ssh_keys.sh vm --root $RESET_ARGS "$@"
 
 	# Generate keys for each app stack
