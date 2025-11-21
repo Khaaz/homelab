@@ -18,7 +18,7 @@ config:
       via: 10.10.2.2 # firewall-mgmt
     - network: 10.10.32.0/24 # intern
       via: 10.10.2.2 # firewall-mgmt
-  dns_servers: [1.1.1.1, 8.8.8.8]
+  dns_servers: [10.10.1.200, 1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr2 # mgmt
     ipv4: 10.10.2.11/24
