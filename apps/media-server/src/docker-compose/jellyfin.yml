@@ -9,7 +9,10 @@ services:
         ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.11
     # user: ${PUID:?err}:${PGID:?err}
     devices:
-      - /dev/dri:/dev/dri   # Accélération matérielle Intel/AMD
+      # Accélération matérielle Intel/AMD
+      # We use renderD129 (secondary device) mapped on the proxmox host machine to the passthrough
+      # renderD128 device is the primary device (virtio) which we don't want for quicksync
+      - /dev/dri/renderD129:/dev/dri/renderD128 
     ports:
       - ${PORT_UI_JELLYFIN:?err}:8096        # HTTP WebUI
       - 7359:7359/udp                        # Service Discovery
