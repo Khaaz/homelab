@@ -24,13 +24,29 @@ resource "proxmox_virtual_environment_file" "vendordata" {
           content     = base64encode(var.nft_rules_config)
         }] : [],
         length(coalesce(var.vm_cfg.config.routes, [])) > 0 ? [{
-          path        = "/etc/local.d/routes.start"
+          path        = "/etc/init.d/routes"
           permissions = "0755"
           encoding    = "b64"
           content     = base64encode(join("\n", concat(
-            ["#!/bin/sh", "set -eu"],
-            [for route in coalesce(var.vm_cfg.config.routes, []) : "ip route replace ${route.network} via ${route.via}"],
-            [""]
+            [
+              "#!/sbin/openrc-run",
+              "",
+              "description=\"Static routes\"",
+              "command=\"/bin/true\"",
+              "",
+              "depend() {",
+              "  need net",
+              "}",
+              "",
+              "start() {",
+              "  ebegin \"Applying static routes\"",
+            ],
+            [for route in coalesce(var.vm_cfg.config.routes, []) : "  /sbin/ip route replace ${route.network} via ${route.via}"],
+            [
+              "  eend $?",
+              "}",
+              ""
+            ]
           )))
         }] : [],
         var.init_script != null ? [{
@@ -54,18 +70,18 @@ resource "proxmox_virtual_environment_file" "vendordata" {
           "[ rc-update, add, nftables, boot ]",
           "[ rc-service, nftables, start ]"
         ] : [],
-        # Persist custom routes via OpenRC local.d
+        # Persist custom routes via dedicated OpenRC service
         length(coalesce(var.vm_cfg.config.routes, [])) > 0 ? [
-          "[ /etc/local.d/routes.start ]",
-          "[ rc-update, add, local, default ]"
+          "[ rc-update, add, routes, boot ]",
+          "[ rc-service, routes, start ]"
         ] : [],
         try(var.vm_cfg.nas, null) != null ? [
           # Enable NFS client services
-          "[ rc-update, add, nfsmount, boot ]",
+          "[ rc-update, add, nfsmount, default ]",
           # Create NFS mount point
           "[ mkdir, -p, ${var.vm_cfg.nas.mount_path} ]",
           # Add NFSv4 mount to fstab (path should be relative to NFSv4 root)
-          "echo \"${var.vm_cfg.nas.ip}:${var.vm_cfg.nas.nfs_export} ${var.vm_cfg.nas.mount_path} nfs4 _netdev,vers=4.2 0 0\" >> /etc/fstab",
+          "echo \"${var.vm_cfg.nas.ip}:${var.vm_cfg.nas.nfs_export} ${var.vm_cfg.nas.mount_path} nfs4 _netdev,vers=4.2,timeo=50,retrans=2,nofail 0 0\" >> /etc/fstab",
           # Mount the NFS share
           "[ mount, -a ]"
         ] : [],
