@@ -94,6 +94,11 @@ else
 	LOCAL_ENV_ARG="$(add_env_file "$LOCAL_ENV_FILE") $(add_env_file "$LOCAL_ENV_OVERRIDE_FILE")"
 fi
 
+# Override jellyfin on proxmox to enable transcoding (intel quick sync)
+if [ "$LOCAL_FLAG" = "false" ]; then
+	COMPOSE_FILE="$COMPOSE_FILE -f $SCRIPT_DIR/src/docker-compose/jellyfin.yml.override"
+fi
+
 docker compose $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
