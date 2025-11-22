@@ -25,7 +25,5 @@ users:
       - ${automation_pubkey}
   
   - name: app
-    groups: []
-    sudo: []
     shell: /bin/sh
     lock_passwd: true
