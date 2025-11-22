@@ -241,6 +241,11 @@
         path: "/root/.init"
       register: init_file
 
+    - name: First initialization - Wait 1 minute before restart
+      ansible.builtin.pause:
+        seconds: 60
+      when: not init_file.stat.exists
+
     - name: First initialization - Restart app (compose down)
       ansible.builtin.command:
         cmd: "./compose.sh --proxmox down --remove-orphans"
