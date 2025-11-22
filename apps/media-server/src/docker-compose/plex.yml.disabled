@@ -7,12 +7,9 @@ services:
     networks:
       media-server:
         ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.10
-        # Add Configurations for GPU Hardware Rendering Here:
-        #    devices:
-        #      - /dev/dri/renderD128:/dev/dri/renderD128
-        #      - /dev/dri/card0:/dev/dri/card0
-        #      - /dev/dri:/dev/dri
-        # Add this option to your run command if you plan on using Quicksync hardware acceleration - see Application Setup section.
+    # For transcoding (intel quick sync)
+    # devices:
+    #   - /dev/dri/renderD129:/dev/dri/renderD128
     user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_PLEX:?err}:32400
