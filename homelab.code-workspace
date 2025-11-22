@@ -33,7 +33,9 @@
 			"networking.env.*": "env",
 			"packer.env.*": "env",
 			"terraform.env.*": "env",
-			"local.env.*": "env"
+			"local.env.*": "env",
+			"*.yml.override": "yaml",
+			"*.yml.disabled": "yaml"
 		},
 		
 		"task.allowAutomaticTasks": "on"
