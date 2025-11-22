@@ -10,7 +10,7 @@ resource "proxmox_virtual_environment_file" "networkdata" {
     data = templatefile("${path.root}/cloud-init/network-data.tpl.yml", {
       nics  = local.nics
       vlans = local.vlans
-      dns   = var.vm_cfg.config.dns_servers
+      dns   = local.nameservers
     })
   }
 }

@@ -11,6 +11,7 @@ resource "proxmox_virtual_environment_file" "userdata" {
       hostname          = var.vm_name
       pwd_admin         = module.rand_20_admin.value
       pwd_automation    = module.rand_20_automation.value
+      nameservers       = local.nameservers
     })
   }
 }

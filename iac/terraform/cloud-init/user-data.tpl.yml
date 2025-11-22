@@ -27,3 +27,9 @@ users:
   - name: app
     shell: /bin/sh
     lock_passwd: true
+
+resolv_conf:
+  nameservers:
+  %{~ for s in nameservers ~}
+    - ${s}
+  %{~ endfor ~}
