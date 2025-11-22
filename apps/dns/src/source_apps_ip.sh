@@ -10,8 +10,8 @@ get_script_dir() {
 		echo "$script_dir"
 	fi
 }
-SCRIPT_DIR=$(get_script_dir)
-ROOT_DIR="$SCRIPT_DIR/../../.."
+LCL_SCRIPT_DIR=$(get_script_dir)
+LCL_ROOT_DIR="$LCL_SCRIPT_DIR/../../.."
 
 ## Usage
 usage() {
@@ -24,11 +24,11 @@ usage() {
 }
 
 ## Input verification
-LOCAL_FLAG="false"
+LCL_LOCAL_FLAG="false"
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--local) 
-			LOCAL_FLAG="true"
+			LCL_LOCAL_FLAG="true"
 			shift
 			;;
 		--help) 
@@ -44,9 +44,9 @@ done
 ## Core
 #
 # Construct local argument dynamically
-LOCAL_ARG=""
-if [ "$LOCAL_FLAG" = "true" ]; then
-	LOCAL_ARG="--local"
+LCL_LOCAL_ARG=""
+if [ "$LCL_LOCAL_FLAG" = "true" ]; then
+	LCL_LOCAL_ARG="--local"
 fi
 
 # Source the source_app_ip.sh script for each app with dynamic local argument
@@ -55,7 +55,7 @@ fi
 source_app_ip() {
 	local env_var_name=$(echo "$1" | tr '[:lower:]' '[:upper:]' | tr '-' '_')_IP
 
-	local ip=$("$ROOT_DIR/src/app-bootstrap/get_app_ip.sh" --for "$1" --on "$2" $LOCAL_ARG)
+	local ip=$("$LCL_ROOT_DIR/src/app-bootstrap/get_app_ip.sh" --for "$1" --on "$2" $LCL_LOCAL_ARG)
 	export "$env_var_name"="$ip"
 	if [ "$VERBOSE" = "true" ]; then
 		echo "$env_var_name=$ip"
