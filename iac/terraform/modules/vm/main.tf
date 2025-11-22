@@ -121,7 +121,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
     interface    = "ide2"
 
     dns {
-      servers = try(var.vm_cfg.dns_servers, ["1.1.1.1", "8.8.8.8"])
+      servers = try(var.vm_cfg.config.dns_servers, ["1.1.1.1", "8.8.8.8"])
     }
 
     # One ip_config per NIC, same order

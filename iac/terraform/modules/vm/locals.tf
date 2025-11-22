@@ -1,6 +1,6 @@
 locals {
-  raw_nics        = tolist(try(var.vm_cfg.nics, []))
-  nameservers = tolist(try(var.vm_cfg.dns_servers, ["1.1.1.1", "8.8.8.8"]))
+  raw_nics    = tolist(try(var.vm_cfg.nics, []))
+  nameservers = tolist(try(var.vm_cfg.config.dns_servers, ["1.1.1.1", "8.8.8.8"]))
 
   # We only want to use cloud-init network file on complex setup (trunks). We can keep it simple otherwise
   use_ci_network_file = anytrue([
