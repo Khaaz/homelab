@@ -14,7 +14,7 @@ services:
     ports:
       - ${PORT_UI_PLEX:?err}:32400
       - 1900:1900/udp
-      - 5353:5353/udp
+      - 5353:5353/udp # switch to another port as 5353/udp is already used (spotify, chrome...) and docker doesn't allow multicast
       - 8324:8324
       - 32410:32410/udp
       - 32412:32412/udp

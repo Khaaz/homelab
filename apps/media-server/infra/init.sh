@@ -15,6 +15,10 @@ mkdir -p /mnt/data/media/unsorted
 
 mkdir -p /mnt/data/transcode
 
-# Change permissions
 chown -R nobody:nogroup /mnt/data
 chmod -R 2777 /mnt/data
+
+# Create apps data
+mkdir -p /mnt/apps-data/yamtrack
+chown -R nobody:nogroup /mnt/apps-data
+chmod -R 2777 /mnt/apps-data
