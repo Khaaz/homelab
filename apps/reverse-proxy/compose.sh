@@ -61,6 +61,8 @@ NETWORKING_ENV_FILE="$SCRIPT_DIR/config/networking.env.default"
 NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/config/networking.env"
 
 # apps
+DNS_NETWORKING_ENV_FILE="$SCRIPT_DIR/../dns/config/networking.env.default"
+DNS_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../dns/config/networking.env"
 CLOUD_NETWORKING_ENV_FILE="$SCRIPT_DIR/../cloud/config/networking.env.default"
 CLOUD_NETWORKING_OVERRIDE_ENV_FILE="$SCRIPT_DIR/../cloud/config/networking.env"
 HA_NETWORKING_ENV_FILE="$SCRIPT_DIR/../home-automation/config/networking.env.default"
@@ -110,13 +112,13 @@ LOCAL_ENV_ARG=""
 if [ "$LOCAL_FLAG" = "false" ]; then
 	PROXMOX_ENV_ARG=$(add_env_file "$PROXMOX_ENV_FILE")
 else
-	echo $LOCAL_ENV_OVERRIDE_FILE
 	LOCAL_ENV_ARG="$(add_env_file "$LOCAL_ENV_FILE") $(add_env_file "$LOCAL_ENV_OVERRIDE_FILE")"
 fi
 
 docker compose $COMPOSE_FILE \
 	--env-file $DEFAULT_ENV_FILE \
 	--env-file $NETWORKING_ENV_FILE $(add_env_file "$NETWORKING_OVERRIDE_ENV_FILE") \
+	--env-file $DNS_NETWORKING_ENV_FILE $(add_env_file "$DNS_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $CLOUD_NETWORKING_ENV_FILE $(add_env_file "$CLOUD_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $HA_NETWORKING_ENV_FILE $(add_env_file "$HA_NETWORKING_OVERRIDE_ENV_FILE") \
 	--env-file $IM_NETWORKING_ENV_FILE $(add_env_file "$IM_NETWORKING_OVERRIDE_ENV_FILE") \

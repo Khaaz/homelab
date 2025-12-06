@@ -51,6 +51,8 @@ services:
           - HOST_LAN_IP=${HOST_LAN_IP:?err}
           # - RP
           - PORT_UI_AUTHELIA=${PORT_UI_AUTHELIA:?err}
+          # - DNS
+          - PORT_UI_ADGUARD=${PORT_UI_ADGUARD:?err}
           # - HA
           - PORT_UI_HOME_ASSISTANT=${PORT_UI_HOME_ASSISTANT:?err}
           # - IM
