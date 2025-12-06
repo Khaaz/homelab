@@ -3,8 +3,14 @@
   hosts: homelab
   become: true
   gather_facts: false
+  vars:
+    # Treat unreachable (because the box is going down) as non-fatal
+    ansible_ignore_unreachable: true
   tasks:
     - name: Initiate clean shutdown
-      ansible.builtin.command: shutdown -h now
+      ansible.builtin.command: shutdown -h +1 "Ansible initiated shutdown"
+      async: 0
+      poll: 0
       changed_when: true
+      ignore_errors: true
 
