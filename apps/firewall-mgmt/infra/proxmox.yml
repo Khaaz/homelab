@@ -25,4 +25,6 @@ nics:
         ipv4: 10.10.31.9/24
       - id: 32 # intern
         ipv4: 10.10.32.9/24
+  - bridge: vmbr4 # vpn
+    ipv4: 10.10.4.9/24
 nas: null

@@ -18,6 +18,10 @@ config:
       via: 10.10.2.2 # firewall-mgmt
     - network: 10.10.32.0/24 # intern
       via: 10.10.2.2 # firewall-mgmt
+    - network: 10.10.33.0/24 # jail
+      via: 10.10.2.2 # firewall-mgmt
+    - network: 10.10.4.0/24 # bpn
+      via: 10.10.2.2 # firewall-mgmt
   dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
   - bridge: vmbr2 # mgmt

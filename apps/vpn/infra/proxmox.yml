@@ -12,7 +12,7 @@ config:
   routes: []
   dns_servers: [1.1.1.1, 8.8.8.8]
 nics:
-  - bridge: vmbr2 # mgmt
-    ipv4: 10.10.2.20/24
-    gateway: 10.10.2.1
+  - bridge: vmbr4 # vpn
+    ipv4: 10.10.4.10/24
+    gateway: 10.10.4.1
 nas: null
