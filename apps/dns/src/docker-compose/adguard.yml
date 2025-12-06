@@ -1,0 +1,37 @@
+services:
+  adguard-pre-start:
+    image: alpine:3.22
+    container_name: adguard-pre-start
+    networks:
+      dns:
+        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.22
+    command:
+      - /bin/sh
+      - -c
+      - /scripts/parse_file.sh /_setup/templates/conf.yml /opt/adguardhome/conf/AdGuardHome.yaml
+    volumes:
+      - ${APPS_FOLDER:?err}/adguard/conf:/opt/adguardhome/conf # config
+      - ${APPS_FOLDER:?err}/adguard/_setup:/_setup # setup
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      # - ADGUARD_ADMIN_PASSWORD_ENCRYPTED=${ADGUARD_ADMIN_PASSWORD_ENCRYPTED:?err}
+      - UNBOUND_IP=${DNS_DOCKER_SUBNET:?err}.11
+  
+  # Adguard - DNS server with ad filtering
+  adguard:
+    image: adguard/adguardhome:latest
+    container_name: adguard
+    restart: unless-stopped
+    networks:
+      dns:
+        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.12
+    depends_on:
+      adguard-pre-start:
+        condition: service_completed_successfully
+    ports:
+      - ${PORT_DNS_ADGUARD:?err}:53/tcp
+      - ${PORT_DNS_ADGUARD:?err}:53/udp
+      - ${PORT_UI_ADGUARD:?err}:80/tcp
+    volumes:
+      - ${APPS_FOLDER:?err}/adguard/work:/opt/adguardhome/work # config
+      - ${APPS_FOLDER:?err}/adguard/conf:/opt/adguardhome/conf

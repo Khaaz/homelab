@@ -4,7 +4,7 @@ services:
     container_name: unbound-pre-start
     networks:
       dns:
-        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.30
+        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.21
     command:
       - /bin/sh
       - -c
@@ -44,12 +44,12 @@ services:
     restart: unless-stopped
     networks:
       dns:
-        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.10
+        ipv4_address: ${DNS_DOCKER_SUBNET:?err}.11
     depends_on:
       unbound-pre-start:
         condition: service_completed_successfully
     ports:
-      - 53:53/tcp
-      - 53:53/udp
+      - ${PORT_DNS_UNBOUND:?err}:53/tcp
+      - ${PORT_DNS_UNBOUND:?err}:53/udp
     volumes:
       - ${APPS_FOLDER:?err}/unbound:/opt/unbound/etc/unbound # config
