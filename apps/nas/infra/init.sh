@@ -84,8 +84,13 @@ fi
 # Mount
 mountpoint -q "$MOUNT_POINT" || mount "$MOUNT_POINT"
 
+# private share for app data (data to keep overall)
+create_export_dir "$MOUNT_POINT/apps"
+# semi private share for medias (mm, ms)
 create_export_dir "$MOUNT_POINT/media"
+# private share for cloud (cld)
 create_export_dir "$MOUNT_POINT/cloud"
+# public share for easy LAN file sharing 
 create_export_dir "$MOUNT_POINT/share"
 
 ## CONFIGURE NFS
@@ -104,6 +109,7 @@ EOF
 cat > /etc/exports <<EOF
 # NFSv4 exports for NAS
 $MOUNT_POINT 10.10.31.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=3) 10.10.32.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 192.168.1.0/24(rw,fsid=0,crossmnt,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533)
+$MOUNT_POINT/apps 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533)
 $MOUNT_POINT/media 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533)
 $MOUNT_POINT/cloud 10.10.31.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533) 10.10.32.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65533,anongid=65533)
 $MOUNT_POINT/share 192.168.1.0/24(rw,sync,no_subtree_check,all_squash,anonuid=65534,anongid=65533)
