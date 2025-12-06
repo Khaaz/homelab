@@ -14,12 +14,12 @@ services:
       - ${APPS_FOLDER:?err}/adguard/_setup:/_setup # setup
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
-      # - ADGUARD_ADMIN_PASSWORD_ENCRYPTED=${ADGUARD_ADMIN_PASSWORD_ENCRYPTED:?err}
       - UNBOUND_IP=${DNS_DOCKER_SUBNET:?err}.11
+      # - ADGUARD_ADMIN_PASSWORD_ENCRYPTED=${ADGUARD_ADMIN_PASSWORD_ENCRYPTED:?err} # bcrypt encrypted
   
   # Adguard - DNS server with ad filtering
   adguard:
-    image: adguard/adguardhome:latest
+    image: adguard/adguardhome:v0.107.70
     container_name: adguard
     restart: unless-stopped
     networks:
