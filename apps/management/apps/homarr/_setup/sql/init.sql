@@ -20,7 +20,7 @@ INSERT INTO "user" (
     home_board_id, mobile_home_board_id, default_search_engine_id,
     open_search_in_new_tab, color_scheme, first_day_of_week, ping_icons_enabled
 ) VALUES (
-    '3e757717-4897-4869-8744-749eed57b3f8', 'admin', 'admin@${INTERNAL_DOMAIN}', NULL,
+    '3e757717-4897-4869-8744-749eed57b3f8', 'admin_default', 'admin_default@${INTERNAL_DOMAIN}', NULL,
     NULL, NULL, NULL, 'oidc', NULL, NULL, NULL, 1, 'dark', 1, 0
 );
 

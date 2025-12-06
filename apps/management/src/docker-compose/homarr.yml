@@ -1,5 +1,7 @@
 services:
   # Homarr - Application Dashboard
+  # default user (no oidc) is admin_default@<internal_domain> with the default admin password
+  # OIDC users will automatically be mapped to admin group (most notably admin user)
   homarr:
     image: ghcr.io/homarr-labs/homarr:v1.43.2
     container_name: homarr
