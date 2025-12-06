@@ -167,11 +167,23 @@ iface vmbr2 inet manual
 
 # vmbr3 = LAN SRV (10.10.3.0/24) - internal L2 bridge vlan-aware [services]
 # bridge-vids: list VLAN IDs to use inside SRV
+# 30: DMZ
+# 31: EXTERN
+# 32: INTERN
+# 33: JAIL
 auto vmbr3
 iface vmbr3 inet manual
     bridge_ports none
     bridge_stp off
     bridge_fd 0
     bridge-vlan-aware yes
-    bridge-vids 30-32
-    comment "LAN SRV - VLANs (DMZ, INTERN, EXTERN)"
+    bridge-vids 30-33
+    comment "LAN SRV - VLANs (DMZ, INTERN, EXTERN, JAIL)"
+
+# vmbr4 = LAN VPN (10.10.4.0/24) - internal L2 bridge [vpn]
+auto vmbr4
+iface vmbr4 inet manual
+    bridge_ports none
+    bridge_stp off
+    bridge_fd 0
+    comment "LAN VPN"
