@@ -69,11 +69,11 @@ variable "vm_cfg" {
       })))
     }))
     # NAS configuration (optional) - for VMs that need NFS mounts
-    nas = optional(object({
+    nas = optional(list(object({
       ip         = string              # IP address of the NAS VM
       mount_path = string              # Local mount point (e.g., "/mnt/nas")
       nfs_export = string              # NFS export path on NAS (e.g., "/data")
-    }))
+    })))
   })
   description = "Per-VM configuration parsed from YAML, containing VM-specific settings like CPU, memory, disk, and network configuration"
 }

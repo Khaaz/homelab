@@ -20,6 +20,6 @@ nics:
     gateway: 10.10.32.1
 # Mount NAS /media share
 nas:
-  ip: "10.10.32.30"
-  mount_path: "/mnt/data"
-  nfs_export: "/media"
+  - ip: "10.10.32.30"
+    mount_path: "/mnt/data"
+    nfs_export: "/media"

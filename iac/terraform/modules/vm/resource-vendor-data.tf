@@ -11,7 +11,7 @@ resource "proxmox_virtual_environment_file" "vendordata" {
           "docker",
           "docker-cli-compose"
         ] : [],
-        try(var.vm_cfg.nas, null) != null ? [
+        length(coalesce(var.vm_cfg.nas, [])) > 0 ? [
           "nfs-utils",
           "nfs-utils-openrc"
         ] : []
@@ -75,16 +75,23 @@ resource "proxmox_virtual_environment_file" "vendordata" {
           "[ rc-update, add, routes, boot ]",
           "[ rc-service, routes, start ]"
         ] : [],
-        try(var.vm_cfg.nas, null) != null ? [
+        length(coalesce(var.vm_cfg.nas, [])) > 0 ? flatten([
           # Enable NFS client services
-          "[ rc-update, add, nfsmount, default ]",
-          # Create NFS mount point
-          "[ mkdir, -p, ${var.vm_cfg.nas.mount_path} ]",
-          # Add NFSv4 mount to fstab (path should be relative to NFSv4 root)
-          "echo \"${var.vm_cfg.nas.ip}:${var.vm_cfg.nas.nfs_export} ${var.vm_cfg.nas.mount_path} nfs4 _netdev,vers=4.2,timeo=50,retrans=2,nofail 0 0\" >> /etc/fstab",
-          # Mount the NFS share
-          "[ mount, -a ]"
-        ] : [],
+          [
+            "[ rc-update, add, nfsmount, default ]"
+          ],
+          # Create NFS mount point and fstab entry for each share
+          [
+            for share in coalesce(var.vm_cfg.nas, []) : [
+              "[ mkdir, -p, ${share.mount_path} ]",
+              "echo \"${share.ip}:${share.nfs_export} ${share.mount_path} nfs4 _netdev,vers=4.2,timeo=50,retrans=2,nofail 0 0\" >> /etc/fstab"
+            ]
+          ],
+          # Mount the NFS shares
+          [
+            "[ mount, -a ]"
+          ]
+        ]) : [],
         var.init_script != null ? [
           "[ /root/init_script.sh ]",
           "[ rm, /root/init_script.sh ]"

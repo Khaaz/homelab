@@ -67,11 +67,11 @@ variable "tier_vms" {
       })))
     }))
     # NAS configuration (optional) - for VMs that need NFS mounts
-    nas = optional(object({
+    nas = optional(list(object({
       ip         = string              # IP address of the NAS VM
       mount_path = string              # Local mount point (e.g., "/mnt/nas")
       nfs_export = string              # NFS export path on NAS (e.g., "/data")
-    }))
+    })))
   }))
   description = "Map of VMs config (vm name => vm config) for this tier"
 }
