@@ -17,6 +17,7 @@ services:
       # setup
       - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
       - HOST_LAN_IP=${HOST_LAN_IP:?err}
+      - ADGUARD_IP=${DNS_DOCKER_SUBNET:?err}.12
       - CLD_IP=${CLOUD_IP:?err}
       - DNS_IP=${DNS_IP:?err}
       - FW_GW_IP=${FIREWALL_GW_IP:?err}
