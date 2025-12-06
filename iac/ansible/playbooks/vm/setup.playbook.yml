@@ -3,7 +3,7 @@
   hosts: all
   become: true
   vars:
-    git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
+    git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
 
     clone_dir: "/tmp/app-deploy-{{ app_name }}"
     work_dir: "/home/app/homelab"
