@@ -72,16 +72,9 @@ services:
       - ${PORT_UI_AUTHELIA:?err}:9091
     volumes:
       - ${APPS_FOLDER:?err}/authelia:/config # config
-      - ${APPS_FOLDER:?err}/authelia/_setup:/_setup # setup
     environment:
       - X_AUTHELIA_CONFIG_FILTERS=template
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - UMASK=${UMASK:?err}
       - TZ=${TIMEZONE:?err}
-    post_start:
-      - command: /_setup/bash/init_users.sh
-        user: root
-        environment:
-          - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
-          - USERS=${AUTHELIA_USERS:?err}
