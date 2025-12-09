@@ -103,15 +103,18 @@
 [media-server] # apps/media-server
 	enabled=true
 
+	MEDIA_SERVER_NAME="media-server"
+	
 	## Plex
 	# Token for the Plex server. It is generated the first time, when the server is claimed.
-	PLEX_CLAIM=""
+	# PLEX_CLAIM=""
 	# Id of the machine for your Plex server. It is generated the first time, when the server is claimed.
-	PLEX_MACHINE_IDENTIFIER=""
+	# PLEX_MACHINE_IDENTIFIER=""
 	# Username and Email for the account linked with the Plex server.
-	PLEX_USERNAME=""
-	PLEX_EMAIL=""
-	PLEX_FRIENDLY_NAME="media-server"
+	# PLEX_USERNAME=""
+	# PLEX_EMAIL=""
+	
+	## Jellyfin
 
 [nas] # apps/nas
 	enabled=true

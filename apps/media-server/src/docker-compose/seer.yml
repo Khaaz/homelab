@@ -27,23 +27,22 @@ services:
       - TZ=${TIMEZONE:?err}
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
       - TP_THEME=${TP_THEME:?err}
-      # setup
-      - API_KEY_SEERR=${API_KEY_SEERR:?err}
-      - DOCKER_SUBNET=${MEDIA_SERVER_DOCKER_SUBNET:?err}
-      - MM_HOST_IP=${MEDIA_MANAGEMENT_IP:?err}
-      - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
-      - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
-      - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
-      - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
-      - API_KEY_RADARR=${API_KEY_RADARR:?err}
-      - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
-      - API_KEY_SONARR=${API_KEY_SONARR:?err}
-      - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
-      - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
-      - WEBHOOK_SERRR_DISCORD=${WEBHOOK_SERRR_DISCORD} # optional
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/settings.json /app/config/settings.json
         user: root
         environment:
           - PUID=${PUID:?err}
           - PGID=${PGID:?err}
+          - API_KEY_SEERR=${API_KEY_SEERR:?err}
+          - DOCKER_SUBNET=${MEDIA_SERVER_DOCKER_SUBNET:?err}
+          - MM_HOST_IP=${MEDIA_MANAGEMENT_IP:?err}
+          - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
+          - PORT_UI_RADARR4K=${PORT_UI_RADARR4K:?err}
+          - API_KEY_RADARR4K=${API_KEY_RADARR4K:?err}
+          - PORT_UI_RADARR=${PORT_UI_RADARR:?err}
+          - API_KEY_RADARR=${API_KEY_RADARR:?err}
+          - PORT_UI_SONARR=${PORT_UI_SONARR:?err}
+          - API_KEY_SONARR=${API_KEY_SONARR:?err}
+          - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
+          - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
+          - WEBHOOK_SERRR_DISCORD=${WEBHOOK_SERRR_DISCORD} # optional

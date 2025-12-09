@@ -13,6 +13,8 @@ services:
       - ${APPS_FOLDER:?err}/jellyfin/config:/config # config
       - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup # setup     
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+    environment:
+      - MEDIA_SERVER_NAME=${MEDIA_SERVER_NAME:?err}
       
   # Jellyfin - Media Server
   jellyfin:
