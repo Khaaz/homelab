@@ -1,12 +1,30 @@
 services:
-  # Jellyfin - Alternative Media Server
+  jellyfin-pre-start:
+    image: alpine:3.22
+    container_name: jellyfin-pre-start
+    networks:
+      media-server:
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.41
+    command:
+      - /bin/sh
+      - -c
+      - /scripts/parse_file.sh /_setup/templates/system.xml /config/system.xml true
+    volumes:
+      - ${APPS_FOLDER:?err}/jellyfin/config:/config # config
+      - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup # setup     
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+      
+  # Jellyfin - Media Server
   jellyfin:
-    image: lscr.io/linuxserver/jellyfin:10.11.0
+    image: lscr.io/linuxserver/jellyfin:10.11.4
     container_name: jellyfin
     restart: unless-stopped
     networks:
       media-server:
         ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.11
+    depends_on:
+      jellyfin-pre-start:
+        condition: service_completed_successfully
     # user: ${PUID:?err}:${PGID:?err}
     # devices is defined in the jellyfin.override file that is included in proxmox only
     # devices:
@@ -15,11 +33,12 @@ services:
       - ${PORT_UI_JELLYFIN:?err}:8096        # HTTP WebUI
       - 7359:7359/udp                        # Service Discovery
     volumes:
-      - ${APPS_FOLDER:?err}/jellyfin/config:/config
-      - ${DATA_FOLDER:?err}/media:/data/media
-      - ${DATA_FOLDER:?err}/transcode:/transcode
-      - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup        
-      - ${SCRIPTS_FOLDER:?err}:/scripts                    
+      - ${APPS_FOLDER:?err}/jellyfin/config:/config # config
+      - ${APPS_FOLDER:?err}/jellyfin/workdir:/workdir # workdir
+      - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup # setup     
+      - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
+      - ${DATA_FOLDER:?err}/media:/data/media # data (media)
+      - ${DATA_FOLDER:?err}/transcode:/transcode # data (transcode)
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
@@ -27,10 +46,12 @@ services:
       - TZ=${TIMEZONE:?err}
       - JELLYFIN_CONFIG_DIR=/config
       - JELLYFIN_DATA_DIR=/config/data
-      - JELLYFIN_CACHE_DIR=/config/cache
-      - JELLYFIN_LOG_DIR=/config/log
+      - JELLYFIN_CACHE_DIR=/workdir/cache
+      - JELLYFIN_LOG_DIR=/workdir/log
       # setup
       - JELLYFIN_PUBLISHED_SERVER_URL=${EXTERNAL_DOMAIN:?err}
     post_start:
-      - command: /_setup/bash/add-repo.sh
+      - command: /_setup/bash/init.sh
         user: root
+        environment:
+          - JELLYFIN_ADMIN_PASSWORD=${JELLYFIN_ADMIN_PASSWORD:?err}

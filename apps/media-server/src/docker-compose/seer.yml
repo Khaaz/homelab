@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     networks:
       media-server:
-        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.20
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.21
     init: true
     user: ${PUID:?err}:${PGID:?err}
     ports:
@@ -28,7 +28,7 @@ services:
       - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:readarr
       - TP_THEME=${TP_THEME:?err}
       # setup
-      - API_KEY_OVERSEERR=${API_KEY_OVERSEERR:?err}
+      - API_KEY_SEERR=${API_KEY_SEERR:?err}
       - DOCKER_SUBNET=${MEDIA_SERVER_DOCKER_SUBNET:?err}
       - MM_HOST_IP=${MEDIA_MANAGEMENT_IP:?err}
       - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
@@ -40,7 +40,7 @@ services:
       - API_KEY_SONARR=${API_KEY_SONARR:?err}
       - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
       - API_KEY_SONARR4K=${API_KEY_SONARR4K:?err}
-      - WEBHOOK_OVERSERRR_DISCORD=${WEBHOOK_OVERSERRR_DISCORD} # optional
+      - WEBHOOK_SERRR_DISCORD=${WEBHOOK_SERRR_DISCORD} # optional
     post_start:
       - command: /scripts/parse_file.sh /_setup/templates/settings.json /app/config/settings.json
         user: root

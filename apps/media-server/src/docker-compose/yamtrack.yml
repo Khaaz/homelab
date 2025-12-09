@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     networks:
       media-server:
-        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.21
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.22
     depends_on:
       - yamtrack-redis
     ports:
@@ -26,6 +26,6 @@ services:
     restart: unless-stopped
     networks:
       media-server:
-        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.31
+        ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.32
     volumes:
       - ${APPS_FOLDER:?err}/yamtrack/redis:/data

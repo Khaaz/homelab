@@ -1,13 +1,14 @@
 !/_setup/**
 
-# keep media subfolders
+# media subfolders and definitions
 !/config/data/root/
 !/config/data/root/**
-!/config/data/plugins/**
 
-# keep "neutral" config files
+# plugins configuration
+!/config/data/plugins/configurations/**
+
+# general config files
 !/config/encoding.xml
 !/config/logging.default.json
-!/config/system.xml
 !/config/network.xml
 !/config/branding.xml

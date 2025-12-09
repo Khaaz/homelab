@@ -1,5 +1,5 @@
 services:
-  # Jellyfin - Alternative Media Server
+  # Jellyfin - Media Server
   # Override Jellyfin on proxmox only to enable transcoding (intel quick sync)
   jellyfin:
     devices:
