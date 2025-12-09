@@ -14,21 +14,27 @@ SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
 usage() {
-	echo "Usage: $0 <path_to_input_file> <path_to_output_file>"
+	echo "Usage: $0 <path_to_input_file> <path_to_output_file> [to_replace]"
 	exit 1
 }
 
 ## Input verification
-if [ "$#" -ne 2 ]; then
+if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
 	usage
 fi
 
 INPUT_FILE="$1"
 OUTPUT_FILE="$2"
+TO_REPLACE="${3:-true}"
 
 if [ ! -f "$INPUT_FILE" ]; then
 	echo "Error: Input file does not exist: $INPUT_FILE"
 	exit 1
+fi
+
+if [ "$TO_REPLACE" = "false" ] && [ -f "$OUTPUT_FILE" ]; then
+	echo "FILE_PARSER: Output file exists and replacement is disabled. Skipping: $OUTPUT_FILE"
+	exit 0
 fi
 
 #
