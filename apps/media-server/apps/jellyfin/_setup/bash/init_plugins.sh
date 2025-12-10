@@ -40,7 +40,7 @@ REPOS=(
 # Wait for Jellyfin to be ready
 wait_for_jellyfin() {
     echo "LOG: Waiting for Jellyfin to be responsive..."
-    until curl -s "$JELLYFIN_URL/System/Info/Public" >/dev/null; do
+    until curl -s "$JELLYFIN_URL/System/Ping" >/dev/null; do
         sleep 5
     done
     echo "LOG: Jellyfin is up."
@@ -105,6 +105,27 @@ echo "INFO: Installing plugins..."
 # echo "DEBUG: Available packages found:"
 # echo "$AVAILABLE_PACKAGES" | jq -r '.[].name' || echo "Raw response: $AVAILABLE_PACKAGES"
 
+# Check installed plugins
+# Endpoint: /Plugins -> https://api.jellyfin.org/#tag/Plugins/operation/GetPlugins
+INSTALLED_PLUGINS_JSON=$(curl -s -X GET "$JELLYFIN_URL/Plugins" \
+    -H "X-Emby-Token: $TOKEN")
+
+INSTALLED_PLUGINS=$(echo "$INSTALLED_PLUGINS_JSON" | jq -r '.[].Name')
+
+# Check if all desired plugins are installed
+ALL_INSTALLED=true
+for plugin in "${PLUGINS[@]}"; do
+    if ! echo "$INSTALLED_PLUGINS" | grep -Fqx "$plugin"; then
+        ALL_INSTALLED=false
+        break
+    fi
+done
+
+if [ "$ALL_INSTALLED" = true ]; then
+    echo "INFO: All desired plugins are already installed. Skipping installation"
+    exit 0
+fi
+
 for plugin in "${PLUGINS[@]}"; do
     echo "LOG: Requesting installation for: $plugin"
     
@@ -125,3 +146,16 @@ for plugin in "${PLUGINS[@]}"; do
 done
 
 echo "INFO: Plugin installation requests completed."
+
+## Reboot Jellyfin
+# Endpoint: /System/Restart -> https://api.jellyfin.org/#tag/System/operation/RestartApplication
+echo "INFO: Restarting Jellyfin..."
+RESTART_RESPONSE=$(curl -s -w "%{http_code}" -X POST "$JELLYFIN_URL/System/Restart" \
+    -H "X-Emby-Token: $TOKEN" \
+    -H "Content-Type: application/json")
+
+if [[ "$RESTART_RESPONSE" == "204" || "$RESTART_RESPONSE" == "200" ]]; then
+    echo "LOG: Restart command sent successfully."
+else
+    echo "ERROR: Failed to restart Jellyfin (HTTP $RESTART_RESPONSE)."
+fi

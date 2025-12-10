@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BrandingOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <LoginDisclaimer>
+&lt;form action="https://jellyfin.${EXTERNAL_DOMAIN}/sso/OID/start/authelia-external"&gt;
+  &lt;button class="raised block emby-button button-submit"&gt;
+    Sign in with Authelia
+  &lt;/button&gt;
+&lt;/form&gt;
+&lt;form action="https://jellyfin.${INTERNAL_DOMAIN}/sso/OID/start/authelia"&gt;
+  &lt;button class="raised block emby-button button-submit"&gt;
+    Sign in with Authelia (internal)
+  &lt;/button&gt;
+&lt;/form&gt;
+  </LoginDisclaimer>
+  <CustomCss>@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css"); 
+
+button.skip-button {
+  color: black !important; /* texte en noir */
+}
+
+a.raised.emby-button {
+  padding: 0.9em 1em;
+  color: inherit !important;
+}
+
+.disclaimerContainer {
+  display: block;
+}</CustomCss>
+  <SplashscreenEnabled>false</SplashscreenEnabled>
+</BrandingOptions>

@@ -1,14 +1,15 @@
 !/_setup/**
 
 # media subfolders and definitions
-!/config/data/root/
-!/config/data/root/**
+!config/data/root/
+!config/data/root/**
 
 # plugins configuration
-!/config/data/plugins/configurations/**
+!config/data/plugins/configurations/**
+config/data/plugins/configurations/SSO-Auth.xml
+config/data/plugins/configurations/Jellyfin.Plugin.OpenSubtitles.xml
 
 # general config files
-!/config/encoding.xml
-!/config/logging.default.json
-!/config/network.xml
-!/config/branding.xml
+!config/encoding.xml
+!config/logging.default.json
+!config/network.xml

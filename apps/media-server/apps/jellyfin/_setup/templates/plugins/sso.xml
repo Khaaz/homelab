@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PluginConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SamlConfigs />
+  <OidConfigs>
+    <item>
+      <key>
+        <string>authelia</string>
+      </key>
+      <value>
+        <PluginConfiguration>
+          <OidEndpoint>https://auth.${INTERNAL_DOMAIN}</OidEndpoint>
+          <OidClientId>jellyfin</OidClientId>
+          <OidSecret>${JELLYFIN_OIDC_CLIENT_SECRET}</OidSecret>
+          <Enabled>true</Enabled>
+          <EnableAuthorization>true</EnableAuthorization>
+          <EnableAllFolders>true</EnableAllFolders>
+          <EnabledFolders />
+		  <AdminRoles>
+            <string>admin</string>
+          </AdminRoles>
+          <Roles>
+            <string>admin</string>
+            <string>family</string>
+            <string>user</string>
+          </Roles>
+          <EnableFolderRoles>false</EnableFolderRoles>
+          <EnableLiveTvRoles>false</EnableLiveTvRoles>
+          <EnableLiveTv>false</EnableLiveTv>
+          <EnableLiveTvManagement>false</EnableLiveTvManagement>
+          <LiveTvRoles />
+          <LiveTvManagementRoles />
+          <FolderRoleMappings />
+          <RoleClaim>groups</RoleClaim>
+          <OidScopes>
+			<string>openid</string>
+            <string>email</string>
+            <string>profile</string>
+            <string>groups</string>
+          </OidScopes>
+		  <SchemeOverride>https</SchemeOverride>
+          <PortOverride xsi:nil="true" />
+          <NewPath>true</NewPath>
+          <CanonicalLinks />
+          <DisableHttps>false</DisableHttps>
+          <DisablePushedAuthorization>true</DisablePushedAuthorization>
+          <DoNotValidateEndpoints>false</DoNotValidateEndpoints>
+          <DoNotValidateIssuerName>false</DoNotValidateIssuerName>
+        </PluginConfiguration>
+      </value>
+    </item>
+    <item>
+      <key>
+        <string>authelia-external</string>
+      </key>
+      <value>
+        <PluginConfiguration>
+          <OidEndpoint>https://auth.${EXTERNAL_DOMAIN}</OidEndpoint>
+          <OidClientId>jellyfin-external</OidClientId>
+          <OidSecret>${JELLYFIN_EXTERNAL_OIDC_CLIENT_SECRET}</OidSecret>
+          <Enabled>true</Enabled>
+          <EnableAuthorization>true</EnableAuthorization>
+          <EnableAllFolders>true</EnableAllFolders>
+          <EnabledFolders />
+		  <AdminRoles>
+            <string>admin</string>
+          </AdminRoles>
+          <Roles>
+            <string>admin</string>
+            <string>family</string>
+            <string>user</string>
+          </Roles>
+          <EnableFolderRoles>false</EnableFolderRoles>
+          <EnableLiveTvRoles>false</EnableLiveTvRoles>
+          <EnableLiveTv>false</EnableLiveTv>
+          <EnableLiveTvManagement>false</EnableLiveTvManagement>
+          <LiveTvRoles />
+          <LiveTvManagementRoles />
+          <FolderRoleMappings />
+          <RoleClaim>groups</RoleClaim>
+          <OidScopes>
+            <string>openid</string>
+            <string>email</string>
+            <string>profile</string>
+            <string>groups</string>
+          </OidScopes>
+		  <SchemeOverride>https</SchemeOverride>
+          <PortOverride xsi:nil="true" />
+          <NewPath>true</NewPath>
+          <CanonicalLinks />
+          <DisableHttps>false</DisableHttps>
+          <DisablePushedAuthorization>true</DisablePushedAuthorization>
+          <DoNotValidateEndpoints>false</DoNotValidateEndpoints>
+          <DoNotValidateIssuerName>false</DoNotValidateIssuerName>
+        </PluginConfiguration>
+      </value>
+    </item>
+  </OidConfigs>
+</PluginConfiguration>

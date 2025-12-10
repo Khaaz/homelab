@@ -13,6 +13,7 @@
   <ScanCredits>true</ScanCredits>
   <ScanRecap>true</ScanRecap>
   <ScanPreview>true</ScanPreview>
+  <ScanCommercial>true</ScanCommercial>
   <AnalysisPercent>25</AnalysisPercent>
   <AnalysisLengthLimit>10</AnalysisLengthLimit>
   <FullLengthChapters>false</FullLengthChapters>
@@ -25,6 +26,8 @@
   <MaximumRecapDuration>120</MaximumRecapDuration>
   <MinimumPreviewDuration>15</MinimumPreviewDuration>
   <MaximumPreviewDuration>120</MaximumPreviewDuration>
+  <MinimumCommercialDuration>15</MinimumCommercialDuration>
+  <MaximumCommercialDuration>120</MaximumCommercialDuration>
   <BlackFrameMinimumPercentage>85</BlackFrameMinimumPercentage>
   <BlackFrameThreshold>32</BlackFrameThreshold>
   <UseChapterMarkersBlackFrame>true</UseChapterMarkersBlackFrame>
@@ -38,12 +41,14 @@
   <ChapterAnalyzerEndCreditsPattern>(^|\s)(Credits?|ED|Ending|End|Outro)(\s|$)</ChapterAnalyzerEndCreditsPattern>
   <ChapterAnalyzerPreviewPattern>(^|\s)(Preview|PV|Sneak\s?Peek|Coming\s?(Up|Soon)|Next\s+(time|on|episode)|Extra|Teaser|Trailer)(?!\sEnd)(\s|:|$)</ChapterAnalyzerPreviewPattern>
   <ChapterAnalyzerRecapPattern>(^|\s)(Re?cap|Sum{1,2}ary|Prev(ious(ly)?)?|(Last|Earlier)(\s\w+)?|Catch[ -]up)(?!\sEnd)(\s|:|$)</ChapterAnalyzerRecapPattern>
+  <ChapterAnalyzerCommercialPattern>(^|\s)(Ad(vert(isement)?)?|Commercial)(?!\sEnd)(\s|$)</ChapterAnalyzerCommercialPattern>
   <PluginSkip>false</PluginSkip>
   <AutoSkip>false</AutoSkip>
   <TypeList />
   <AutoSkipCredits>false</AutoSkipCredits>
   <AutoSkipRecap>false</AutoSkipRecap>
   <AutoSkipPreview>false</AutoSkipPreview>
+  <AutoSkipCommercial>true</AutoSkipCommercial>
   <SkipFirstEpisode>true</SkipFirstEpisode>
   <IntroEndOffset>0</IntroEndOffset>
   <IntroStartOffset>0</IntroStartOffset>

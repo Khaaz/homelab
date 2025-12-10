@@ -8,17 +8,25 @@ services:
     command:
       - /bin/sh
       - -c
-      - /scripts/parse_file.sh /_setup/templates/system.xml /config/system.xml true
+      - |
+        /scripts/parse_file.sh /_setup/templates/system.xml /config/system.xml false
+        /scripts/parse_file.sh /_setup/templates/branding.xml /config/branding.xml
+        /scripts/parse_file.sh /_setup/templates/plugins/sso.xml /config/data/plugins/configurations/SSO-Auth.xml
+        /scripts/parse_file.sh /_setup/templates/plugins/open-subtitles.xml /config/data/plugins/configurations/Jellyfin.Plugin.OpenSubtitles.xml
     volumes:
       - ${APPS_FOLDER:?err}/jellyfin/config:/config # config
       - ${APPS_FOLDER:?err}/jellyfin/_setup:/_setup # setup     
       - ${SCRIPTS_FOLDER:?err}:/scripts # scripts
     environment:
       - MEDIA_SERVER_NAME=${MEDIA_SERVER_NAME:?err}
+      - INTERNAL_DOMAIN=${INTERNAL_DOMAIN:?err}
+      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
+      - JELLYFIN_OIDC_CLIENT_SECRET=${JELLYFIN_OIDC_CLIENT_SECRET:?err}
+      - JELLYFIN_EXTERNAL_OIDC_CLIENT_SECRET=${JELLYFIN_EXTERNAL_OIDC_CLIENT_SECRET:?err}
       
   # Jellyfin - Media Server
   jellyfin:
-    image: lscr.io/linuxserver/jellyfin:10.11.4
+    image: jellyfin/jellyfin:10.11
     container_name: jellyfin
     restart: unless-stopped
     networks:
@@ -53,6 +61,8 @@ services:
       # setup
       - JELLYFIN_PUBLISHED_SERVER_URL=${EXTERNAL_DOMAIN:?err}
     post_start:
+      - command: /scripts/trust_certificate.sh "${INTERNAL_DOMAIN:?err}"
+        user: root
       - command: /_setup/bash/init.sh
         user: root
         environment:

@@ -4,7 +4,8 @@
       "Id": "Jellyfin.Plugin.HomeScreenSections",
       "Url": "/ModularHomeViews/settings",
       "DisplayText": "Modular Home",
-      "Icon": "ballot"
+      "Icon": "ballot",
+      "Version": 1
     }
   ]
 }

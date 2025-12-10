@@ -17,7 +17,7 @@ AUTH_HEADER="MediaBrowser Client=\"$CLIENT\", Device=\"$DEVICE\", DeviceId=\"$DE
 # Wait for Jellyfin to be ready
 wait_for_jellyfin() {
     echo "LOG: Waiting for Jellyfin to be responsive..."
-    until curl -s "$JELLYFIN_URL/System/Info/Public" >/dev/null; do
+    until curl -s "$JELLYFIN_URL/System/Ping" >/dev/null; do
         sleep 5
     done
     echo "LOG: Jellyfin is up."
@@ -26,11 +26,12 @@ wait_for_jellyfin() {
 wait_for_jellyfin
 
 ## Check if Startup Wizard is already completed
-# We check /Startup/Configuration. If it returns 200, wizard is open. If 403, it's likely closed.
-HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Emby-Authorization: $AUTH_HEADER" "$JELLYFIN_URL/Startup/Configuration")
+# Endpoint: /System/Info/Public -> https://api.jellyfin.org/#tag/System/operation/GetPublicSystemInfo
+echo "INFO: Checking if startup wizard is completed..."
+WIZARD_STATUS=$(curl -s "$JELLYFIN_URL/System/Info/Public" | jq -r '.StartupWizardCompleted')
 
-if [[ "$HTTP_STATUS" != "200" ]]; then
-    echo "INFO: Startup wizard seems to be already completed (Status: $HTTP_STATUS). Skipping wizard setup."
+if [[ "$WIZARD_STATUS" == "true" ]]; then
+    echo "INFO: Startup wizard is already completed. Skipping wizard setup."
     exit 0
 fi
 
