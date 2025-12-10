@@ -12,7 +12,7 @@ services:
     ports:
       - ${PORT_UI_YAMTRACK:?err}:8000
     volumes:
-      - ${APPS_FOLDER:?err}/yamtrack/db:/yamtrack/db
+      - ${APPS_DATA_FOLDER:?err}/yamtrack/db:/yamtrack/db
       - ${SCRIPTS_FOLDER:?err}:/scripts
     environment:
       - PUID=${PUID:?err}
