@@ -13,13 +13,53 @@ services:
       - ${PORT_UI_YAMTRACK:?err}:8000
     volumes:
       - ${APPS_FOLDER:?err}/yamtrack/db:/yamtrack/db
+      - ${SCRIPTS_FOLDER:?err}:/scripts
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
       - TZ=${TIMEZONE:?err}
-      - SECRET=longstring
+      - SECRET=${YAMTRACK_SECRET_ENCRYPTION_KEY:?err}
       - REDIS_URL=redis://yamtrack-redis:6379
+      - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      # global / oidc settings
+      - SOCIALACCOUNT_ONLY=True
+      - REDIRECT_LOGIN_TO_SSO=True
+      - REGISTRATION=True
+      # OIDC
+      - URLS=https://yamtrack.${INTERNAL_DOMAIN},https://yamtrack.${EXTERNAL_DOMAIN}
+      - ACCOUNT_DEFAULT_HTTP_PROTOCOL=https
+      - SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
+      - >-
+        SOCIALACCOUNT_PROVIDERS={
+          "openid_connect": {
+            "OAUTH_PKCE_ENABLED": true,
+            "APPS": [
+              {
+                "provider_id": "authelia",
+                "name": "Authelia (internal)",
+                "client_id": "yamtrack",
+                "secret": "${YAMTRACK_OIDC_CLIENT_SECRET}",
+                "settings": {
+                  "server_url": "https://auth.${INTERNAL_DOMAIN}/.well-known/openid-configuration"
+                }
+              },
+              {
+                "provider_id": "authelia-external",
+                "name": "Authelia",
+                "client_id": "yamtrack-external",
+                "secret": "${YAMTRACK_EXTERNAL_OIDC_CLIENT_SECRET}",
+                "settings": {
+                  "server_url": "https://auth.${EXTERNAL_DOMAIN}/.well-known/openid-configuration"
+                }
+              }
+            ]
+          }
+        }
+    post_start:
+      - command: /scripts/trust_certificate.sh "${INTERNAL_DOMAIN:?err}"
+        user: root
 
+  # Yamtrack - Redis
   yamtrack-redis:
     container_name: yamtrack-redis
     image: redis:7-alpine
