@@ -7,7 +7,6 @@ services:
     networks:
       media-server:
         ipv4_address: ${MEDIA_SERVER_DOCKER_SUBNET:?err}.21
-    init: true
     user: ${PUID:?err}:${PGID:?err}
     ports:
       - ${PORT_UI_SEERR:?err}:5055
