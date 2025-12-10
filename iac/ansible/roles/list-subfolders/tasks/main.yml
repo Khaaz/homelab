@@ -4,6 +4,8 @@
     paths: "{{ input_folder }}"
     file_type: directory
     depth: 1
+    use_regex: true
+    patterns: '^[^_].*'
   register: found_dirs
 
 - name: Set role output variable dynamically
