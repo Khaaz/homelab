@@ -70,10 +70,10 @@ services:
           - PORT_UI_SONARR4K=${PORT_UI_SONARR4K:?err}
           - PORT_UI_MAINTAINERR=${PORT_UI_MAINTAINERR:?err}
           # - MS
-          - PORT_UI_OVERSEERR=${PORT_UI_OVERSEERR:?err}
           - PORT_UI_SEERR=${PORT_UI_SEERR:?err}
           - PORT_UI_PLEX=${PORT_UI_PLEX:?err}
           - PORT_UI_JELLYFIN=${PORT_UI_JELLYFIN:?err}
+          - PORT_UI_YAMTRACK=${PORT_UI_YAMTRACK:?err}
           # - NC
           - PORT_UI_NEXTCLOUD=${PORT_UI_NEXTCLOUD:?err}
           # - VW

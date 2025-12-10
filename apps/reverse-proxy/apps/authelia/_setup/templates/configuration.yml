@@ -194,7 +194,6 @@ identity_providers:
 
       - client_id: 'portainer'
         client_name: 'portainer'
-        # The digest of 'insecure_secret'.
         client_secret: '${PORTAINER_OIDC_CLIENT_SECRET}'
         redirect_uris:
           - 'https://portainer.${INTERNAL_DOMAIN}'
@@ -210,4 +209,58 @@ identity_providers:
         authorization_policy: 'one_factor'
         userinfo_signed_response_alg: 'none'
         token_endpoint_auth_method: 'client_secret_post'
+        consent_mode: implicit
+      
+      - client_id: 'jellyfin'
+        client_name: 'jellyfin'
+        client_secret: '${JELLYFIN_OIDC_CLIENT_SECRET}'
+        redirect_uris:
+          - 'https://jellyfin.${INTERNAL_DOMAIN}/sso/OID/redirect/authelia'
+        scopes:
+          - 'openid'
+          - 'email'
+          - 'groups'
+          - 'profile'
+        authorization_policy: 'one_factor'
+        token_endpoint_auth_method: 'client_secret_post'
+        consent_mode: implicit
+
+      - client_id: 'jellyfin-external'
+        client_name: 'jellyfin-external'
+        client_secret: '${JELLYFIN_EXTERNAL_OIDC_CLIENT_SECRET}'
+        redirect_uris:
+          - 'https://jellyfin.${EXTERNAL_DOMAIN}/sso/OID/redirect/authelia-external'
+        scopes:
+          - 'openid'
+          - 'email'
+          - 'groups'
+          - 'profile'
+        authorization_policy: 'one_factor'
+        token_endpoint_auth_method: 'client_secret_post'
+        consent_mode: implicit
+
+      - client_id: 'yamtrack'
+        client_name: 'yamtrack'
+        client_secret: '${YAMTRACK_OIDC_CLIENT_SECRET}'
+        redirect_uris:
+          - 'https://yamtrack.${INTERNAL_DOMAIN}/accounts/oidc/authelia/login/callback/'
+        scopes:
+          - 'openid'
+          - 'email'
+          - 'groups'
+          - 'profile'
+        authorization_policy: 'one_factor'
+        consent_mode: implicit
+
+      - client_id: 'yamtrack-external'
+        client_name: 'yamtrack-external'
+        client_secret: '${YAMTRACK_EXTERNAL_OIDC_CLIENT_SECRET}'
+        redirect_uris:
+          - 'https://yamtrack.${EXTERNAL_DOMAIN}/accounts/oidc/authelia-external/login/callback/'
+        scopes:
+          - 'openid'
+          - 'email'
+          - 'groups'
+          - 'profile'
+        authorization_policy: 'one_factor'
         consent_mode: implicit
