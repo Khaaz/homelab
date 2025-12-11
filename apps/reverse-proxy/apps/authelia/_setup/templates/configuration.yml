@@ -99,7 +99,11 @@ access_control:
         - '*.${EXTERNAL_DOMAIN}'
         - auth.${INTERNAL_DOMAIN}
         - request.${INTERNAL_DOMAIN}
+        - seerr.${INTERNAL_DOMAIN}
         - media.${INTERNAL_DOMAIN}
+        - jellyfin.${INTERNAL_DOMAIN}
+        - tracker.${INTERNAL_DOMAIN}
+        - yamtrack.${INTERNAL_DOMAIN}
       subject:
         - 'group:family'
       policy: 'one_factor'
@@ -109,7 +113,11 @@ access_control:
         # - '*.${EXTERNAL_DOMAIN}'
         - auth.${EXTERNAL_DOMAIN}
         - request.${EXTERNAL_DOMAIN}
+        - seerr.${EXTERNAL_DOMAIN}
         - media.${EXTERNAL_DOMAIN}
+        - jellyfin.${EXTERNAL_DOMAIN}
+        - tracker.${EXTERNAL_DOMAIN}
+        - yamtrack.${EXTERNAL_DOMAIN}
       subject:
         - 'group:user'
       policy: 'one_factor'
