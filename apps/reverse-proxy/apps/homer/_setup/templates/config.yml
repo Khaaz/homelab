@@ -176,7 +176,7 @@ services:
         logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/portainer.svg"
         url: "https://portainer.${INTERNAL_DOMAIN}"
       - name: "Adguard"
-        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/portainer.svg"
+        logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/adguard-home.svg"
         url: "https://adguard.${INTERNAL_DOMAIN}"
       - name: "TrueNAS"
         logo: "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/truenas-scale.svg"
