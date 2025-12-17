@@ -15,4 +15,4 @@ SIZE="$1"
 #
 ## Core
 #
-tr -dc 'A-Za-z0-9!@%^*()_+=}[]<>?-' </dev/urandom | head -c "$SIZE"
+tr -dc 'A-Za-z0-9!@%^*_+=}[]<>?-' </dev/urandom | head -c "$SIZE"
