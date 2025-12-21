@@ -153,9 +153,11 @@ setup_vm_if_enabled "vault"
 setup_vm_if_enabled "vscode-server"
 setup_vm_if_enabled "whiteboard"
 
+# Other infra VMs / VPN
+setup_vm_if_enabled "vpn"
+
 # Management VMs
 setup_vm_if_enabled "management"
-setup_vm_if_enabled "vpn"
 
 echo "VMs setup complete!"
 
