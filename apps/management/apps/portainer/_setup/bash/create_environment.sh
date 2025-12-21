@@ -149,6 +149,8 @@ assign_team_access_to_group "homelab" "${GROUP_ID}" "admin"
 # - initialise endpoints
 echo "Initialising endpoints"
 remove_all_endpoints
+create_endpoint_in_environment "management" "127.0.0.1"
+
 # create_endpoint_in_environment "cloud" "${CLD_IP}"
 create_endpoint_in_environment "dns" "${DNS_IP}"
 # create_endpoint_in_environment "home-automation" "${HA_IP}"
