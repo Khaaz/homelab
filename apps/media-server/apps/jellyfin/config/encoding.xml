@@ -12,8 +12,8 @@
   <SegmentKeepSeconds>720</SegmentKeepSeconds>
   <HardwareAccelerationType>qsv</HardwareAccelerationType>
   <EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>
-  <VaapiDevice>/dev/dri/renderD128</VaapiDevice>
-  <QsvDevice>/dev/dri/renderD128</QsvDevice>
+  <VaapiDevice>/dev/dri/renderD129</VaapiDevice>
+  <QsvDevice>/dev/dri/renderD129</QsvDevice>
   <EnableTonemapping>false</EnableTonemapping>
   <EnableVppTonemapping>false</EnableVppTonemapping>
   <EnableVideoToolboxTonemapping>false</EnableVideoToolboxTonemapping>
@@ -36,8 +36,8 @@
   <EnableDecodingColorDepth12HevcRext>true</EnableDecodingColorDepth12HevcRext>
   <EnableEnhancedNvdecDecoder>true</EnableEnhancedNvdecDecoder>
   <PreferSystemNativeHwDecoder>true</PreferSystemNativeHwDecoder>
-  <EnableIntelLowPowerH264HwEncoder>false</EnableIntelLowPowerH264HwEncoder>
-  <EnableIntelLowPowerHevcHwEncoder>false</EnableIntelLowPowerHevcHwEncoder>
+  <EnableIntelLowPowerH264HwEncoder>true</EnableIntelLowPowerH264HwEncoder>
+  <EnableIntelLowPowerHevcHwEncoder>true</EnableIntelLowPowerHevcHwEncoder>
   <EnableHardwareEncoding>true</EnableHardwareEncoding>
   <AllowHevcEncoding>false</AllowHevcEncoding>
   <AllowAv1Encoding>false</AllowAv1Encoding>

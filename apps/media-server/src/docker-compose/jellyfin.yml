@@ -41,7 +41,7 @@ services:
     # user: ${PUID:?err}:${PGID:?err}
     # devices is defined in the jellyfin.override file that is included in proxmox only
     # devices:
-    #   - /dev/dri/renderD129:/dev/dri/renderD128 
+    #   - /dev/dri/renderD129:/dev/dri/renderD129
     ports:
       - ${PORT_UI_JELLYFIN:?err}:8096        # HTTP WebUI
       - 7359:7359/udp                        # Service Discovery

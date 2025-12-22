@@ -6,4 +6,4 @@ services:
       # Accélération matérielle Intel/AMD
       # We use renderD129 (secondary device) mapped on the proxmox host machine to the passthrough
       # renderD128 device is the primary device (virtio) which we don't want for quicksync
-      - /dev/dri/renderD129:/dev/dri/renderD128 
+      - /dev/dri/renderD129:/dev/dri/renderD129 
