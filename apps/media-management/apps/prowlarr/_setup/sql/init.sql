@@ -142,7 +142,7 @@ DELETE FROM DownloadClients;
 INSERT INTO DownloadClients (Id, Enable, Name, Implementation, Settings, ConfigContract, Priority, Categories)
 VALUES
 (2, 1, 'qBittorrent', 'QBittorrent', '{
-  "host": "localhost",
+  "host": "${DOCKER_SUBNET}.10",
   "port": ${PORT_UI_QBITTORRENT},
   "useSsl": false,
   "username": "admin",
