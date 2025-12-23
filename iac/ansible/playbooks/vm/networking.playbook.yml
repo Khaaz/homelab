@@ -1,0 +1,51 @@
+---
+- name: Update VM Networking (nftables)
+  hosts: all
+  become: true
+  vars:
+    controller_repo_root: "{{ playbook_dir }}/../../../.."
+    app_name: "{{ lookup('env', 'APP_NAME') | default('', true) }}"
+    
+    nftable_conf_src: "{{ controller_repo_root }}/apps/{{ app_name }}/infra/nftable.conf"
+    nftable_dest: "/etc/nftables.d/firewall.nft"
+
+  tasks:
+    - name: Check if source nftable.conf exists locally
+      ansible.builtin.stat:
+        path: "{{ nftable_conf_src }}"
+      delegate_to: localhost
+      register: local_nftable_conf
+
+    - name: Fail if nftable.conf source is missing
+      ansible.builtin.fail:
+        msg: "nftable.conf not found at {{ nftable_conf_src }}"
+      when: not local_nftable_conf.stat.exists
+
+    - name: Ensure /etc/nftables.d directory exists
+      ansible.builtin.file:
+        path: /etc/nftables.d
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Update nftable configuration
+      ansible.builtin.copy:
+        src: "{{ nftable_conf_src }}"
+        dest: "{{ nftable_dest }}"
+        mode: '0644'
+        owner: root
+        group: root
+      register: nft_update
+
+    - name: Apply nftables rules
+      ansible.builtin.command:
+        cmd: "nft -f {{ nftable_dest }}"
+      when: nft_update.changed
+
+    - name: Restart docker to restore container connectivity
+      ansible.builtin.service:
+        name: docker
+        state: restarted
+      when: nft_update.changed
+

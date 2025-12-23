@@ -10,16 +10,18 @@ SCRIPT_DIR=$(get_script_dir)
 
 ## Usage
 usage() {
-    echo "Usage: $0 [--auto] [--skip-jump] [--refresh-config <none|generated|full>] <vm>"
+    echo "Usage: $0 [--auto] [--skip-jump] [--refresh-config <none|generated|full>] [--refresh-networking] <vm>"
     echo "--auto mode will use sensible defaults (implies --refresh-config full)"
     echo "--skip-jump mode will skip the jump VM before setuping the target VM"
 	echo "--refresh-config <none|generated|full> will set the refresh config level (default: full)"
+    echo "--refresh-networking will run the networking playbook before the setup playbook, and refresh nftable"
     exit 1
 }
 
 ## Input verification
 AUTO=false
 SKIP_JUMP=false
+REFRESH_NETWORKING=false
 REFRESH_CONFIG="full"
 VM_NAME=""
 while [ $# -gt 0 ]; do
@@ -35,6 +37,10 @@ while [ $# -gt 0 ]; do
         --refresh-config|-rc)
             REFRESH_CONFIG=$2
             shift 2
+            ;;
+        --refresh-networking)
+            REFRESH_NETWORKING=true
+            shift
             ;;
         --help)
             usage
@@ -72,9 +78,13 @@ else
 	fi
 
     # Execute command directely via jump / resolve vm name via dns
+    REFRESH_NETWORKING_ARG=""
+    if [ "$REFRESH_NETWORKING" = true ]; then
+        REFRESH_NETWORKING_ARG="--refresh-networking"
+    fi
 	ssh -i $SCRIPT_DIR/../config/ssh/jump/admin_key \
 		-o StrictHostKeyChecking=no \
 		-p 2222 \
 		admin@192.168.1.200 \
-        "./homelab/apps/jump/ansible_vm.sh --refresh-config $REFRESH_CONFIG $VM_NAME"
+        "./homelab/apps/jump/ansible_vm.sh --refresh-config $REFRESH_CONFIG $REFRESH_NETWORKING_ARG $VM_NAME"
 fi

@@ -11,24 +11,30 @@ ROOT_DIR="$SCRIPT_DIR/../.."
 
 ## Usage
 usage() {
-    echo "Usage: $0 [--refresh-config <none|generated|full>] <vm>"
+    echo "Usage: $0 [--refresh-config <none|generated|full>] [--refresh-networking] <vm>"
     echo
     echo "Options:"
     echo "  --refresh-config, -rc  Set config refresh level (default: full)"
     echo "    - none      : do nothing"
     echo "    - generated : copy .env.generated"
     echo "    - full      : also copy .env and networking.env from controller root (override if present)"
+    echo "  --refresh-networking   Run the networking playbook before the setup playbook"
     exit 1
 }
 
 ## Input verification
 REFRESH_CONFIG="full"
+REFRESH_NETWORKING=false
 VM_NAME=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --refresh-config|-rc)
             REFRESH_CONFIG=$2
             shift 2
+            ;;
+        --refresh-networking)
+            REFRESH_NETWORKING=true
+            shift
             ;;
         --help)
             usage
@@ -49,5 +55,9 @@ fi
 #
 TARGET_IP=$("$SCRIPT_DIR/src/get_vm_ip.sh" "$VM_NAME")
 SSH_KEY=$ROOT_DIR/config/ssh/$VM_NAME/automation_key
+
+if [ "$REFRESH_NETWORKING" = true ]; then
+    $ROOT_DIR/iac/5.setup_vm.sh networking --app "$VM_NAME" --ip "$TARGET_IP" --key "$SSH_KEY"
+fi
 
 $ROOT_DIR/iac/5.setup_vm.sh setup --app "$VM_NAME" --ip "$TARGET_IP" --key "$SSH_KEY" --refresh-config "$REFRESH_CONFIG"
