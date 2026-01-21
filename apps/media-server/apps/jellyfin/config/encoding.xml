@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EncodingOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <EncodingThreadCount>-1</EncodingThreadCount>
+  <TranscodingTempPath>/transcode</TranscodingTempPath>
   <EnableFallbackFont>false</EnableFallbackFont>
   <EnableAudioVbr>false</EnableAudioVbr>
   <DownMixAudioBoost>2</DownMixAudioBoost>
@@ -39,7 +40,7 @@
   <EnableIntelLowPowerH264HwEncoder>true</EnableIntelLowPowerH264HwEncoder>
   <EnableIntelLowPowerHevcHwEncoder>true</EnableIntelLowPowerHevcHwEncoder>
   <EnableHardwareEncoding>true</EnableHardwareEncoding>
-  <AllowHevcEncoding>false</AllowHevcEncoding>
+  <AllowHevcEncoding>true</AllowHevcEncoding>
   <AllowAv1Encoding>false</AllowAv1Encoding>
   <EnableSubtitleExtraction>false</EnableSubtitleExtraction>
   <HardwareDecodingCodecs>
