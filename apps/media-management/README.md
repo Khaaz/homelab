@@ -174,3 +174,19 @@ This will launch all containers and apply configuration templates from `_setup` 
 
 Each service provides templates and SQL files in its `_setup` folder which are
 applied on first launch.
+
+notes:
+
+Voila le process que je propose:
+dans qbit quand tu dl manuellement, tu utilise le tag "prowlarr". Ca va DL dans "unsorted"
+si tu DL direct depuis prowlarr, ca va auto applique le tag prowlarr et ca va faire pareil
+dans radarr / sonarr, tu ajoute la serie comme d'habitude, mais tu lance pas de recherche
+dans radarr / sonarr, tu va dans "wanted". La tu vois la liste des episodes / films que tu veux (basé sur ce que tu as mis comme films / series).
+ensuite la tu fais le manual import, tu change le path pour dire que tu veux manual import depuis /data/torrents/unsorted
+tu choisis hardlink en bas a gauche. Faut faire les matchings a la mains si ca ne match pas, mais en general ca fonctionne bien. Parfois il y a besoin de fere des actions manuelles.
+tu import et ca fait les matchings tout seul et boum ca te fait les links et ca te les met dans ta libraire normalement
+
+Du coup: 
+aucune action manuelle a faire sur le disque
+pour un truc automatique sonarr/radarr c'est dans /torrents/series /torrents/movies puis dans /media/series /media/movies
+pour un truc manuel (prowlarr ou qbit direct), c'est dans /torrents/unsorted puis dans /media/series /media/movies
