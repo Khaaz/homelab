@@ -3,7 +3,7 @@
   hosts: jump
   become: true
   vars:
-    git_repo_url: "https://khaaz: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@github.com/Khaaz/homelab.git"
+    git_repo_url: "https://github.com/Khaaz/homelab.git"
 
     # Jump VM target repo
     work_dir: "/home/admin/homelab"
