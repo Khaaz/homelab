@@ -201,6 +201,11 @@
       register: compose_down
       changed_when: "'Stopping' in compose_down.stdout or 'Removing' in compose_down.stdout or compose_down.rc == 0"
 
+    - name: Force syncing system clock with NTP
+      ansible.builtin.command:
+        cmd: ntpd -q -p pool.ntp.org
+      changed_when: false
+
     - block:
         - name: Compose up via compose.sh (recreate/pull/build)
           ansible.builtin.command:
