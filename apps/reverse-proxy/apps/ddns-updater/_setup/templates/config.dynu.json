@@ -3,6 +3,7 @@
 		{
 			"provider": "dynu",
 			"domain": "${EXTERNAL_DOMAIN}",
+			"username": "${DNS_PROVIDER_USERNAME}",
 			"token": "${DNS_PROVIDER_TOKEN}",
 			"ip_version": "ipv4",
 			"ipv6_suffix": ""

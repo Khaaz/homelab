@@ -21,6 +21,7 @@ services:
       - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN:?err}
       - DNS_PROVIDER_TOKEN=${DNS_PROVIDER_TOKEN:?err}
       - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+      - DNS_PROVIDER_USERNAME=${DNS_PROVIDER_USERNAME}
 
   # DDNS-Updater - Dynamically update registrar (CF / google etc) with the host ip address to correctly map domain -> ip
   ddns-updater:

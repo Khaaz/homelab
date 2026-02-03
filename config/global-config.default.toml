@@ -194,6 +194,8 @@
 	AUTHELIA_OIDC_JWKS_KEY="generate_rsa()"
 
 	## DDNS
+	# Optional: For  Dynu Only
+	DNS_PROVIDER_USERNAME=""
 	# Optional: For cloudflare only
 	# On the homepage, on the account home, on the domain line, click "copy zone ID" (clickable dots at the right of the line)
 	CLOUDFLARE_ZONE_ID=""
